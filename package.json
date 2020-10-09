@@ -13,6 +13,25 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.3"
   },
+  "rules": {
+    "jsx-a11y/anchor-is-valid": [
+      "error",
+      {
+        "components": [
+          "Link"
+        ],
+        "specialLink": [
+          "hrefLeft",
+          "hrefRight"
+        ],
+        "aspects": [
+          "noHref",
+          "invalidHref",
+          "preferButton"
+        ]
+      }
+    ]
+  },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",

@@ -1,10 +1,10 @@
 import React from "react";
 import { Form, Button, Col, Row, Container } from "react-bootstrap";
 
-export default function Home() {
+function Plan() {
   return (
     <>
-      <span>Home</span>
+      <span>Kế hoạch năm học</span>
       <Container fluid>
         <Row>
           <Col>This is col</Col>
@@ -14,4 +14,4 @@ export default function Home() {
   );
 }
 
-
+export default Plan;
