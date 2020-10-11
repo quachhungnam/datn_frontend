@@ -1,14 +1,13 @@
 import React, { useState, useContext } from "react";
-import { Form, Button, Col, Row, Container, InputGroup } from "react-bootstrap";
+import { Form, Button, Col, Row, Container, Spinner, Badge } from "react-bootstrap";
 import {
   BrowserRouter as Router,
   Redirect,
 } from "react-router-dom";
-import { AuthContexts } from '../actions/auth';
-import { login } from '../services/auth_service'
-// import { action_login2 } from '../reducer/auth_reducer'
+import { login_action } from '../actions/auth_action'
+import { AuthContext } from '../context/Contexts'
 export default function Login() {
-  const [state, dispatch] = useContext(AuthContexts);
+  const [userState, dispatch] = useContext(AuthContext);
   const init_user = { username: null, password: null };
   const [user, set_user] = useState(init_user);
 
@@ -17,40 +16,38 @@ export default function Login() {
     set_user({ ...user, [name]: value });
   };
 
-  const action_login = async (user) => {
-    try {
-      const res = await login(user);
-      if (res.access) {
-        localStorage.setItem("user", JSON.stringify(res));
-        dispatch({ type: "LOG_IN", token: res.access });
-      } else {
-        alert("Sai tai khoan hoac mat khau");
-      }
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
-
-  async function handleSubmit(event) {
+  async function handleLogin(event) {
     event.preventDefault();
-    action_login(user)
+    login_action(dispatch, user)
+
   }
 
-  if (state.accessToken != null) {
+  // if (userState.isloading) {
+  //   return (
+  //     <Container>
+  //       <Spinner animation="border" variant="success" size />
+  //     </Container>
+
+
+  //   )
+  // }
+
+  if (userState.user !== "") {
     return <Redirect to="/" />;
   }
 
   return (
     <Container>
+
       <br></br>
-      <Form onSubmit={handleSubmit}>
+      <Form onSubmit={handleLogin}>
         <Form.Group as={Row}>
           <Form.Label column sm={2}>
             Tài khoản
           </Form.Label>
           <Col sm={5}>
             <Form.Control
+              disabled={userState.isloading}
               name="username"
               type="username"
               placeholder="Tài khoản"
@@ -65,6 +62,7 @@ export default function Login() {
           </Form.Label>
           <Col sm={5}>
             <Form.Control
+              disabled={userState.isloading}
               name="password"
               type="password"
               placeholder="Mật khẩu"
@@ -73,18 +71,38 @@ export default function Login() {
           </Col>
         </Form.Group>
 
-        <Form.Group as={Row} controlId="formHorizontalCheck">
+        {/* <Form.Group as={Row} controlId="formHorizontalCheck">
           <Col sm={{ span: 10, offset: 2 }}>
             <Form.Check label="Lưu mật khẩu" />
           </Col>
-        </Form.Group>
+        </Form.Group> */}
 
         <Form.Group as={Row}>
           <Col sm={{ span: 10, offset: 2 }}>
-            <Button type="submit">Đăng nhập</Button>
+            <Button type="submit" disabled={userState.isloading}>
+              {userState.isloading ?
+                <Spinner
+                  as="span"
+                  animation="grow"
+                  size="sm"
+                  role="status"
+                  aria-hidden="true"
+                />
+                : ""
+              }
+              Đăng nhập
+              </Button>
           </Col>
+          {
+            userState.errorMessage != null
+              ?
+              <Badge pill variant="danger">
+                {userState.errorMessage}
+              </Badge>
+              : ""
+          }
         </Form.Group>
       </Form>
-    </Container>
+    </Container >
   );
 }

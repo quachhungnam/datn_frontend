@@ -1,22 +1,33 @@
 import React from 'react'
-import { AuthContexts } from '../actions/auth'
-import { login } from '../services/auth_service'
-const [dispatch] = React.useContext(AuthContexts)
+export default function AuthReducer(initialState, action) {
+    switch (action.type) {
+        case "REQUEST_LOGIN":
+            return {
+                ...initialState,
+                loading: true
+            }
 
+        case "LOGIN_SUCCESS":
+            return {
+                ...initialState,
+                user: action.payload.user,
+                token: action.payload.accesstoken,
+                loading: false
+            }
+        case "LOGOUT":
+            return {
+                ...initialState,
+                user: "",
+                token: ""
+            };
 
-
-const action_login2 = async (user) => {
-    try {
-        const res = await login(user);
-        if (res.access) {
-            localStorage.setItem("user", JSON.stringify(res));
-            dispatch({ type: "LOG_IN", token: res.access });
-        } else {
-            alert("Sai tai khoan hoac mat khau");
-        }
-    } catch (e) {
-        console.log(e);
+        case "LOGIN_ERROR":
+            return {
+                ...initialState,
+                loading: false,
+                errorMessage: action.error
+            };
+        default:
+            return initialState
     }
-};
-
-export { action_login2 }
+}
