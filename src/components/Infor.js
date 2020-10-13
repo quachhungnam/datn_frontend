@@ -10,93 +10,93 @@ import {
   FormControl,
   Button,
   Table,
-  Col, Container, Row
+  Col,
+  Container,
+  Row,
+  InputGroup,
+  Figure,
 } from "react-bootstrap";
+import DatePicker from "react-datepicker";
+
+import "react-datepicker/dist/react-datepicker.css";
 
 function Infor() {
+  const [startDate, setStartDate] = useState(new Date());
   return (
-
-    <Container fluid>
+    <Container>
+      <br></br>
       <Form>
-
-
-        <Form.Group as={Row}>
-          <Form.Label column sm={1}>
-            Tài khoản
-          </Form.Label>
+        <Form.Row>
           <Col sm={2}>
-            <Form.Control
-              name="username"
-              type="username"
-              placeholder="Tài khoản"
-            // onChange={handle_input}
-            />
+            <Figure>
+              <Figure.Image
+                width={171}
+                height={180}
+                alt="171x180"
+                src="https://sohanews.sohacdn.com/thumb_w/660/2018/10/1/photo1538392226601-15383922266012085392896.jpg"
+              />
+              {/* <Figure.Caption>
+            Nulla vitae elit libero, a pharetra augue mollis interdum.
+          </Figure.Caption> */}
+            </Figure>
           </Col>
-          <Form.Label column sm={1}>
-            Tài khoản
-          </Form.Label>
-          <Col sm={2}>
+          <Col>Nguyễn Văn Anh</Col>
+        </Form.Row>
+        <Form.Row>
+          <Form.Group as={Col} controlId="lastname">
+            <Form.Label>Họ</Form.Label>
             <Form.Control
-              name="username"
-              type="username"
-              placeholder="Tài khoản"
-            // onChange={handle_input}
+              type="text"
+              placeholder="Nhập họ và tên đệm"
+              defaultValue="Nguyễn Văn Nam"
             />
-          </Col>
-        </Form.Group>
-
+          </Form.Group>
+          <Form.Group as={Col} controlId="firstname">
+            <Form.Label>Tên</Form.Label>
+            <Form.Control type="text" placeholder="Nhập tên" />
+          </Form.Group>
+        </Form.Row>
+        <Form.Row>
+          <Form.Group as={Col} controlId="formGridState">
+            <Form.Label>Giới tính</Form.Label>
+            <Form.Control as="select" defaultValue="Choose...">
+              <option>---</option>
+              <option>Nam</option>
+              <option>Nữ</option>
+            </Form.Control>
+          </Form.Group>
+          <Form.Group as={Col} controlId="firstname">
+            <Form.Label>Năm sinh</Form.Label>
+            <Form.Control type="date" />
+          </Form.Group>
+        </Form.Row>
         <Form.Row>
           <Form.Group as={Col} controlId="formGridEmail">
             <Form.Label>Email</Form.Label>
-            <Form.Control type="email" placeholder="Enter email" />
+            <Form.Control type="email" placeholder="Nhập email" />
           </Form.Group>
-
-          <Form.Group as={Col} controlId="formGridPassword">
-            <Form.Label>Password</Form.Label>
-            <Form.Control type="password" placeholder="Password" />
+          <Form.Group as={Col} controlId="phonenumber">
+            <Form.Label>Số điện thoại</Form.Label>
+            <Form.Control placeholder="Nhập số điện thoại" />
           </Form.Group>
         </Form.Row>
-
         <Form.Group controlId="formGridAddress1">
-          <Form.Label>Address</Form.Label>
-          <Form.Control placeholder="1234 Main St" />
+          <Form.Label>Địa chỉ</Form.Label>
+          <Form.Control placeholder="Nhập địa chỉ" />
         </Form.Group>
-
-        <Form.Group controlId="formGridAddress2">
-          <Form.Label>Address 2</Form.Label>
-          <Form.Control placeholder="Apartment, studio, or floor" />
-        </Form.Group>
-
-        <Form.Row>
-          <Form.Group as={Col} controlId="formGridCity">
-            <Form.Label>City</Form.Label>
-            <Form.Control />
-          </Form.Group>
-
-          <Form.Group as={Col} controlId="formGridState">
-            <Form.Label>State</Form.Label>
-            <Form.Control as="select" defaultValue="Choose...">
-              <option>Choose...</option>
-              <option>...</option>
-            </Form.Control>
-          </Form.Group>
-
-          <Form.Group as={Col} controlId="formGridZip">
-            <Form.Label>Zip</Form.Label>
-            <Form.Control />
-          </Form.Group>
-        </Form.Row>
-
-        <Form.Group id="formGridCheckbox">
-          <Form.Check type="checkbox" label="Check me out" />
-        </Form.Group>
-
         <Button variant="primary" type="submit">
-          Submit
-      </Button>
+          Lưu
+        </Button>
+        &nbsp;
+        <Button variant="danger" type="reset">
+          Reset
+        </Button>
+        &nbsp;
+        <Button variant="danger" type="reset">
+          Cacel
+        </Button>
       </Form>
     </Container>
-
   );
 }
 

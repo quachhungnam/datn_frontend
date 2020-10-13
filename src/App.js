@@ -5,20 +5,22 @@ import {
   Route,
   NavLink,
 } from "react-router-dom";
-import { Navbar, Nav, NavDropdown } from "react-bootstrap";
+import { Navbar, Nav, NavDropdown, Container } from "react-bootstrap";
 import Login from "./components/Login";
 import About from "./components/About";
 import Plan from "./components/Plan";
 import Suport from "./components/Suport";
 import Infor from "./components/Infor";
 import MyMarks from "./components/student/MyMarks";
-import TeachClass from "./components/teacher/TeachClass";
+// import TeachClass from "./components/teacher/TeachClassList";
 import MyClass from "./components/teacher/MyClass";
 import Home from "./components/Home";
 import Index from "./components/Index";
 import { AuthContext } from "./context/Contexts";
 import { logout_action, checktoken_action } from "./actions/auth_action";
 import { DropdownStudent, DropdownTeacher } from "./components/DropdownUser";
+import TeachClassList from './components/teacher/TeachClassList'
+import TeachClass from './components/teacher/TeachClass'
 export default function App() {
   const [userState, dispatch] = useContext(AuthContext);
 
@@ -41,10 +43,10 @@ export default function App() {
         </NavLink>
       </>
     ) : (
-      <NavLink to="/login" className="nav-link">
-        Đăng nhập
-      </NavLink>
-    );
+        <NavLink to="/login" className="nav-link">
+          Đăng nhập
+        </NavLink>
+      );
   };
 
   const show_dropdown_user = () => {
@@ -136,7 +138,10 @@ export default function App() {
             <MyClass />
           </Route>
           <Route exact path="/teachclass">
-            <TeachClass />
+            <TeachClassList />
+          </Route>
+          <Route exact path="/input">
+            < TeachClass />
           </Route>
         </Switch>
       </div>

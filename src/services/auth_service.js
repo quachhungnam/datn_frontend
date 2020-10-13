@@ -1,11 +1,12 @@
 const API_URL = 'http://127.0.0.1:8000'
 // http://127.0.0.1:8000/api/token/
-async function get_account_infor() {
+async function checktoken_service(token) {
     try {
-        let result = await fetch(`${API_URL}/api/users/`, {
+        let result = await fetch(`${API_URL}/api/checktoken/`, {
             method: 'GET',
             headers: {
                 Accept: 'application/json',
+                Authorization: token,
                 'Content-Type': 'application/json',
             },
         });
@@ -16,7 +17,8 @@ async function get_account_infor() {
         return error;
     }
 }
-const login = async (user) => {
+
+const login_service = async (user) => {
     try {
         let result = await fetch(`${API_URL}/api/token/`, {
             method: 'POST',
@@ -30,17 +32,17 @@ const login = async (user) => {
             }),
         });
         let resultJson = await result.json();
-        // if (resultJson.accessToken) {
-        //     localStorage.setItem("user", JSON.stringify(resultJson.accessToken));
-        // }
         return resultJson;
     } catch (error) {
         return error;
     }
 }
 
-const logout = async () => {
+const logout_service = async () => {
     localStorage.removeItem("user")
 }
 
-export { get_account_infor, login, logout }
+export {
+    login_service,
+    logout_service, checktoken_service
+}

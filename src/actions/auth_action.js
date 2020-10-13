@@ -1,9 +1,9 @@
-import { login } from '../services/auth_service'
+import { checktoken_service, login_service } from '../services/auth_service'
 
 export async function login_action(dispatch, user) {
     try {
         dispatch({ type: 'REQUEST_LOGIN' });
-        const res = await login(user)
+        const res = await login_service(user)
         if (res.access) {
             dispatch({ type: 'LOGIN_SUCCESS', user: res });
             localStorage.setItem("user", JSON.stringify(res));
@@ -23,5 +23,20 @@ export async function logout_action(dispatch) {
 }
 
 export async function checktoken_action(dispatch) {
-    dispatch({ type: "RESTORE_TOKEN" });
+    let user = await localStorage.getItem("user")
+        ? JSON.parse(localStorage.getItem("user"))
+        : "";
+    if (user !== "") {
+        const token = await 'Bearer ' + user.access
+        let rs = await checktoken_service(token)
+        if (rs.access) {
+            dispatch({ type: "RESTORE_TOKEN" });
+        } else {
+            dispatch({ type: 'LOGOUT' });
+            localStorage.removeItem('user');
+        }
+    } else {
+        dispatch({ type: 'LOGOUT' });
+        localStorage.removeItem('user');
+    }
 }
