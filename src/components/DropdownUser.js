@@ -31,7 +31,7 @@ export function DropdownTeacher() {
             <NavLink to="/myclass" className="dropdown-item">
                 Lớp sinh hoạt
         </NavLink>
-            <NavLink to="/teachclass" className="dropdown-item">
+            <NavLink to="/teachclasslist" className="dropdown-item">
                 Lớp giảng dạy
         </NavLink>
         </NavDropdown>

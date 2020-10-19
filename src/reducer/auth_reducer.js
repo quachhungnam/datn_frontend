@@ -1,30 +1,37 @@
 import React from 'react'
 export default function AuthReducer(initialState, action) {
     switch (action.type) {
+        case "RESTORE_TOKEN":
+            return {
+                ...initialState,
+                isloading: false
+            }
         case "REQUEST_LOGIN":
             return {
                 ...initialState,
-                loading: true
+                isloading: true
             }
 
         case "LOGIN_SUCCESS":
             return {
                 ...initialState,
-                user: action.payload.user,
-                token: action.payload.accesstoken,
-                loading: false
+                user: action.user,
+                isloading: false,
+                errorMessage: null
             }
         case "LOGOUT":
+            // alert('logout')
             return {
                 ...initialState,
+                isLogout: true,
                 user: "",
-                token: ""
+                // token: ""
             };
 
         case "LOGIN_ERROR":
             return {
                 ...initialState,
-                loading: false,
+                isloading: false,
                 errorMessage: action.error
             };
         default:

@@ -1,20 +1,12 @@
-import React, { useReducer } from 'react'
-
-
-export const AuthContext = React.createContext()
-
-let user = localStorage.getItem("user")
-    ? JSON.parse(localStorage.getItem("user"))
-    : "";
-
-export const initialState = {
-    user: user || "",
-    isloading: false,
-    errorMessage: null,
-    isLogout: false
-};
-export default function AuthReducer(initialState, action) {
+import React from 'react'
+export default function MarkReducer(initialState, action) {
     switch (action.type) {
+
+        case "GET_MARK_TYPE":
+            return {
+                ...initialState,
+                marktype: action.marktype
+            }
         case "RESTORE_TOKEN":
             return {
                 ...initialState,
@@ -51,16 +43,4 @@ export default function AuthReducer(initialState, action) {
         default:
             return initialState
     }
-}
-
-
-export const AuthProvider = ({ children }) => {
-    const [userState, dispatch] = useReducer(AuthReducer, initialState)
-
-    return (
-        <AuthContext.Provider value={[userState, dispatch]}>
-            {children}
-        </AuthContext.Provider>
-    )
-
 }

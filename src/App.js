@@ -5,7 +5,7 @@ import {
   Route,
   NavLink,
 } from "react-router-dom";
-import { Navbar, Nav, NavDropdown, Container } from "react-bootstrap";
+import { Navbar, Nav, NavDropdown,  } from "react-bootstrap";
 import Login from "./components/Login";
 import About from "./components/About";
 import Plan from "./components/Plan";
@@ -16,11 +16,12 @@ import MyMarks from "./components/student/MyMarks";
 import MyClass from "./components/teacher/MyClass";
 import Home from "./components/Home";
 import Index from "./components/Index";
-import { AuthContext } from "./context/Contexts";
+import { AuthContext } from "./context/AuthContext";
 import { logout_action, checktoken_action } from "./actions/auth_action";
 import { DropdownStudent, DropdownTeacher } from "./components/DropdownUser";
 import TeachClassList from './components/teacher/TeachClassList'
 import TeachClass from './components/teacher/TeachClass'
+import InputMark from './components/teacher/InputMark'
 export default function App() {
   const [userState, dispatch] = useContext(AuthContext);
 
@@ -137,11 +138,14 @@ export default function App() {
           <Route exact path="/myclass">
             <MyClass />
           </Route>
-          <Route exact path="/teachclass">
+          <Route exact path="/teachclasslist">
             <TeachClassList />
           </Route>
           <Route exact path="/input">
             < TeachClass />
+          </Route>
+          <Route exact path="/inputmark">
+            < InputMark />
           </Route>
         </Switch>
       </div>
