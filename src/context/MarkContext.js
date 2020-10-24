@@ -9,8 +9,8 @@ let user = localStorage.getItem("user")
 
 export const initialState = {
     // user: user || "",
-    classes: "",
-    subject: "",
+    classes: "10a2",
+    subject: "Toans",
     marktype: "1",
     yearschool: "",
     errorMessage: null,

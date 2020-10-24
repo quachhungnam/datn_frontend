@@ -1,11 +1,15 @@
 import React from "react";
-import { Container, Row, Col, Table, } from 'react-bootstrap'
+import { Container, Row, Col, Table, Card } from "react-bootstrap";
 export default function MyClass() {
-
   return (
     <Container>
       <br></br>
-      <Row>
+      <Card>
+        <Card.Header>
+          <Card.Title>Lớp chủ nhiệm</Card.Title>
+        </Card.Header>
+        <Card.Body>
+        <Row>
         <Col>
           <p>Lớp chủ nhiệm: 12a5</p>
         </Col>
@@ -32,24 +36,12 @@ export default function MyClass() {
           <Table striped bordered hover size="sm">
             <thead>
               <tr>
-                <th>
-                  Số TT
-                </th>
-                <th>
-                  Họ và tên
-                </th>
-                <th>
-                  Giới tính
-                </th>
-                <th>
-                  Năm sinh
-                </th>
-                <th>
-                  Email
-                </th>
-                <th>
-                  Số điện thoại
-                </th>
+                <th>Số TT</th>
+                <th>Họ và tên</th>
+                <th>Giới tính</th>
+                <th>Năm sinh</th>
+                <th>Email</th>
+                <th>Số điện thoại</th>
               </tr>
             </thead>
             <tbody>
@@ -65,6 +57,9 @@ export default function MyClass() {
           </Table>
         </Col>
       </Row>
+        </Card.Body>
+      </Card>
+     
     </Container>
-  )
+  );
 }

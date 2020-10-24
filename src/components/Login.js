@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { Form, Button, Col, Row, Container, Spinner, Badge } from "react-bootstrap";
+import { Form, Button, Col, Row, Container, Spinner, Badge, Card } from "react-bootstrap";
 import {
   BrowserRouter as Router,
   Redirect,
@@ -22,87 +22,95 @@ export default function Login() {
 
   }
 
-  // if (userState.isloading) {
-  //   return (
-  //     <Container>
-  //       <Spinner animation="border" variant="success" size />
-  //     </Container>
-
-
-  //   )
-  // }
 
   if (userState.user !== "") {
     return <Redirect to="/" />;
   }
 
   return (
-    <Container>
+  
+      <Container>
+        {/* className="justify-content-center" */}
+        <br></br>
+        <Card>
+          <Card.Header>
+            <Card.Title>Thông tin đăng nhập
 
-      <br></br>
-      <Form onSubmit={handleLogin}>
-        <Form.Group as={Row}>
-          <Form.Label column sm={2}>
-            Tài khoản
-          </Form.Label>
-          <Col sm={5}>
-            <Form.Control
-              disabled={userState.isloading}
-              name="username"
-              type="username"
-              placeholder="Tài khoản"
-              onChange={handle_input}
-            />
-          </Col>
-        </Form.Group>
+          {
+                userState.errorMessage != null
+                  ?
+                  <Badge pill variant="danger">
+                    {userState.errorMessage}
+                  </Badge>
+                  : ""
+              }
+            </Card.Title>
+          </Card.Header>
+          <Card.Body >
+            <Form onSubmit={handleLogin} >
+              <Form.Group as={Row}>
+                <Form.Label column sm={2}>
+                  <b>Tài khoản</b>
+                </Form.Label>
+                <Col sm={5}>
+                  <Form.Control
+                    disabled={userState.isloading}
+                    name="username"
+                    type="username"
+                    placeholder="Tài khoản"
+                    onChange={handle_input}
+                  />
+                </Col>
+              </Form.Group>
 
-        <Form.Group as={Row} controlId="formHorizontalPassword">
-          <Form.Label column sm={2}>
-            Mật khẩu
-          </Form.Label>
-          <Col sm={5}>
-            <Form.Control
-              disabled={userState.isloading}
-              name="password"
-              type="password"
-              placeholder="Mật khẩu"
-              onChange={handle_input}
-            />
-          </Col>
-        </Form.Group>
+              <Form.Group as={Row} controlId="formHorizontalPassword">
+                <Form.Label column sm={2}>
+                  <b>Mật khẩu</b>
+                </Form.Label>
+                <Col sm={5}>
+                  <Form.Control
+                    disabled={userState.isloading}
+                    name="password"
+                    type="password"
+                    placeholder="Mật khẩu"
+                    onChange={handle_input}
+                  />
+                </Col>
+              </Form.Group>
 
-        {/* <Form.Group as={Row} controlId="formHorizontalCheck">
+              {/* <Form.Group as={Row} controlId="formHorizontalCheck">
           <Col sm={{ span: 10, offset: 2 }}>
             <Form.Check label="Lưu mật khẩu" />
           </Col>
         </Form.Group> */}
 
-        <Form.Group as={Row}>
-          <Col sm={{ span: 10, offset: 2 }}>
-            <Button type="submit" disabled={userState.isloading}>
-              {userState.isloading ?
-                <Spinner
-                  as="span"
-                  animation="grow"
-                  size="sm"
-                  role="status"
-                  aria-hidden="true"
-                />
-                : ""
-              }
+              <Form.Group as={Row}>
+                <Col sm={{ span: 10, offset: 2 }}>
+                  <Button type="submit" disabled={userState.isloading}>
+                    {userState.isloading ?
+                      <Spinner
+                        as="span"
+                        animation="grow"
+                        size="sm"
+                        role="status"
+                        aria-hidden="true"
+                      />
+                      : ""
+                    }
               Đăng nhập
               </Button>
-          </Col>
-          {
-            userState.errorMessage != null
-              ?
-              <Badge pill variant="danger">
-                {userState.errorMessage}
-              </Badge>
-              : ""
-          }
-        </Form.Group>
-      </Form>
-    </Container >
+              &nbsp;
+                <Button type="reset" className="bg-info">
+                    Xóa
+                </Button>
+                </Col>
+              </Form.Group>
+            </Form>
+          </Card.Body>
+          <br></br>
+        </Card>
+      </Container >
+    
+
   );
 }

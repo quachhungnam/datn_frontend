@@ -1,10 +1,26 @@
 import React, { useState } from "react";
 import { Container, Row, Col, Table, Button, InputGroup, Form } from 'react-bootstrap'
 import { MarkContext } from '../../context/MarkContext'
-export default function InputMark() {
+export default function InputMark(props) {
     const [numOfDGTX, set_numOfDGTX] = useState(3)
+    // const {data}=props.location
+    const list_student = props.list_marks.map((item) => (
+        <RowTable
+            numofdgtx={numOfDGTX}
+            student_name={item.student.user.username}
+            lecture={item.lecture}
+            mid_first_semester={item.mid_first_semester}
+            end_first_semester={item.end_first_semester}
+            gpa_first_semester={item.gpa_first_semester}
+            mid_second_semester={item.mid_second_semester}
+            end_second_semester={item.end_second_semester}
+            gpa_second_semester={item.gpa_second_semester}
+            gpa_year={item.gpa_year}
+        />
+    ))
     return (
         <Container>
+
             <Row>
                 <Col>
                     <h5>ĐIỂM CHI TIẾT</h5>
@@ -13,12 +29,13 @@ export default function InputMark() {
                             numofdgtx={numOfDGTX}
                         />
                         <tbody>
-                            <RowTable
+                            {list_student}
+                            {/* <RowTable
                                 numofdgtx={numOfDGTX}
                             />
                             <RowTable
                                 numofdgtx={numOfDGTX}
-                            />
+                            /> */}
                         </tbody>
                     </Table>
                 </Col>
@@ -45,7 +62,9 @@ function HeadTable(props) {
 }
 
 function RowTable(props) {
-
+    const update_mark=()=>{
+        
+    }
     const list = () => {
         let ele = []
         for (let i = 0; i < props.numofdgtx; i++) {
@@ -62,9 +81,9 @@ function RowTable(props) {
     return (
         <tr>
             <td>1</td>
-            <td>Nguyễn Văn Nam</td>
-            <td>12a2</td>
-            <td>Toán</td>
+            <td>{props.student_name}</td>
+            <td>{props.lecture.classes.class_name}</td>
+            <td>{props.lecture.subject.subject_name}</td>
             <td><Form.Control size="sm" type="text" placeholder="Điểm" /></td>
         </tr>
     )

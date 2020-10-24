@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import {
   Container,
   Row,
@@ -6,28 +6,103 @@ import {
   Table,
   DropdownButton,
   NavDropdown,
-  Dropdown, Button, ButtonGroup
+  Dropdown, Button, ButtonGroup, Card
 } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
 import { MarkContext } from '../../context/MarkContext'
+import { get_list_student_sevice } from '../../services/student_service'
+import { get_marksofclass_service } from '../../services/marks_services'
+import InputMark from './InputMark'
+// export const markContext = React.useContext(null)
+
 export default function TeachClass() {
   const [numOfDGTX, set_numOfDGTX] = useState(3);
+  const [list_marks, set_list_marks] = useState([])
+  const [inputMark, setinputMark] = useState(false)
+  const [markState, dispatchMark] = useContext(MarkContext)
+
+
+  const get_all_marks = async () => {
+    let lecture_id = 2
+    const rs = await get_marksofclass_service(lecture_id)
+    set_list_marks(rs.results)
+  }
+
+
+  const list_student = list_marks.map((item) => (
+    <RowTable
+      numofdgtx={numOfDGTX}
+      student_name={item.student.user.username}
+      lecture={item.lecture}
+      mid_first_semester={item.mid_first_semester}
+      end_first_semester={item.end_first_semester}
+      gpa_first_semester={item.gpa_first_semester}
+      mid_second_semester={item.mid_second_semester}
+      end_second_semester={item.end_second_semester}
+      gpa_second_semester={item.gpa_second_semester}
+      gpa_year={item.gpa_year}
+    />
+  ))
+  useEffect(() => {
+    get_all_marks()
+  }, [])
+
+  const nhapdiem = () => {
+    if (inputMark) {
+      setinputMark(false)
+      return
+    }
+
+    if (!inputMark) {
+      setinputMark(true)
+      return
+    }
+  }
+
+
+
+  if (inputMark == true) {
+    return (
+      <Container fluid>
+        <InputMark
+          list_marks={list_marks}
+
+        ></InputMark>
+        <Button onClick={nhapdiem}>ffff</Button>
+      </Container>
+    )
+  }
+
   return (
     <Container fluid>
       <Row>
         <Col>
-          <h5>ĐIỂM CHI TIẾT</h5>
-          <Table striped bordered hover size="sm">
-            <HeadTable numofdgtx={numOfDGTX} />
-            <tbody>
-              <RowTable numofdgtx={numOfDGTX} />
-            </tbody>
-          </Table>
+          <Card>
+            <Card.Header><Card.Title>ĐIỂM CHI TIẾT MÔN GÌ, NĂM HỌC GÌ</Card.Title></Card.Header>
+            <Card.Body>
+
+              <Table striped bordered hover size="sm">
+                <HeadTable
+                  numofdgtx={numOfDGTX}
+                  nhapdiem={nhapdiem}
+
+                />
+                <tbody>
+                  {/* <RowTable numofdgtx={numOfDGTX} /> */}
+                  {list_student}
+                </tbody>
+              </Table>
+            </Card.Body>
+          </Card>
+
+
         </Col>
       </Row>
     </Container>
   );
 }
+
+
 
 function HeadTable(props) {
   let colSpan = props.numofdgtx;
@@ -54,7 +129,10 @@ function HeadTable(props) {
       </tr>
       <tr>
         <th colSpan={props.numofdgtx}>
-          <DropMark marktype={1} />
+          <DropMark
+            nhapdiem={props.nhapdiem}
+
+            marktype={1} />
         </th>
         <th>
           {" "}
@@ -94,31 +172,35 @@ function DropMark(props) {
   }
   return (
     <>
-
-      <Dropdown as={ButtonGroup}>
+      {/* <Dropdown as={ButtonGroup}>
         <Button variant="success">Split Button</Button>
 
         <Dropdown.Toggle split variant="success" id="dropdown-split-basic" />
 
         <Dropdown.Menu>
-          <Dropdown.Item href="#/action-1" onClick={()=>{
+          <Dropdown.Item href="#/action-1" onClick={() => {
             getMark()
           }}>Action</Dropdown.Item>
           <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
           <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
         </Dropdown.Menu>
-      </Dropdown>
+      </Dropdown> */}
       <DropdownButton size="sm" title="+" id="collasible-nav-dropdown">
-
-        <NavLink to="/inputmark" className="dropdown-item" onclick={() => {
-          getMark()
-        }}>
+        <Button onClick={props.nhapdiem}>Nhập điểm</Button>
+        {/* <NavLink to={{
+          pathname: '/inputmark"',
+          data: { 'nam': 19 }
+        }}
+          className="dropdown-item" onClick={() => {
+            getMark()
+          }}>
           Nhập điểm + {props.marktype}
-        </NavLink>
+        </NavLink> */}
         <NavDropdown.Divider />
-        <NavLink to="/inputmark" className="dropdown-item">
+        {/* <NavLink to="/inputmark" className="dropdown-item">
           Sửa điểm + {props.marktype}
-        </NavLink>
+        </NavLink> */}
+        <Button onClick={props.nhapdiem}>Sửa điểm</Button>
       </DropdownButton>
     </>
 
@@ -131,7 +213,6 @@ function RowTable(props) {
     for (let i = 0; i < props.numofdgtx; i++) {
       ele.push(<td>1</td>);
     }
-
     return ele;
   };
 
@@ -139,16 +220,16 @@ function RowTable(props) {
     <tr>
       <td>1</td>
       <td>2018-2019</td>
-      <td>Nguyễn Văn Nam</td>
+      <td>{props.student_name}</td>
       {list()}
-      <td >10</td>
-      <td>8</td>
-      <td>8</td>
+      <td >{props.mid_first_semester}</td>
+      <td>{props.end_first_semester}</td>
+      <td>{props.gpa_first_semester}</td>
       <td>10</td>
-      <td>10</td>
-      <td>8</td>
-      <td>8</td>
-      <td>8.9</td>
+      <td>{props.mid_second_semester}</td>
+      <td>{props.end_second_semester}</td>
+      <td>{props.gpa_second_semester}</td>
+      <td>{props.gpa_year}</td>
     </tr>
   );
 }

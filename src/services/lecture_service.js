@@ -1,8 +1,8 @@
 const API_URL = 'http://127.0.0.1:8000'
 // http://127.0.0.1:8000/api/token/
-async function getuser_service(token, id) {
+async function get_lecture_service(token, id) {
     try {
-        let result = await fetch(`${API_URL}/api/users/${id}/`, {
+        let result = await fetch(`${API_URL}/api/lectures/`, {
             method: 'GET',
             headers: {
                 Accept: 'application/json',
@@ -11,25 +11,7 @@ async function getuser_service(token, id) {
             },
         });
         let resultJson = await result.json();
-        console.log(resultJson)
-        return resultJson;
-    } catch (error) {
-        console.log(`Error is: ${error}`);
-        return error;
-    }
-}
-async function update_user(token, id) {
-    try {
-        let result = await fetch(`${API_URL}/api/users/${id}/`, {
-            method: 'POST',
-            headers: {
-                Accept: 'application/json',
-                // Authorization: token,
-                'Content-Type': 'application/json',
-            },
-        });
-        let resultJson = await result.json();
-        console.log(resultJson)
+        // console.log(resultJson)
         return resultJson;
     } catch (error) {
         console.log(`Error is: ${error}`);
@@ -37,4 +19,23 @@ async function update_user(token, id) {
     }
 }
 
-export { getuser_service, update_user }
+// lay danh sach lop ma giao vien day, theo nam hoc
+async function get_lecture_teacher_service(teacher_id, schoolyear_id) {
+    try {
+        let result = await fetch(`${API_URL}/api/lectures/${teacher_id}/${schoolyear_id}/`, {
+            method: 'GET',
+            headers: {
+                Accept: 'application/json',
+                // Authorization: token,
+                'Content-Type': 'application/json',
+            },
+        });
+        let resultJson = await result.json();
+        // console.log(resultJson)
+        return resultJson;
+    } catch (error) {
+        console.log(`Error is: ${error}`);
+        return error;
+    }
+}
+export { get_lecture_service, get_lecture_teacher_service }

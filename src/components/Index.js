@@ -1,11 +1,12 @@
-import React,{useState} from 'react'
-import { Carousel} from 'react-bootstrap'
+import React, { useState } from 'react'
+import { Carousel, Container } from 'react-bootstrap'
 
 export default function Index() {
   return (
-    <>
-     Index Page
-    </>
+    <Container>
+      Index Page
+    </Container>
+
   )
 }
 

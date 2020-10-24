@@ -1,27 +1,9 @@
 const API_URL = 'http://127.0.0.1:8000'
-// http://127.0.0.1:8000/api/token/
-async function getuser_service(token, id) {
+
+async function get_marksofclass_service(lecture_id) {
     try {
-        let result = await fetch(`${API_URL}/api/users/${id}/`, {
+        let result = await fetch(`${API_URL}/api/marks/lecture/${lecture_id}/`, {
             method: 'GET',
-            headers: {
-                Accept: 'application/json',
-                Authorization: token,
-                'Content-Type': 'application/json',
-            },
-        });
-        let resultJson = await result.json();
-        console.log(resultJson)
-        return resultJson;
-    } catch (error) {
-        console.log(`Error is: ${error}`);
-        return error;
-    }
-}
-async function update_user(token, id) {
-    try {
-        let result = await fetch(`${API_URL}/api/users/${id}/`, {
-            method: 'POST',
             headers: {
                 Accept: 'application/json',
                 // Authorization: token,
@@ -29,7 +11,25 @@ async function update_user(token, id) {
             },
         });
         let resultJson = await result.json();
-        console.log(resultJson)
+        // console.log(resultJson)
+        return resultJson;
+    } catch (error) {
+        console.log(`Error is: ${error}`);
+        return error;
+    }
+}
+async function get_marksofstudent_service(lecture_id, student_id) {
+    try {
+        let result = await fetch(`${API_URL}/api/marks/lecture/${lecture_id}/student/${student_id}/`, {
+            method: 'GET',
+            headers: {
+                Accept: 'application/json',
+                // Authorization: token,
+                'Content-Type': 'application/json',
+            },
+        });
+        let resultJson = await result.json();
+        // console.log(resultJson)
         return resultJson;
     } catch (error) {
         console.log(`Error is: ${error}`);
@@ -37,4 +37,4 @@ async function update_user(token, id) {
     }
 }
 
-export { getuser_service, update_user }
+export { get_marksofclass_service, get_marksofstudent_service }
