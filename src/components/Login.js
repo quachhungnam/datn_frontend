@@ -19,7 +19,6 @@ export default function Login() {
   async function handleLogin(event) {
     event.preventDefault();
     login_action(dispatch, user)
-
   }
 
 

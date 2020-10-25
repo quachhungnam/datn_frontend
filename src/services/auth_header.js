@@ -1,10 +1,16 @@
 // import React from 'react'
 
-export default function authHeader() {
-    const user = JSON.parse(localStorage.getItem('user'))
-    if (user && user.access) {
-        return { Authorization: 'Bearer ' + user.access }
-    } else {
-        return {}
-    }
+
+let user = localStorage.getItem("user")
+    ? JSON.parse(localStorage.getItem("user"))
+    : "";
+
+let authHeader = {}
+if (user != "" && user.access) {
+    authHeader.Authorization = 'Bearer ' + user.access
 }
+else {
+    authHeader.Authorization = ""
+}
+
+export { authHeader }
