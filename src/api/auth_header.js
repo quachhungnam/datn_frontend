@@ -6,7 +6,7 @@ let user = localStorage.getItem("user")
     : "";
 
 let authHeader = {}
-if (user != "" && user.access) {
+if (user !== "" && user.access) {
     authHeader.Authorization = 'Bearer ' + user.access
 }
 else {

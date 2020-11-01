@@ -36,5 +36,29 @@ async function get_marksofstudent_service(lecture_id, student_id) {
         return error;
     }
 }
+// cap nhat diem giua ky, cuoi ky, va
+async function update_marks(data) {
+    try {
+        let result = await fetch(`${API_URL}/api/marks/${data.id}/`, {
+            method: 'PATCH',
+            headers: {
+                Accept: 'application/json',
+                // Authorization: token,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+        });
+        let resultJson = await result.json();
+        // console.log(resultJson)
+        return resultJson;
+    } catch (error) {
+        console.log(`Error is: ${error}`);
+        return error;
+    }
+}
 
-export { get_marksofclass_service, get_marksofstudent_service }
+export {
+    get_marksofclass_service,
+    get_marksofstudent_service,
+    update_marks
+}

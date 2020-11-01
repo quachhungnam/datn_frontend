@@ -1,4 +1,3 @@
-import React from 'react'
 export default function AuthReducer(initialState, action) {
     switch (action.type) {
         case "RESTORE_TOKEN":

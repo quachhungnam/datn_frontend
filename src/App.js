@@ -5,7 +5,7 @@ import {
   Route,
   NavLink,
 } from "react-router-dom";
-import { Navbar, Nav, NavDropdown, Container } from "react-bootstrap";
+import { Navbar, Nav, NavDropdown } from "react-bootstrap";
 import Login from "./components/Login";
 import About from "./components/About";
 import Plan from "./components/Plan";

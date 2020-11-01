@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Container,
   Row,
@@ -6,71 +6,255 @@ import {
   Table,
   DropdownButton,
   NavDropdown,
-  Dropdown, Button, ButtonGroup, Card
+  Dropdown,
+  Button,
+  Card,
+  Form,
+  Spinner,
 } from "react-bootstrap";
-import { NavLink } from "react-router-dom";
-import { MarkContext } from '../../context/MarkContext'
-import { get_list_student_sevice } from '../../services/student_service'
-import { get_marksofclass_service } from '../../services/marks_services'
-import InputMark from './InputMark'
-// export const markContext = React.useContext(null)
+// import { useParams } from "react-router-dom";
+import {
+  get_marksofclass_service,
+  get_marksofstudent_service,
+  update_marks,
+} from "../../api/marks_api";
+import InputMark from "./InputMark";
+import { useLocation } from "react-router-dom";
+export default function TeachClass(props) {
+  const init_state = {
+    isAddDGTX1: true,
+    isEditDGTX1: true,
+    isAddGK1: true,
+    isEditGK1: true,
+    isAddCK1: true,
+    isEditCK1: true,
 
-export default function TeachClass() {
-  const [numOfDGTX, set_numOfDGTX] = useState(3);
-  const [list_marks, set_list_marks] = useState([])
-  const [inputMark, setinputMark] = useState(false)
-  const [markState, dispatchMark] = useContext(MarkContext)
+    isAddDGTX2: true,
+    isEditDGTX: true,
+    isAddGK2: true,
+    isEditGK2: true,
+    isAddCK2: true,
+    isEditCK2: true,
+  };
+  const location = useLocation();
+  const [listMarks, setlistMarks] = useState([]);
+  const [isShowInput, setisShowInput] = useState(false);
+  const [marksType, setmarksType] = useState({});
+  const [timesDGTX, settimesDGTX] = useState(1);
+  const [timesDGTX2, settimesDGTX2] = useState(1);
 
+  const [enableInput, setenableInput] = useState(true);
+  const [isUpdating, setisUpdating] = useState(false);
+  const [marksState, dispatch] = React.useReducer((prevState, action) => {
+    switch (action.type) {
+      case "ADD_DGTX1":
+        return {
+          ...init_state,
+          isAddDGTX1: false,
+        };
+      case "EDIT_DGTX1":
+        return {
+          ...init_state,
+          isEditDGTX1: false,
+        };
+      case "ADD_DGTX2":
+        return {
+          ...init_state,
+          isAddDGTX2: false,
+        };
+      case "EDIT_DGTX2":
+        return {
+          ...init_state,
+          isEditDGTX2: false,
+        };
+      case "ADD_GK1":
+        return {
+          ...init_state,
+          isAddGK1: false,
+        };
+      case "EDIT_GK1":
+        return {
+          ...init_state,
+          isEditGK1: false,
+        };
+      case "ADD_CK1":
+        return {
+          ...init_state,
+          isAddCK1: false,
+        };
+      case "EDIT_CK1":
+        return {
+          ...init_state,
+          isEditCK1: false,
+        };
+      case "ADD_GK2":
+        return {
+          ...init_state,
+          isAddGK2: false,
+        };
+      case "EDIT_GK2":
+        return {
+          ...init_state,
+          isEditGK2: false,
+        };
+      case "ADD_CK2":
+        return {
+          ...init_state,
+          isAddCK2: false,
+        };
+      case "EDIT_CK2":
+        return {
+          ...init_state,
+          isEditCK2: false,
+        };
+      default:
+        return {
+          ...init_state,
+        };
+    }
+  }, init_state);
 
-  const get_all_marks = async () => {
-    let lecture_id = 2
-    const rs = await get_marksofclass_service(lecture_id)
-    set_list_marks(rs.results)
-  }
+  const getlistMarks = async () => {
+    try {
+      const lectureId = location.state;
+      const rs = await get_marksofclass_service(lectureId);
+      const results = rs.results;
 
+      setlistMarks(results);
 
-  const list_student = list_marks.map((item) => (
-    <RowTable
-      numofdgtx={numOfDGTX}
-      student_name={item.student.user.username}
-      lecture={item.lecture}
-      mid_first_semester={item.mid_first_semester}
-      end_first_semester={item.end_first_semester}
-      gpa_first_semester={item.gpa_first_semester}
-      mid_second_semester={item.mid_second_semester}
-      end_second_semester={item.end_second_semester}
-      gpa_second_semester={item.gpa_second_semester}
-      gpa_year={item.gpa_year}
-    />
-  ))
+      if (rs.results !== "") {
+        let timesdgtx = 1;
+        let timesdgtx2 = 1;
+        for (let i = 0; i < results.length; i++) {
+          let listdgtx = results[i].marks_regulary;
+          let list1 = listdgtx.filter((item) => item.code_semester == 1);
+          let list2 = listdgtx.filter((item) => item.code_semester == 2);
+
+          if (list1.length > timesdgtx) {
+            timesdgtx = list1.length;
+          }
+          if (list2.length > timesdgtx) {
+            timesdgtx2 = list2.length;
+          }
+
+          // if (results[i].marks_regulary.length > timesdgtx) {
+          //   timesdgtx = results[i].marks_regulary.length;
+          // }
+        }
+        settimesDGTX(timesdgtx);
+        settimesDGTX2(timesdgtx2);
+      }
+    } catch (e) {}
+  };
+
+  const updateFieldChanged = (values) => {
+    let newArr = listMarks.map((item, i) => {
+      if (item.id == values.id) {
+        return values;
+        // return { ...item, value: values.v };
+      } else {
+        return item;
+      }
+    });
+    setlistMarks(newArr);
+  };
+
+  const showStudentsMarks = listMarks.map((item, index) => {
+    return (
+      <RowTable
+        item_value={item}
+        marksState={marksState}
+        key={index}
+        stt={index + 1}
+        timesDGTX={timesDGTX}
+        timesDGTX2={timesDGTX2}
+        student_name={item.student.user.username}
+        lecture={item.lecture}
+        mid_first_semester={item.mid_first_semester}
+        end_first_semester={item.end_first_semester}
+        gpa_first_semester={item.gpa_first_semester}
+        mid_second_semester={item.mid_second_semester}
+        end_second_semester={item.end_second_semester}
+        gpa_second_semester={item.gpa_second_semester}
+        gpa_year={item.gpa_year}
+        enableInput={enableInput}
+        updateFieldChanged={updateFieldChanged}
+      />
+    );
+  });
+
   useEffect(() => {
-    get_all_marks()
-  }, [])
+    getlistMarks();
+  }, []);
 
-  const nhapdiem = () => {
-    if (inputMark) {
-      setinputMark(false)
-      return
+  const showId = () => {
+    alert(JSON.stringify(listMarks));
+  };
+
+  const onShowInput = (marksObj) => {
+    if (marksObj == null) {
+      return;
     }
-
-    if (!inputMark) {
-      setinputMark(true)
-      return
+    setmarksType(marksObj);
+    if (isShowInput) {
+      setisShowInput(false);
+      return;
     }
-  }
+    if (!isShowInput) {
+      setisShowInput(true);
+      return;
+    }
+  };
 
+  const onBack = () => {
+    setisShowInput(true);
+  };
 
+  const setenableInput2 = () => {
+    if (enableInput) {
+      setenableInput(false);
+      return;
+    }
+    if (!enableInput) {
+      setenableInput(true);
+      return;
+    }
+  };
 
-  if (inputMark == true) {
+  const updateManyMarks = async (data) => {
+    const allRespone = data.map((item) => {
+      const rs = update_marks(item);
+      return rs;
+    });
+    return Promise.all(allRespone);
+  };
+
+  const onupdateMarks = async (event) => {
+    event.preventDefault();
+    setisUpdating(true);
+    const rs = await updateManyMarks(listMarks);
+    rs.map((item, index) => {
+      if (!item.id) {
+        alert("err");
+      }
+    });
+    console.log(rs);
+    setisUpdating(false);
+  };
+
+  const addMarksRegulary = async (data) => {};
+  const updateMarksRegulary = async (data) => {};
+
+  if (isShowInput == true && marksType !== null) {
     return (
       <Container fluid>
         <InputMark
-          list_marks={list_marks}
-
+          list_marks={listMarks}
+          on_back={onBack}
+          marktype={marksType}
         ></InputMark>
-        <Button onClick={nhapdiem}>ffff</Button>
       </Container>
-    )
+    );
   }
 
   return (
@@ -78,34 +262,46 @@ export default function TeachClass() {
       <Row>
         <Col>
           <Card>
-            <Card.Header><Card.Title>ĐIỂM CHI TIẾT MÔN GÌ, NĂM HỌC GÌ</Card.Title></Card.Header>
-            <Card.Body>
-
-              <Table striped bordered hover size="sm">
-                <HeadTable
-                  numofdgtx={numOfDGTX}
-                  nhapdiem={nhapdiem}
-
-                />
-                <tbody>
-                  {/* <RowTable numofdgtx={numOfDGTX} /> */}
-                  {list_student}
-                </tbody>
-              </Table>
-            </Card.Body>
+            <Card.Header>
+              <Card.Title>
+                ĐIỂM CHI TIẾT MÔN GÌ, NĂM HỌC GÌ{" "}
+                {isUpdating ? (
+                  <Spinner animation="border" variant="primary" />
+                ) : (
+                  ""
+                )}{" "}
+              </Card.Title>
+            </Card.Header>
+            <Form method="POST" onSubmit={onupdateMarks}>
+              <Card.Body>
+                <Table striped bordered hover size="sm">
+                  <HeadTable
+                    timesDGTX={timesDGTX}
+                    timesDGTX2={timesDGTX2}
+                    inputMarks={onShowInput}
+                    enableInput={setenableInput2}
+                    addMarks={dispatch}
+                  />
+                  <tbody>
+                    {/* <RowTable numofdgtx={numOfDGTX} /> */}
+                    {showStudentsMarks}
+                  </tbody>
+                </Table>
+                <Button type="submit">Lưu điểm</Button>
+                <Button type="reset">Reset</Button>
+                <Button>hhhh </Button>
+              </Card.Body>
+            </Form>
           </Card>
-
-
         </Col>
       </Row>
     </Container>
   );
 }
 
-
-
 function HeadTable(props) {
-  let colSpan = props.numofdgtx;
+  let timesDGTX = props.timesDGTX;
+  let timesDGTX2 = props.timesDGTX2;
 
   return (
     <thead>
@@ -113,47 +309,74 @@ function HeadTable(props) {
         <th rowSpan="3">STT</th>
         <th rowSpan="3">Năm học</th>
         <th rowSpan="3">Học sinh</th>
-        <th colSpan={colSpan + 3}>Học kỳ 1</th>
-        <th colSpan="4">Học kỳ 2</th>
+        <th colSpan={timesDGTX + 3}>Học kỳ 1</th>
+        <th colSpan={timesDGTX + 3}>Học kỳ 2</th>
         <th rowSpan="3">Cả năm</th>
       </tr>
       <tr>
-        <th colSpan={props.numofdgtx}>Điểm ĐGTX </th>
+        <th colSpan={timesDGTX}>Điểm ĐGTX </th>
         <th>Giữa kỳ</th>
         <th>Cuối kỳ</th>
         <th>Trung bình môn</th>
-        <th>Điểm ĐGTX</th>
+        <th colSpan={timesDGTX2}>Điểm ĐGTX</th>
         <th>Giữa kỳ</th>
         <th>Cuối kỳ</th>
         <th>Trung bình môn</th>
       </tr>
       <tr>
-        <th colSpan={props.numofdgtx}>
+        <th colSpan={timesDGTX}>
           <DropMark
-            nhapdiem={props.nhapdiem}
-
-            marktype={1} />
+            inputMarks={props.inputMarks}
+            enableInput={props.enableInput}
+            mark_obj={{ type: 1, name: "ĐGTX", code_semester: 1 }}
+            addMarks={props.addMarks}
+          />
         </th>
         <th>
           {" "}
-          <DropMark marktype={2} />
+          <DropMark
+            inputMarks={props.inputMarks}
+            mark_obj={{ type: 2, name: "Giữa kỳ", code_semester: 1 }}
+            enableInput={props.enableInput}
+            addMarks={props.addMarks}
+          />
         </th>
         <th>
           {" "}
-          <DropMark marktype={3} />
+          <DropMark
+            inputMarks={props.inputMarks}
+            enableInput={props.enableInput}
+            mark_obj={{ type: 3, name: "Cuối kỳ", code_semester: 1 }}
+            addMarks={props.addMarks}
+          />
         </th>
         <th>Trung bình môn</th>
-        <th>
+        <th colSpan={timesDGTX}>
           {" "}
-          <DropMark />
+          <DropMark
+            inputMarks={props.inputMarks}
+            enableInput={props.enableInput}
+            mark_obj={{ type: 1, name: "ĐGTX", code_semester: 2 }}
+            addMarks={props.addMarks}
+          />
         </th>
         <th>
           {" "}
-          <DropMark />
+          <DropMark
+            inputMarks={props.inputMarks}
+            enableInput={props.enableInput}
+            mark_obj={{ type: 2, name: "Giữa kỳ", code_semester: 2 }}
+            addMarks={props.addMarks}
+          />
         </th>
         <th>
           {" "}
-          <DropMark />
+          <DropMark
+            inputMarks={props.inputMarks}
+            enableInput={props.enableInput}
+            mark_obj={{ type: 3, name: "Cuối kỳ", code_semester: 2 }}
+            addMarks={props.addMarks}
+          />
         </th>
         <th>Trung bình môn</th>
       </tr>
@@ -162,72 +385,217 @@ function HeadTable(props) {
 }
 
 function DropMark(props) {
-  const [markState, dispatchMark] = React.useContext(MarkContext)
-  // React.useEffect(() => {
-  //   dispatchMark({ type: "GET_MARK_TYPE", marktype: "Toan gettetettee" })
-  // }, [])
-  const getMark = (e) => {
-    alert('ddd')
-    dispatchMark({ type: "GET_MARK_TYPE", marktype: "Toan gettetettee" })
-  }
+  const onInputMarks = () => {
+    // props.inputMarks(props.mark_obj);
+    if (props.mark_obj.code_semester == 1 && props.mark_obj.type == 1) {
+      props.addMarks({ type: "ADD_DGTX1" });
+    }
+    if (props.mark_obj.code_semester == 1 && props.mark_obj.type == 2) {
+      props.addMarks({ type: "ADD_GK1" });
+    }
+    if (props.mark_obj.code_semester == 1 && props.mark_obj.type == 3) {
+      props.addMarks({ type: "ADD_CK1" });
+    }
+    if (props.mark_obj.code_semester == 2 && props.mark_obj.type == 1) {
+      props.addMarks({ type: "ADD_DGTX2" });
+    }
+    if (props.mark_obj.code_semester == 2 && props.mark_obj.type == 2) {
+      props.addMarks({ type: "ADD_GK2" });
+    }
+    if (props.mark_obj.code_semester == 2 && props.mark_obj.type == 3) {
+      props.addMarks({ type: "ADD_CK2" });
+    }
+  };
+
+  const editMarks = () => {
+    props.inputMarks(props.mark_obj);
+  };
+
+  const enableInput = () => {
+    // props.enableInput();
+    // props.addGK1({ type: "ADD_GK1" });
+  };
+
   return (
-    <>
-      {/* <Dropdown as={ButtonGroup}>
-        <Button variant="success">Split Button</Button>
-
-        <Dropdown.Toggle split variant="success" id="dropdown-split-basic" />
-
-        <Dropdown.Menu>
-          <Dropdown.Item href="#/action-1" onClick={() => {
-            getMark()
-          }}>Action</Dropdown.Item>
-          <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
-          <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
-        </Dropdown.Menu>
-      </Dropdown> */}
-      <DropdownButton size="sm" title="+" id="collasible-nav-dropdown">
-        <Button onClick={props.nhapdiem}>Nhập điểm</Button>
-        {/* <NavLink to={{
-          pathname: '/inputmark"',
-          data: { 'nam': 19 }
-        }}
-          className="dropdown-item" onClick={() => {
-            getMark()
-          }}>
-          Nhập điểm + {props.marktype}
-        </NavLink> */}
-        <NavDropdown.Divider />
-        {/* <NavLink to="/inputmark" className="dropdown-item">
-          Sửa điểm + {props.marktype}
-        </NavLink> */}
-        <Button onClick={props.nhapdiem}>Sửa điểm</Button>
-      </DropdownButton>
-    </>
-
+    <DropdownButton size="sm" title="+" id="collasible-nav-dropdown">
+      <Dropdown.Item onClick={onInputMarks}>
+        Nhập điểm {props.mark_obj.name}
+      </Dropdown.Item>
+      <NavDropdown.Divider />
+      <Dropdown.Item onClick={enableInput}>
+        Sửa điểm {props.mark_obj.name}
+      </Dropdown.Item>
+    </DropdownButton>
   );
 }
 
 function RowTable(props) {
-  const list = () => {
-    let ele = [];
-    for (let i = 0; i < props.numofdgtx; i++) {
-      ele.push(<td>1</td>);
+  const [marks, setmarks] = useState(props.item_value);
+
+  const filMarkSemester = (marks, semester) => {
+    return marks.marks_regulary.filter(
+      (item) => item.code_semester == semester
+    );
+  };
+
+  const showListDGTX2 = () => {
+    if (filMarkSemester(marks, 2).length == 0) {
+      return (
+        <td>
+          <Form.Row className="float-md-right">
+            {props.marksState.isAddDGTX2 == false ? (
+              <Form.Control
+                readonly
+                style={{ width: 80 }}
+                size="sm"
+                type="text"
+                placeholder="DGTX"
+                defaultValue={""}
+                disabled={false}
+              />
+            ) : (
+              ""
+            )}
+          </Form.Row>
+        </td>
+      );
     }
+
+    let ele = [];
+    for (let i = 0; i < filMarkSemester(marks, 2).length; i++) {
+      let item;
+      item = (
+        <td>
+          <Form.Row className="float-md-right">
+            <Form.Control
+              readonly
+              style={{ width: 80 }}
+              size="sm"
+              type="text"
+              placeholder="DGTX"
+              defaultValue={filMarkSemester(marks, 2)[i].point}
+              disabled={false}
+            />
+          </Form.Row>
+        </td>
+      );
+      ele.push(item);
+    }
+
     return ele;
+  };
+  const showListDGTX1 = () => {
+    if (filMarkSemester(marks, 1).length == 0) {
+      return (
+        <td>
+          <Form.Row className="float-md-right">
+            {props.marksState.isAddDGTX1 == false ? (
+              <Form.Control
+                readonly
+                style={{ width: 80 }}
+                size="sm"
+                type="text"
+                placeholder="DGTX"
+                defaultValue={""}
+                disabled={false}
+              />
+            ) : (
+              ""
+            )}
+          </Form.Row>
+        </td>
+      );
+    }
+
+    let ele = [];
+    for (let i = 0; i < filMarkSemester(marks, 1).length; i++) {
+      let item;
+      item = (
+        <td>
+          <Form.Row className="float-md-right">
+            <Form.Control
+              readonly
+              style={{ width: 80 }}
+              size="sm"
+              type="text"
+              placeholder="DGTX"
+              defaultValue={filMarkSemester(marks, 1)[i].point}
+              disabled={false}
+            />
+          </Form.Row>
+        </td>
+      );
+      ele.push(item);
+    }
+
+    return ele;
+  };
+
+  const handleInput = (event) => {
+    const { name, value } = event.target;
+    let obj = marks;
+    obj[`${name}`] = value;
+    setmarks({ ...marks, [name]: value });
+    props.updateFieldChanged(obj);
   };
 
   return (
     <tr>
-      <td>1</td>
+      <td>{props.stt}</td>
       <td>2018-2019</td>
       <td>{props.student_name}</td>
-      {list()}
-      <td >{props.mid_first_semester}</td>
-      <td>{props.end_first_semester}</td>
+      {showListDGTX1()}
+      <td>
+        <Form.Control
+          name="mid_first_semester"
+          style={{ width: 80 }}
+          size="sm"
+          type="text"
+          placeholder="Điểm giữa kỳ"
+          defaultValue={props.mid_first_semester}
+          disabled={props.marksState.isAddGK1}
+          onChange={handleInput}
+        />
+      </td>
+      <td>
+        <Form.Control
+          name="end_first_semester"
+          style={{ width: 80 }}
+          size="sm"
+          type="text"
+          placeholder="Cuối kỳ 1"
+          defaultValue={props.end_first_semester}
+          onChange={handleInput}
+          disabled={props.marksState.isAddCK1}
+        />
+      </td>
       <td>{props.gpa_first_semester}</td>
-      <td>10</td>
-      <td>{props.mid_second_semester}</td>
-      <td>{props.end_second_semester}</td>
+      {showListDGTX2()}
+      <td>
+        <Form.Control
+          name="mid_second_semester"
+          style={{ width: 80 }}
+          mb-2
+          size="sm"
+          type="text"
+          placeholder="Cuối kỳ 1"
+          defaultValue={props.mid_second_semester}
+          onChange={handleInput}
+          disabled={props.marksState.isAddGK2}
+        />
+      </td>
+      <td>
+        <Form.Control
+          name="end_second_semester"
+          style={{ width: 80 }}
+          size="sm"
+          type="text"
+          placeholder="Cuối kỳ 2"
+          defaultValue={props.end_second_semester}
+          onChange={handleInput}
+          disabled={props.marksState.isAddCK2}
+        />
+      </td>
       <td>{props.gpa_second_semester}</td>
       <td>{props.gpa_year}</td>
     </tr>

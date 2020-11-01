@@ -1,7 +1,6 @@
 import React, { useState, useContext } from "react";
 import { Form, Button, Col, Row, Container, Spinner, Badge, Card } from "react-bootstrap";
 import {
-  BrowserRouter as Router,
   Redirect,
 } from "react-router-dom";
 import { login_action } from '../actions/auth_action'

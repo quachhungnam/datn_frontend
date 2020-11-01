@@ -9,12 +9,11 @@ import {
   Container,
   Figure,
   Card,
-  ListGroup,
   Nav,
 } from "react-bootstrap";
 import "react-datepicker/dist/react-datepicker.css";
-import { getuser_service, update_user } from "../services/user_service";
-import { changepass_srv } from "../services/auth_service";
+import { get_user_api, update_user_api } from "../api/user_api";
+import { change_password_api } from "../api/auth_api";
 import ChangePassword from "./ChangePassword";
 import { AuthContext } from "../context/AuthContext";
 import validator from "validator";
@@ -42,10 +41,7 @@ function Infor() {
 
   const get_user = async () => {
     try {
-      let rs = await getuser_service(
-        userState.user.access,
-        userState.user.user_id
-      );
+      let rs = await get_user_api(userState.user.user_id);
       set_user(rs);
     } catch (e) {}
   };
@@ -63,7 +59,7 @@ function Infor() {
       alert("Kiểm tra lại thông tin");
       return;
     }
-    let rs = await update_user(user);
+    let rs = await update_user_api(user);
     if (rs.id) {
       alert("Sửa thông tin thành công");
     }
@@ -78,8 +74,8 @@ function Infor() {
   };
 
   const change_password = async (password) => {
-    let rs = await changepass_srv(password);
-    if (rs.status == "success") {
+    let rs = await change_password_api(password);
+    if (rs.status === "success") {
       alert("Đổi mật khẩu thành công");
       return;
     }
@@ -107,7 +103,7 @@ function Infor() {
           </Nav>
         </Card.Header>
         <Card.Body>
-          {show_infor == true ? (
+          {show_infor === true ? (
             <Form method="POST" onSubmit={on_update_user}>
               <Form.Row>
                 <Col sm={2}>
@@ -150,7 +146,7 @@ function Infor() {
                   <Form.Label>Giới tính</Form.Label>
                   <Form.Control
                     as="select"
-                    defaultValue={user.gender == true ? 1 : 0}
+                    defaultValue={user.gender === true ? 1 : 0}
                     disabled
                   >
                     <option value={-1}>---</option>

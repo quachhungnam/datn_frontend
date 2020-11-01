@@ -1,4 +1,3 @@
-import React from 'react'
 export default function MarkReducer(initialState, action) {
     switch (action.type) {
 

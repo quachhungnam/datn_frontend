@@ -1,15 +1,11 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import {
   Form,
   Button,
   Col,
   Row,
-  Container,
-  Spinner,
-  Badge,
-  Card,
+ 
 } from "react-bootstrap";
-import { BrowserRouter as Router, Redirect } from "react-router-dom";
 import validator from "validator";
 
 export default function ChangePassword(props) {
@@ -28,7 +24,7 @@ export default function ChangePassword(props) {
 
   const action_change_pass = (event) => {
     event.preventDefault();
-    if (password.old_password == "" || password.new_password == "") {
+    if (password.old_password === "" || password.new_password === "") {
       alert("Vui lòng nhập đầy đủ các trường!");
       return;
     }
@@ -53,7 +49,7 @@ export default function ChangePassword(props) {
     <Form onSubmit={action_change_pass}>
       <Form.Group as={Row}>
         <Form.Label column sm={2}>
-          <b>Tài khoản</b>
+          <b>Mật khẩu cũ</b>
         </Form.Label>
         <Col sm={5}>
           <Form.Control

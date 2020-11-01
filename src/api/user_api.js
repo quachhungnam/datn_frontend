@@ -2,7 +2,7 @@ import { authHeader } from './auth_header'
 const API_URL = 'http://127.0.0.1:8000'
 // http://127.0.0.1:8000/api/token/
 
-async function getuser_service(token, id) {
+async function get_user_api(id) {
     try {
         let result = await fetch(`${API_URL}/api/users/${id}/`, {
             method: 'GET',
@@ -20,7 +20,7 @@ async function getuser_service(token, id) {
         return error;
     }
 }
-async function update_user(data) {
+async function update_user_api(data) {
     try {
         let result = await fetch(`${API_URL}/api/users/${data.id}/`, {
             method: 'PUT',
@@ -39,4 +39,4 @@ async function update_user(data) {
     }
 }
 
-export { getuser_service, update_user }
+export { get_user_api, update_user_api }

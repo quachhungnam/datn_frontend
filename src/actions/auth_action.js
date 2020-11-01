@@ -1,9 +1,9 @@
-import { checktoken_service, login_service } from '../services/auth_service'
+import { checktoken_api, login_api } from '../api/auth_api'
 
 export async function login_action(dispatch, user) {
     try {
         dispatch({ type: 'REQUEST_LOGIN' });
-        const res = await login_service(user)
+        const res = await login_api(user)
         if (res.access) {
             dispatch({ type: 'LOGIN_SUCCESS', user: res });
             localStorage.setItem("user", JSON.stringify(res));
@@ -28,7 +28,7 @@ export async function checktoken_action(dispatch) {
         : "";
     if (user !== "") {
         const token = await 'Bearer ' + user.access
-        let rs = await checktoken_service(token)
+        let rs = await checktoken_api(token)
         if (rs.access) {
             dispatch({ type: "RESTORE_TOKEN" });
         } else {

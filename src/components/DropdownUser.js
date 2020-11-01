@@ -1,11 +1,8 @@
 import React from 'react'
 import {
-    BrowserRouter as Router,
-    Switch,
-    Route,
     NavLink,
 } from "react-router-dom";
-import { Navbar, Nav, NavDropdown } from "react-bootstrap";
+import { NavDropdown } from "react-bootstrap";
 
 export function DropdownStudent() {
     return (

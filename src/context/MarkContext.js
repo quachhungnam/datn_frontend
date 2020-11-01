@@ -3,9 +3,9 @@ import MarkReducer from '../reducer/mark_reducer'
 
 export const MarkContext = React.createContext()
 
-let user = localStorage.getItem("user")
-    ? JSON.parse(localStorage.getItem("user"))
-    : "";
+// let user = localStorage.getItem("user")
+//     ? JSON.parse(localStorage.getItem("user"))
+//     : "";
 
 export const initialState = {
     // user: user || "",
