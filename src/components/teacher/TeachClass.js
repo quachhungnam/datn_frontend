@@ -13,6 +13,8 @@ import {
   Spinner,
 } from "react-bootstrap";
 // import { useParams } from "react-router-dom";
+import * as FileSaver from "file-saver";
+import * as XLSX from "xlsx";
 import {
   get_marksofclass_service,
   get_marksofstudent_service,
@@ -20,6 +22,7 @@ import {
 } from "../../api/marks_api";
 import InputMark from "./InputMark";
 import { useLocation } from "react-router-dom";
+import {ExportCSV} from "../ExportCSV";
 export default function TeachClass(props) {
   const init_state = {
     isAddDGTX1: true,
@@ -116,12 +119,13 @@ export default function TeachClass(props) {
 
   const getlistMarks = async () => {
     try {
+      setisUpdating(true);
       const lectureId = location.state;
       const rs = await get_marksofclass_service(lectureId);
       const results = rs.results;
 
       setlistMarks(results);
-
+      setisUpdating(false);
       if (rs.results !== "") {
         let timesdgtx = 1;
         let timesdgtx2 = 1;
@@ -266,10 +270,23 @@ export default function TeachClass(props) {
               <Card.Title>
                 ĐIỂM CHI TIẾT MÔN GÌ, NĂM HỌC GÌ{" "}
                 {isUpdating ? (
-                  <Spinner animation="border" variant="primary" />
+                  <Button
+                    variant="primary"
+                    size="sm"
+                    disabled
+                    className="float-md-right"
+                  >
+                    <Spinner
+                      as="span"
+                      animation="border"
+                      size="sm"
+                      role="status"
+                      aria-hidden="true"
+                    />
+                  </Button>
                 ) : (
                   ""
-                )}{" "}
+                )}
               </Card.Title>
             </Card.Header>
             <Form method="POST" onSubmit={onupdateMarks}>
@@ -290,6 +307,7 @@ export default function TeachClass(props) {
                 <Button type="submit">Lưu điểm</Button>
                 <Button type="reset">Reset</Button>
                 <Button>hhhh </Button>
+                <ExportCSV csvData={listMarks} fileName={"namexcel"} />
               </Card.Body>
             </Form>
           </Card>
@@ -431,7 +449,7 @@ function DropMark(props) {
 
 function RowTable(props) {
   const [marks, setmarks] = useState(props.item_value);
-
+  //khi them diem danh gia thuong xuyen thi hien len 1 column,n
   const filMarkSemester = (marks, semester) => {
     return marks.marks_regulary.filter(
       (item) => item.code_semester == semester

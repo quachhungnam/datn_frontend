@@ -1,13 +1,7 @@
 import React, { useState } from "react";
-import {
-  Form,
-  Button,
-  Col,
-  Row,
- 
-} from "react-bootstrap";
+import { Form, Button, Col, Row, Spinner } from "react-bootstrap";
 import validator from "validator";
-
+import { change_password_api } from "../api/auth_api";
 export default function ChangePassword(props) {
   const init_password = {
     old_password: "",
@@ -15,15 +9,16 @@ export default function ChangePassword(props) {
     confirmpassword: "",
   };
   const [password, set_password] = useState(init_password);
-
+  const [isLoading, setisLoading] = useState(false);
   const handle_input = (event) => {
     event.preventDefault();
     const { name, value } = event.target;
     set_password({ ...password, [name]: value });
   };
 
-  const action_change_pass = (event) => {
+  const action_change_pass = async (event) => {
     event.preventDefault();
+
     if (password.old_password === "" || password.new_password === "") {
       alert("Vui lòng nhập đầy đủ các trường!");
       return;
@@ -37,7 +32,16 @@ export default function ChangePassword(props) {
       alert("Xác nhận mật khẩu ko đúng!");
       return;
     }
-    props.change_password(password);
+    setisLoading(true);
+    // props.change_password(password);
+    let rs = await change_password_api(password);
+    setisLoading(false);
+    if (rs.status === "success") {
+      alert("Đổi mật khẩu thành công");
+      set_password(init_password);
+      return;
+    }
+    alert("Thất bại!");
   };
   const clean_pass = (event) => {
     set_password(init_password);
@@ -111,6 +115,20 @@ export default function ChangePassword(props) {
           <Button onClick={clean_pass} type="reset" className="bg-info">
             Xóa
           </Button>
+
+          {isLoading ? (
+            <Button variant="primary" size="sm" disabled>
+              <Spinner
+                as="span"
+                animation="border"
+                size="sm"
+                role="status"
+                aria-hidden="true"
+              />
+            </Button>
+          ) : (
+              ""
+            )}
         </Col>
       </Form.Group>
     </Form>

@@ -10,6 +10,7 @@ import {
   Col,
   Button,
   Card,
+  Spinner,
 } from "react-bootstrap";
 import {
   // BrowserRouter as Router,
@@ -23,14 +24,16 @@ export default function TeachClassList() {
   const [listYear, setlistYear] = useState([]);
   const [currentYear, setcurrentYear] = useState(0);
   const [listLecture, setlistLecture] = useState([]);
-
+  const [isLoading, setisLoading] = useState(false);
   const getlistLecture = async (teacherId, yearId) => {
+    setisLoading(true);
     const rs = await get_lecture_teacher_service(teacherId, yearId);
     if (rs.results !== "") {
       const arr_lecture = rs.results;
       setlistLecture(arr_lecture);
     } else {
     }
+    setisLoading(false);
   };
 
   const getcurrentYear = (rs) => {
@@ -107,6 +110,19 @@ export default function TeachClassList() {
           <Form.Group>
             <Row>
               <Col md={3}>{listselectYear()}</Col>
+              {isLoading ? (
+                <Button variant="primary" size="sm" disabled>
+                  <Spinner
+                    as="span"
+                    animation="border"
+                    size="sm"
+                    role="status"
+                    aria-hidden="true"
+                  />
+                </Button>
+              ) : (
+                ""
+              )}
             </Row>
           </Form.Group>
           <br></br>

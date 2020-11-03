@@ -1,42 +1,67 @@
 import React, { useEffect, useState } from "react";
-import { Container, Row, Col, Table, Card } from "react-bootstrap";
-import { get_classes_api } from '../../api/classes_api'
+import {
+  Container,
+  Row,
+  Col,
+  Table,
+  Card,
+  Button,
+  Spinner,
+} from "react-bootstrap";
+import { get_classes_api } from "../../api/classes_api";
 export default function MyClass() {
   const init_class = {
     id: null,
     school_year: null,
     form_teacher: null,
-    class_name: null
-  }
-  const [classes, set_classes] = useState(init_class)
-
+    class_name: null,
+  };
+  const [classes, set_classes] = useState(init_class);
+  const [isLoading, setisLoading] = useState(false);
   const get_classes = async () => {
     try {
-      let rs = await get_classes_api(1)
-      set_classes(rs)
+      setisLoading(true);
+      let rs = await get_classes_api(1);
+      setisLoading(false);
+      set_classes(rs);
       //get list of class
-    } catch (e) {
-
-    }
-  }
+    } catch (e) {}
+  };
 
   const show_class = () => {
-    alert(JSON.stringify(classes))
-  }
+    alert(JSON.stringify(classes));
+  };
 
   useEffect(() => {
-    get_classes()
-  }, [])
-
-
-
+    get_classes();
+  }, []);
 
   return (
     <Container>
       <br></br>
       <Card>
         <Card.Header>
-          <Card.Title>Lớp chủ nhiệm</Card.Title>
+          <Card.Title>
+            Lớp chủ nhiệm
+            {isLoading ? (
+              <Button
+                variant="primary"
+                size="sm"
+                disabled
+                className="float-md-right"
+              >
+                <Spinner
+                  as="span"
+                  animation="border"
+                  size="sm"
+                  role="status"
+                  aria-hidden="true"
+                />
+              </Button>
+            ) : (
+              ""
+            )}
+          </Card.Title>
         </Card.Header>
         <Card.Body>
           <Row>
@@ -75,7 +100,6 @@ export default function MyClass() {
                   </tr>
                 </thead>
                 <tbody>
-
                   <tr>
                     <td>1</td>
                     <td>Nguyễn Văn Nam</td>
@@ -84,7 +108,6 @@ export default function MyClass() {
                     <td>0974436947</td>
                     <td>0974436947</td>
                   </tr>
-
                 </tbody>
               </Table>
             </Col>
