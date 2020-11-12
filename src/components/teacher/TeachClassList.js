@@ -21,6 +21,8 @@ import { get_lecture_teacher_service } from "../../api/lecture_api";
 import { AuthContext } from "../../context/AuthContext";
 
 export default function TeachClassList() {
+
+  const [userState, dispatch] = React.useContext(AuthContext);
   const [listYear, setlistYear] = useState([]);
   const [currentYear, setcurrentYear] = useState(0);
   const [listLecture, setlistLecture] = useState([]);
@@ -56,13 +58,13 @@ export default function TeachClassList() {
     const rs = await get_schoolyear_service();
     setlistYear(rs);
     const yearId = getcurrentYear(rs);
-    getlistLecture(2, yearId);
+    getlistLecture(userState.user.user_id, yearId);
   };
 
   const onselectYear = (event) => {
     const yearSelect = event.target.value;
     setcurrentYear(yearSelect);
-    getlistLecture(2, yearSelect);
+    getlistLecture(userState.user.user_id, yearSelect);
   };
 
   const listselectYear = () => {
@@ -88,9 +90,10 @@ export default function TeachClassList() {
       letureId={item.id}
       index={id + 1}
       class_name={item.classes.class_name}
+      course_year={item.classes.course_year}
       subject_name={item.subject.subject_name}
-      from_year={item.classes.school_year.from_year}
-      to_year={item.classes.school_year.to_year}
+      from_year={item.school_year.from_year}
+      to_year={item.school_year.to_year}
     />
   ));
 
@@ -121,8 +124,8 @@ export default function TeachClassList() {
                   />
                 </Button>
               ) : (
-                ""
-              )}
+                  ""
+                )}
             </Row>
           </Form.Group>
           <br></br>
@@ -142,6 +145,7 @@ function HeadTable() {
       <tr>
         <th>Số TT</th>
         <th>Lớp</th>
+        <th>Khóa</th>
         <th>Môn</th>
         <th>Năm học</th>
       </tr>
@@ -163,6 +167,7 @@ function RowTable(props) {
           {props.class_name}
         </NavLink>
       </td>
+      <td>{props.course_year}</td>
       <td>{props.subject_name}</td>
       <td>{props.from_year}</td>
     </tr>

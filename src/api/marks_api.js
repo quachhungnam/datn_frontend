@@ -57,8 +57,27 @@ async function update_marks(data) {
     }
 }
 
+async function get_record_student(studentId) {
+    try {
+        let result = await fetch(`${API_URL}/api/academicrecord/student/${studentId}/`, {
+            method: 'GET',
+            headers: {
+                Accept: 'application/json',
+                // Authorization: token,
+                'Content-Type': 'application/json',
+            },
+        });
+        let resultJson = await result.json();
+        return resultJson;
+    } catch (error) {
+        return error;
+    }
+}
+
+
 export {
     get_marksofclass_service,
     get_marksofstudent_service,
-    update_marks
+    update_marks,
+    get_record_student
 }

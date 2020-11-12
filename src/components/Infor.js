@@ -63,6 +63,7 @@ function Infor() {
     const is_email = validator.isEmail(user.email);
     if (!is_phone_number || !is_email) {
       alert("Kiểm tra lại thông tin");
+      setisLoading(false);
       return;
     }
     let rs = await update_user_api(user);

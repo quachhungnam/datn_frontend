@@ -23,7 +23,7 @@ async function get_lecture_service(token, id) {
 async function get_lecture_teacher_service(teacher_id, schoolyear_id) {
   try {
     let result = await fetch(
-      `${API_URL}/api/lectures/${teacher_id}/${schoolyear_id}/`,
+      `${API_URL}/api/lectures/teacher/${teacher_id}/schoolyear/${schoolyear_id}/`,
       {
         method: "GET",
         headers: {

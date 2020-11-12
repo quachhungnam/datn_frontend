@@ -23,7 +23,7 @@ async function get_user_api(id) {
 async function update_user_api(data) {
     try {
         let result = await fetch(`${API_URL}/api/users/${data.id}/`, {
-            method: 'PUT',
+            method: 'PATCH',
             headers: {
                 Accept: 'application/json',
                 Authorization: authHeader.Authorization,

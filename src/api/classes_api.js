@@ -19,5 +19,26 @@ async function get_classes_api(id) {
         return error;
     }
 }
+async function get_teacher_class(teacherId, yearId) {
+    try {
+        let result = await fetch(`${API_URL}/api/activitiesclass/teacher/${teacherId}/schoolyear/${yearId}/`, {
+            method: 'GET',
+            headers: {
+                Accept: 'application/json',
+                Authorization: authHeader.Authorization,
+                'Content-Type': 'application/json',
+            },
 
-export { get_classes_api } 
+        });
+        let resultJson = await result.json();
+        return resultJson;
+    } catch (error) {
+        console.log(`Error is: ${error}`);
+        return error;
+    }
+}
+
+export {
+    get_classes_api,
+    get_teacher_class
+} 
