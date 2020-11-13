@@ -19,7 +19,7 @@ import {
 import { get_schoolyear_service } from "../../api/schoolyear_api";
 import { get_teacher_class } from '../../api/classes_api'
 import { AuthContext } from "../../context/AuthContext";
-
+import { getStudentLecture } from '../../api/student_api'
 export default function MyClass() {
 
   const [userState, dispatch] = React.useContext(AuthContext);
@@ -29,12 +29,24 @@ export default function MyClass() {
   const [listStudent, setlistStudent] = useState([])
   const [isLoading, setisLoading] = useState(false);
 
+
+
+  const getListStudent = async (classId, yearId) => {
+    const rs = await getStudentLecture(classId, yearId);
+    if (rs.results !== "") {
+      const arrStudent = rs.results;
+      setlistStudent(arrStudent);
+    } else {
+    }
+  };
+
   const getTeacherClass = async (teacherId, yearId) => {
     setisLoading(true);
     const rs = await get_teacher_class(teacherId, yearId);
-    if (rs.results !== "") {
-      const arr_lecture = rs.results;
-      setlistTeacherClass(arr_lecture);
+    if (rs.results.length>0) {
+      const arrTeacherClass = rs.results;
+      getListStudent(arrTeacherClass[0].classes.id, yearId)
+      setlistTeacherClass(arrTeacherClass);
     } else {
     }
     setisLoading(false);
@@ -96,6 +108,16 @@ export default function MyClass() {
     />
   ));
 
+  const showListStudent = listStudent.map((item, index) => (
+    <StudentDetail
+      key={index}
+      stt={index + 1}
+      user={item.user}
+    >
+
+    </StudentDetail>
+  ))
+
   useEffect(() => {
     getlistFirst();
   }, []);
@@ -128,6 +150,7 @@ export default function MyClass() {
             </Row>
           </Form.Group>
           <br></br>
+
           <Table striped bordered hover>
             <thead>
               <tr>
@@ -139,19 +162,20 @@ export default function MyClass() {
             </thead>
             <tbody>{showlistLecture}</tbody>
           </Table>
+                   
           <Table striped bordered hover size="sm">
             <thead>
               <tr>
                 <th>Số TT</th>
                 <th>Họ và tên</th>
-                <th>Giới tính</th>
                 <th>Năm sinh</th>
+                <th>Giới tính</th>
                 <th>Email</th>
                 <th>Số điện thoại</th>
               </tr>
             </thead>
             <tbody>
-              <StudentDetail></StudentDetail>
+              {showListStudent}
             </tbody>
           </Table>
         </Card.Body>
@@ -160,15 +184,15 @@ export default function MyClass() {
   );
 }
 
-function StudentDetail() {
+function StudentDetail(props) {
   return (
     <tr>
-      <td>1</td>
-      <td>Nguyễn Văn Nam</td>
-      <td>Nam</td>
-      <td>27.02.1993</td>
-      <td>0974436947</td>
-      <td>0974436947</td>
+      <td>{props.stt}</td>
+      <td>{props.user.first_name + ' '+props.user.last_name}</td>
+      <td>{props.user.birthday}</td>
+      <td>{props.user.gender ? 'Nam' : 'Nữ'}</td>
+      <td>{props.user.email}</td>
+      <td>{props.user.phone_number}</td>
     </tr>
   )
 }

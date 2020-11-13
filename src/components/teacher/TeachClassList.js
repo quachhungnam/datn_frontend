@@ -30,7 +30,7 @@ export default function TeachClassList() {
   const getlistLecture = async (teacherId, yearId) => {
     setisLoading(true);
     const rs = await get_lecture_teacher_service(teacherId, yearId);
-    if (rs.results !== "") {
+    if (rs.results.length > 0) {
       const arr_lecture = rs.results;
       setlistLecture(arr_lecture);
     } else {
@@ -169,7 +169,7 @@ function RowTable(props) {
       </td>
       <td>{props.course_year}</td>
       <td>{props.subject_name}</td>
-      <td>{props.from_year}</td>
+      <td>{props.from_year.slice(0, 4) + ' - ' + props.to_year.slice(0, 4)}</td>
     </tr>
   );
 }

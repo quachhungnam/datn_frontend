@@ -19,10 +19,11 @@ import {
   get_marksofclass_service,
   get_marksofstudent_service,
   update_marks,
+  getMarksLecture
 } from "../../api/marks_api";
 import InputMark from "./InputMark";
 import { useLocation } from "react-router-dom";
-import {ExportCSV} from "../ExportCSV";
+import { ExportCSV } from "../ExportCSV";
 export default function TeachClass(props) {
   const init_state = {
     isAddDGTX1: true,
@@ -121,34 +122,34 @@ export default function TeachClass(props) {
     try {
       setisUpdating(true);
       const lectureId = location.state;
-      const rs = await get_marksofclass_service(lectureId);
+      const rs = await getMarksLecture(lectureId);
       const results = rs.results;
 
       setlistMarks(results);
       setisUpdating(false);
-      if (rs.results !== "") {
-        let timesdgtx = 1;
-        let timesdgtx2 = 1;
-        for (let i = 0; i < results.length; i++) {
-          let listdgtx = results[i].marks_regulary;
-          let list1 = listdgtx.filter((item) => item.code_semester == 1);
-          let list2 = listdgtx.filter((item) => item.code_semester == 2);
+      // if (rs.results !== "") {
+      //   let timesdgtx = 1;
+      //   let timesdgtx2 = 1;
+      //   for (let i = 0; i < results.length; i++) {
+      //     let listdgtx = results[i].marks_regulary;
+      //     let list1 = listdgtx.filter((item) => item.code_semester == 1);
+      //     let list2 = listdgtx.filter((item) => item.code_semester == 2);
 
-          if (list1.length > timesdgtx) {
-            timesdgtx = list1.length;
-          }
-          if (list2.length > timesdgtx) {
-            timesdgtx2 = list2.length;
-          }
+      //     if (list1.length > timesdgtx) {
+      //       timesdgtx = list1.length;
+      //     }
+      //     if (list2.length > timesdgtx) {
+      //       timesdgtx2 = list2.length;
+      //     }
 
-          // if (results[i].marks_regulary.length > timesdgtx) {
-          //   timesdgtx = results[i].marks_regulary.length;
-          // }
-        }
-        settimesDGTX(timesdgtx);
-        settimesDGTX2(timesdgtx2);
-      }
-    } catch (e) {}
+      //     // if (results[i].marks_regulary.length > timesdgtx) {
+      //     //   timesdgtx = results[i].marks_regulary.length;
+      //     // }
+      //   }
+      //   settimesDGTX(timesdgtx);
+      //   settimesDGTX2(timesdgtx2);
+      // }
+    } catch (e) { }
   };
 
   const updateFieldChanged = (values) => {
@@ -164,22 +165,23 @@ export default function TeachClass(props) {
   };
 
   const showStudentsMarks = listMarks.map((item, index) => {
+    
     return (
       <RowTable
+        key={index}
+        stt={index+1}
         item_value={item}
         marksState={marksState}
-        key={index}
-        stt={index + 1}
         timesDGTX={timesDGTX}
         timesDGTX2={timesDGTX2}
         student_name={item.student.user.username}
         lecture={item.lecture}
-        mid_first_semester={item.mid_first_semester}
-        end_first_semester={item.end_first_semester}
-        gpa_first_semester={item.gpa_first_semester}
-        mid_second_semester={item.mid_second_semester}
-        end_second_semester={item.end_second_semester}
-        gpa_second_semester={item.gpa_second_semester}
+        mid_first_semester={item.mid_stsemester_point}
+        end_first_semester={item.end_stsemester_point}
+        gpa_first_semester={item.gpa_stsemester_point}
+        mid_second_semester={item.mid_ndsemester_point}
+        end_second_semester={item.end_ndsemester_point}
+        gpa_second_semester={item.gpa_ndsemester_point}
         gpa_year={item.gpa_year}
         enableInput={enableInput}
         updateFieldChanged={updateFieldChanged}
@@ -246,8 +248,8 @@ export default function TeachClass(props) {
     setisUpdating(false);
   };
 
-  const addMarksRegulary = async (data) => {};
-  const updateMarksRegulary = async (data) => {};
+  const addMarksRegulary = async (data) => { };
+  const updateMarksRegulary = async (data) => { };
 
   if (isShowInput == true && marksType !== null) {
     return (
@@ -285,8 +287,8 @@ export default function TeachClass(props) {
                     />
                   </Button>
                 ) : (
-                  ""
-                )}
+                    ""
+                  )}
               </Card.Title>
             </Card.Header>
             <Form method="POST" onSubmit={onupdateMarks}>
@@ -451,8 +453,8 @@ function RowTable(props) {
   const [marks, setmarks] = useState(props.item_value);
   //khi them diem danh gia thuong xuyen thi hien len 1 column,n
   const filMarkSemester = (marks, semester) => {
-    return marks.marks_regulary.filter(
-      (item) => item.code_semester == semester
+    return marks.marksregulary.filter(
+      (item) => item.semester == semester
     );
   };
 
@@ -472,8 +474,8 @@ function RowTable(props) {
                 disabled={false}
               />
             ) : (
-              ""
-            )}
+                ""
+              )}
           </Form.Row>
         </td>
       );
@@ -518,8 +520,8 @@ function RowTable(props) {
                 disabled={false}
               />
             ) : (
-              ""
-            )}
+                ""
+              )}
           </Form.Row>
         </td>
       );

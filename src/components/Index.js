@@ -92,7 +92,7 @@ export default function Index() {
         <Card.Body>
 
           <p><h3>Hệ thống quản lý điểm trường Trung học phổ thông</h3> </p>
-          <Form method="POST" onSubmit={onSendFile}>
+          {/* <Form method="POST" onSubmit={onSendFile}>
             <Form.Group>
               <Form.File
                 multiple={true}
@@ -113,7 +113,7 @@ export default function Index() {
                 : ""
             }
 
-          </Form>
+          </Form> */}
         </Card.Body>
       </Card>
     </Container>

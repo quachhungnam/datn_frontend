@@ -9,21 +9,36 @@ import {
   Table,
   Container, Row, Card
 } from "react-bootstrap";
-import { get_record_student } from '../../api/marks_api'
+import { AuthContext } from "../../context/AuthContext";
+
+import { get_record_student, get_marks_student } from '../../api/marks_api'
 
 
 function MyMarks() {
-
-
+  const [userState, dispatch] = React.useContext(AuthContext);
   const initFormState = { username: null, password: null };
   const [task, setTask] = useState(initFormState);
   const [listRecord, setlistRecord] = useState([])
+
+  const [listMarks, setlistMarks] = useState([])
+
+  const getAllMarks = async () => {
+    const rs = await get_marks_student(userState.user.user_id, 1)
+    if (rs.count > 0) {
+      setlistMarks(rs.results)
+    }
+  }
+
   const getAllRecord = async () => {
-    const rs = await get_record_student(389)
+    const rs = await get_record_student(userState.user.user_id)
     if (rs.count > 0) {
       setlistRecord(rs.results)
     }
   }
+
+
+
+
   const showRecord = listRecord.map((item, index) => (
     <RowRecord
       key={index}
@@ -34,6 +49,16 @@ function MyMarks() {
     </RowRecord>
   ))
 
+  // const showRecordDetail = listMarks.map((item, index) => (
+  //   <TableRecordDetail
+  //     key={index}
+  //     stt={index + 1}
+  //     data={item}
+  //   >
+  //   </TableRecordDetail>
+  // ))
+
+
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setTask({ ...task, [name]: value });
@@ -41,6 +66,7 @@ function MyMarks() {
 
   useEffect(() => {
     getAllRecord()
+    getAllMarks()
   }, []);
 
 
@@ -92,14 +118,38 @@ function MyMarks() {
         </Card.Header>
         <Card.Body>
           <hr></hr>
-          <TableRecordDetail></TableRecordDetail>
+          <TableRecordDetail
+            listMarks={listMarks}
+          ></TableRecordDetail>
         </Card.Body>
       </Card>
 
     </Container>
   );
 }
+
+
+
 function TableRecordDetail(props) {
+  const showListMarks = props.listMarks.map((item, index) => (
+    <tr>
+      <td>{index + 1}</td>
+      <td>{item.lecture.school_year.from_year.slice(0, 4) + " - " + item.lecture.school_year.to_year.slice(0, 4)}</td>
+      <td>{item.lecture.subject.subject_name}</td>
+      <td>
+        <span>9</span>+<span>9</span>+<span>9</span>
+      </td>
+      <td>{item.mid_stsemester_point}</td>
+      <td>{item.end_stsemester_point}</td>
+      <td>{item.gpa_stsemester_point}</td>
+      <td>10</td>
+      <td>{item.mid_ndsemester_point}</td>
+      <td>{item.end_ndsemester_point}</td>
+      <td>{item.gpa_ndsemester_point}</td>
+      <td>8.9</td>
+    </tr>
+  ))
+
   return (
     <Table striped bordered hover size="sm">
       <thead>
@@ -122,135 +172,9 @@ function TableRecordDetail(props) {
           <th>Trung bình môn</th>
         </tr>
       </thead>
+
       <tbody>
-        <tr>
-          <td>1</td>
-          <td>2018-2019</td>
-          <td>Toán</td>
-          <td>
-            <span>9</span>+<span>9</span>+<span>9</span>
-          </td>
-          <td>10</td>
-          <td>8</td>
-          <td>8</td>
-          <td>10</td>
-          <td>10</td>
-          <td>8</td>
-          <td>8</td>
-          <td>8.9</td>
-        </tr>
-        <tr>
-          <td>1</td>
-          <td>2018-2019</td>
-          <td>Giáo dục công dân</td>
-          <td>10</td>
-          <td>10</td>
-          <td>8</td>
-          <td>10</td>
-          <td>10</td>
-          <td>8</td>
-          <td>10</td>
-          <td>8</td>
-          <td>8.2</td>
-        </tr>
-        <tr>
-          <td>1</td>
-          <td>2018-2019</td>
-          <td>Toán</td>
-          <td>10</td>
-          <td>10</td>
-          <td>8</td>
-          <td>10</td>
-          <td>10</td>
-          <td>8</td>
-          <td>10</td>
-          <td>8</td>
-          <td>8.7</td>
-        </tr>
-        <tr>
-          <td>1</td>
-          <td>2018-2019</td>
-          <td>Toán</td>
-          <td>10</td>
-          <td>10</td>
-          <td>8</td>
-          <td>10</td>
-          <td>10</td>
-          <td>8</td>
-          <td>10</td>
-          <td>8</td>
-          <td>8.7</td>
-        </tr>
-        <tr>
-          <td>1</td>
-          <td>2018-2019</td>
-          <td>Toán</td>
-          <td>10</td>
-          <td>10</td>
-          <td>8</td>
-          <td>10</td>
-          <td>10</td>
-          <td>8</td>
-          <td>10</td>
-          <td>8</td>
-          <td>8.7</td>
-        </tr>
-        <tr>
-          <td>1</td>
-          <td>2018-2019</td>
-          <td>Toán</td>
-          <td>10</td>
-          <td>10</td>
-          <td>8</td>
-          <td>10</td>
-          <td>10</td>
-          <td>8</td>
-          <td>10</td>
-          <td>8</td>
-          <td>8.7</td>
-        </tr>
-        <tr>
-          <td>1</td>
-          <td>2018-2019</td>
-          <td>Toán</td>
-          <td>10</td>
-          <td>10</td>
-          <td>8</td>
-          <td>10</td>
-          <td>10</td>
-          <td>8</td>
-          <td>10</td>
-          <td>8</td>
-          <td>8.7</td>
-        </tr>
-        <tr>
-          <td>1</td>
-          <td>2018-2019</td>
-          <td>Toán</td>
-          <td>10</td>
-          <td>10</td>
-          <td>8</td>
-          <td>10</td>
-          <td>10</td>
-          <td>8</td>
-          <td>10</td>
-          <td>8</td>
-          <td>8.7</td>
-        </tr>
-        <tr>
-          <td>1</td>
-          <td>2018-2019</td>
-          <td>Toán</td>
-          <td>10</td>
-          <td>10</td>
-          <td>8</td>
-          <td>10</td>
-          <td>10</td>
-          <td>8</td>
-          <td>10</td>
-          <td>8</td>
-          <td>8.7</td>
-        </tr>
+        {showListMarks}
       </tbody>
     </Table>
   )
