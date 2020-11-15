@@ -11,7 +11,7 @@ import {
 } from "react-bootstrap";
 import { AuthContext } from "../../context/AuthContext";
 
-import { get_record_student, get_marks_student } from '../../api/marks_api'
+import { get_record_student, get_marks_student } from '../../services/marksService'
 
 
 function MyMarks() {

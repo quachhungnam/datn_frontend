@@ -1,7 +1,7 @@
-import { authHeader } from './auth_header'
+import { authHeader } from './authHeader'
 const API_URL = 'http://127.0.0.1:8000'
 // http://127.0.0.1:8000/api/token/
-async function checktoken_api(token) {
+async function checkToken(token) {
     try {
         let result = await fetch(`${API_URL}/api/checktoken/`, {
             method: 'GET',
@@ -19,7 +19,7 @@ async function checktoken_api(token) {
     }
 }
 
-const login_api = async (user) => {
+const loginUser = async (user) => {
     try {
         let result = await fetch(`${API_URL}/api/token/`, {
             method: 'POST',
@@ -39,7 +39,7 @@ const login_api = async (user) => {
     }
 }
 
-const change_password_api = async (password) => {
+const changePassword = async (password) => {
     try {
         let result = await fetch(`${API_URL}/api/change-password/`, {
             method: 'PUT',
@@ -58,14 +58,14 @@ const change_password_api = async (password) => {
 }
 
 
-const logout_api = async () => {
+const logoutUser = async () => {
     localStorage.removeItem("user")
 }
 
 
 export {
-    login_api,
-    logout_api,
-    checktoken_api,
-    change_password_api
+    loginUser,
+    logoutUser,
+    checkToken,
+    changePassword
 }

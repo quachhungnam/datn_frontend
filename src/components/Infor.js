@@ -13,8 +13,8 @@ import {
   Spinner,
 } from "react-bootstrap";
 import "react-datepicker/dist/react-datepicker.css";
-import { get_user_api, update_user_api } from "../api/user_api";
-import { change_password_api } from "../api/auth_api";
+import { get_userService, update_userService } from "../services/userService";
+import { changePassword } from "../services/authService";
 import ChangePassword from "./ChangePassword";
 import { AuthContext } from "../context/AuthContext";
 import validator from "validator";
@@ -44,7 +44,7 @@ function Infor() {
   const get_user = async () => {
     try {
       setisLoading(true)
-      let rs = await get_user_api(userState.user.user_id);
+      let rs = await get_userService(userState.user.user_id);
       setisLoading(false)
       set_user(rs);
 
@@ -66,7 +66,7 @@ function Infor() {
       setisLoading(false);
       return;
     }
-    let rs = await update_user_api(user);
+    let rs = await update_userService(user);
     if (rs.id) {
       alert("Sửa thông tin thành công");
     }
@@ -82,7 +82,7 @@ function Infor() {
   };
 
   const change_password = async (password) => {
-    let rs = await change_password_api(password);
+    let rs = await changePassword(password);
     if (rs.status === "success") {
       alert("Đổi mật khẩu thành công");
       return;

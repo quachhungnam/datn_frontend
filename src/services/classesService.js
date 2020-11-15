@@ -1,10 +1,9 @@
-import { authHeader } from './auth_header'
-const API_URL = 'http://127.0.0.1:8000'
-// http://127.0.0.1:8000/api/token/
 
-async function get_user_api(id) {
+import { authHeader } from './authHeader'
+const API_URL = 'http://127.0.0.1:8000'
+async function get_classesService(id) {
     try {
-        let result = await fetch(`${API_URL}/api/users/${id}/`, {
+        let result = await fetch(`${API_URL}/api/classes/${id}/`, {
             method: 'GET',
             headers: {
                 Accept: 'application/json',
@@ -20,16 +19,16 @@ async function get_user_api(id) {
         return error;
     }
 }
-async function update_user_api(data) {
+async function get_teacher_class(teacherId, yearId) {
     try {
-        let result = await fetch(`${API_URL}/api/users/${data.id}/`, {
-            method: 'PATCH',
+        let result = await fetch(`${API_URL}/api/activitiesclass/teacher/${teacherId}/schoolyear/${yearId}/`, {
+            method: 'GET',
             headers: {
                 Accept: 'application/json',
                 Authorization: authHeader.Authorization,
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(data)
+
         });
         let resultJson = await result.json();
         return resultJson;
@@ -39,4 +38,7 @@ async function update_user_api(data) {
     }
 }
 
-export { get_user_api, update_user_api }
+export {
+    get_classesService,
+    get_teacher_class
+} 

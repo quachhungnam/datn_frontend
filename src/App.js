@@ -17,7 +17,7 @@ import MyClass from "./components/teacher/MyClass";
 import Home from "./components/Home";
 import Index from "./components/Index";
 import { AuthContext } from "./context/AuthContext";
-import { logout_action, checktoken_action } from "./actions/auth_action";
+import { logoutAction, checkTokenAction } from "./actions/authAction";
 import { DropdownStudent, DropdownTeacher } from "./components/DropdownUser";
 import TeachClassList from "./components/teacher/TeachClassList";
 import TeachClass from "./components/teacher/TeachClass";
@@ -27,7 +27,7 @@ export default function App() {
   const [userState, dispatch] = useContext(AuthContext);
 
   useEffect(() => {
-    checktoken_action(dispatch);
+    checkTokenAction(dispatch);
   }, []);
 
   const AuthButton = () => {
@@ -38,7 +38,7 @@ export default function App() {
           to="/login"
           className="nav-link"
           onClick={() => {
-            logout_action(dispatch);
+            logoutAction(dispatch);
           }}
         >
           Đăng xuất

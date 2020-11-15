@@ -12,6 +12,7 @@ export default function AuthReducer(initialState, action) {
             }
 
         case "LOGIN_SUCCESS":
+            localStorage.setItem("user", JSON.stringify(action.user));
             return {
                 ...initialState,
                 user: action.user,
@@ -19,15 +20,15 @@ export default function AuthReducer(initialState, action) {
                 errorMessage: null
             }
         case "LOGOUT":
-            // alert('logout')
+            localStorage.removeItem('user');
             return {
                 ...initialState,
                 isLogout: true,
                 user: "",
-                // token: ""
             };
 
         case "LOGIN_ERROR":
+            localStorage.removeItem('user');
             return {
                 ...initialState,
                 isloading: false,

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Card, Carousel, Container, Form, Button, Spinner } from "react-bootstrap";
 
-import { uploadFile } from '../api/student_api'
+import { uploadFile } from '../services/studentService'
 export default function Index() {
   const [index, setIndex] = useState(0);
   const [files, setfiles] = useState()

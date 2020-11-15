@@ -16,8 +16,8 @@ import {
   // BrowserRouter as Router,
   NavLink,
 } from "react-router-dom";
-import { get_schoolyear_service } from "../../api/schoolyear_api";
-import { get_lecture_teacher_service } from "../../api/lecture_api";
+import { get_schoolyear_service } from "../../services/schoolYearService";
+import { get_lecture_teacher_service } from "../../services/lectureService";
 import { AuthContext } from "../../context/AuthContext";
 
 export default function TeachClassList() {

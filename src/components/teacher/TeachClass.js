@@ -11,6 +11,7 @@ import {
   Card,
   Form,
   Spinner,
+  Tab,
 } from "react-bootstrap";
 // import { useParams } from "react-router-dom";
 import * as FileSaver from "file-saver";
@@ -20,7 +21,7 @@ import {
   get_marksofstudent_service,
   update_marks,
   getMarksLecture
-} from "../../api/marks_api";
+} from "../../services/marksService";
 import InputMark from "./InputMark";
 import { useLocation } from "react-router-dom";
 import { ExportCSV } from "../ExportCSV";
@@ -165,11 +166,11 @@ export default function TeachClass(props) {
   };
 
   const showStudentsMarks = listMarks.map((item, index) => {
-    
+
     return (
       <RowTable
         key={index}
-        stt={index+1}
+        stt={index + 1}
         item_value={item}
         marksState={marksState}
         timesDGTX={timesDGTX}
@@ -306,10 +307,19 @@ export default function TeachClass(props) {
                     {showStudentsMarks}
                   </tbody>
                 </Table>
+
+
+
                 <Button type="submit">Lưu điểm</Button>
                 <Button type="reset">Reset</Button>
                 <Button>hhhh </Button>
                 <ExportCSV csvData={listMarks} fileName={"namexcel"} />
+                <Row>
+
+                </Row>
+                
+
+
               </Card.Body>
             </Form>
           </Card>

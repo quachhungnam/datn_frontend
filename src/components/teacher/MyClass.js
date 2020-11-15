@@ -16,10 +16,10 @@ import {
   // BrowserRouter as Router,
   NavLink,
 } from "react-router-dom";
-import { get_schoolyear_service } from "../../api/schoolyear_api";
-import { get_teacher_class } from '../../api/classes_api'
+import { get_schoolyear_service } from "../../services/schoolYearService";
+import { get_teacher_class } from '../../services/classesService'
 import { AuthContext } from "../../context/AuthContext";
-import { getStudentLecture } from '../../api/student_api'
+import { getStudentLecture } from '../../services/studentService'
 export default function MyClass() {
 
   const [userState, dispatch] = React.useContext(AuthContext);

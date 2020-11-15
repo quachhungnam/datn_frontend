@@ -2,7 +2,7 @@
 // const AuthContext = React.createContext(null)
 // export default AuthContext
 import React, { useReducer } from "react";
-import AuthReducer from '../reducer/auth_reducer'
+import AuthReducer from '../reducer/authReducer'
 
 const AuthStateContext = React.createContext();
 const AuthDispatchContext = React.createContext();

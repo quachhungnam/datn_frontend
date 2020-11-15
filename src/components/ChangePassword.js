@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Form, Button, Col, Row, Spinner } from "react-bootstrap";
 import validator from "validator";
-import { change_password_api } from "../api/auth_api";
+import { changePassword } from "../services/authService";
 export default function ChangePassword(props) {
   const init_password = {
     old_password: "",
@@ -34,7 +34,7 @@ export default function ChangePassword(props) {
     }
     setisLoading(true);
     // props.change_password(password);
-    let rs = await change_password_api(password);
+    let rs = await changePassword(password);
     setisLoading(false);
     if (rs.status === "success") {
       alert("Đổi mật khẩu thành công");
