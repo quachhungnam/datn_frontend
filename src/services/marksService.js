@@ -77,7 +77,7 @@ async function update_marks(data) {
 
 async function get_record_student(studentId) {
     try {
-        let result = await fetch(`${API_URL}/api/academicrecord/student/${studentId}/`, {
+        let result = await fetch(`${API_URL}/api/learningoutcome/student/${studentId}/`, {
             method: 'GET',
             headers: {
                 Accept: 'application/json',
@@ -92,9 +92,9 @@ async function get_record_student(studentId) {
     }
 }
 
-async function get_marks_student(studentId, yearId) {
+async function get_marks_student(studentId) {
     try {
-        let result = await fetch(`${API_URL}/api/marks/student/${studentId}/school_year/${yearId}/`, {
+        let result = await fetch(`${API_URL}/api/marks/student/${studentId}/`, {
             method: 'GET',
             headers: {
                 Accept: 'application/json',

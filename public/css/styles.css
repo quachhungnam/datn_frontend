@@ -1,0 +1,24 @@
+.navbar-color {
+  /* background: #0c4b33; */
+  /* background: #20aa76; */
+  background: #417690;
+  color: #ffc;
+}
+
+.btn-color {
+  background-color: #417690;
+}
+
+.auth-color {
+  display: inline;
+  color: darkgoldenrod;
+  font-weight: bold;
+}
+
+.color-link {
+  color: white;
+}
+
+.inline-h5 {
+  display: inline;
+}

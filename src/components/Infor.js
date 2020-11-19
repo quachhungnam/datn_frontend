@@ -11,17 +11,18 @@ import {
   Card,
   Nav,
   Spinner,
+  Row,
 } from "react-bootstrap";
 import "react-datepicker/dist/react-datepicker.css";
-import { get_userService, update_userService } from "../services/userService";
+import { getUserService, updateUserService } from "../services/userService";
 import { changePassword } from "../services/authService";
 import ChangePassword from "./ChangePassword";
 import { AuthContext } from "../context/AuthContext";
 import validator from "validator";
 
 function Infor() {
-  let init_user = {
-    id: 2,
+  let initUser = {
+    id: null,
     username: "",
     first_name: "",
     last_name: "",
@@ -32,31 +33,25 @@ function Infor() {
     address: "",
   };
   const [userState, dispatch] = useContext(AuthContext);
-  const [startDate, setStartDate] = useState(new Date());
-  const [user, set_user] = useState(init_user);
-  const [show_infor, set_show_infor] = useState(true);
+  const [user, setUser] = useState(initUser);
+  const [showInfor, setShowInfor] = useState(true);
   const [isLoading, setisLoading] = useState(false);
 
-  useEffect(() => {
-    get_user();
-  }, []);
-
-  const get_user = async () => {
+  const getUserInfor = async () => {
     try {
-      setisLoading(true)
-      let rs = await get_userService(userState.user.user_id);
-      setisLoading(false)
-      set_user(rs);
-
-    } catch (e) { }
+      setisLoading(true);
+      let rs = await getUserService(userState.user.user_id);
+      setisLoading(false);
+      setUser(rs);
+    } catch (e) {}
   };
 
-  const handle_input = (event) => {
+  const handleInput = (event) => {
     const { name, value } = event.target;
-    set_user({ ...user, [name]: value });
+    setUser({ ...user, [name]: value });
   };
 
-  const on_update_user = async (event) => {
+  const onUpdateUser = async (event) => {
     event.preventDefault();
     setisLoading(true);
     const is_phone_number = validator.isMobilePhone(user.phone_number);
@@ -66,22 +61,24 @@ function Infor() {
       setisLoading(false);
       return;
     }
-    let rs = await update_userService(user);
+    let rs = await updateUserService(user);
     if (rs.id) {
       alert("Sửa thông tin thành công");
     }
     setisLoading(false);
   };
-  const show_information = (event) => {
+
+  const onShowInformation = (event) => {
     event.preventDefault();
-    set_show_infor(true);
-  };
-  const show_changepassword = (event) => {
-    event.preventDefault();
-    set_show_infor(false);
+    setShowInfor(true);
   };
 
-  const change_password = async (password) => {
+  const onShowChangePassword = (event) => {
+    event.preventDefault();
+    setShowInfor(false);
+  };
+
+  const onChangePassword = async (password) => {
     let rs = await changePassword(password);
     if (rs.status === "success") {
       alert("Đổi mật khẩu thành công");
@@ -90,6 +87,10 @@ function Infor() {
     alert("Thất bại!");
   };
 
+  useEffect(() => {
+    getUserInfor();
+  }, []);
+
   return (
     <Container>
       <Card>
@@ -97,21 +98,20 @@ function Infor() {
           <Nav variant="tabs" defaultActiveKey="#1">
             <Nav.Item>
               {/* <Button>Thông tin</Button> */}
-              <Nav.Link onClick={show_information} href="#1">
+              <Nav.Link onClick={onShowInformation} href="#1">
                 <b>Thông tin cá nhân</b>
               </Nav.Link>
             </Nav.Item>
             <Nav.Item>
-              <Nav.Link onClick={show_changepassword} href="#2">
+              <Nav.Link onClick={onShowChangePassword} href="#2">
                 <b>Mật khẩu</b>
               </Nav.Link>
             </Nav.Item>
           </Nav>
-
         </Card.Header>
         <Card.Body>
-          {show_infor === true ? (
-            <Form method="POST" onSubmit={on_update_user}>
+          {showInfor === true ? (
+            <Form method="POST" onSubmit={onUpdateUser}>
               <Form.Row>
                 <Col sm={2}>
                   <Figure>
@@ -178,7 +178,7 @@ function Infor() {
                     placeholder="Nhập email"
                     defaultValue={user.email}
                     name="email"
-                    onChange={handle_input}
+                    onChange={handleInput}
                   />
                 </Form.Group>
                 <Form.Group as={Col} controlId="phonenumber">
@@ -187,7 +187,7 @@ function Infor() {
                     placeholder="Nhập số điện thoại"
                     defaultValue={user.phone_number}
                     name="phone_number"
-                    onChange={handle_input}
+                    onChange={handleInput}
                   />
                 </Form.Group>
               </Form.Row>
@@ -197,20 +197,20 @@ function Infor() {
                   placeholder="Nhập địa chỉ"
                   defaultValue={user.address}
                   name="address"
-                  onChange={handle_input}
+                  onChange={handleInput}
                 />
               </Form.Group>
               <Button variant="primary" type="submit">
                 Lưu
               </Button>
-              &nbsp;
+              {/* &nbsp;
               <Button variant="danger" type="reset">
                 Reset
               </Button>
               &nbsp;
               <Button variant="danger" type="reset">
                 Cancel
-              </Button>
+              </Button> */}
               {isLoading ? (
                 <Button variant="primary" size="sm" disabled>
                   <Spinner
@@ -222,12 +222,12 @@ function Infor() {
                   />
                 </Button>
               ) : (
-                  ""
-                )}
+                ""
+              )}
             </Form>
           ) : (
-              <ChangePassword change_password={change_password}></ChangePassword>
-            )}
+            <ChangePassword changePassword={onChangePassword}></ChangePassword>
+          )}
         </Card.Body>
       </Card>
     </Container>

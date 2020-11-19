@@ -1,108 +1,63 @@
 import React from "react";
-
 export default function Footer() {
   return (
-    <span>footer</span>
-    // <footer className="page-footer font-small mdb-color lighten-3 pt-4">
-    //   <div className="container text-center text-md-left">
-    //     <div className="row">
-    //       <div className="col-md-4 col-lg-3 mr-auto my-md-4 my-0 mt-4 mb-1">
-    //         <h5 className="font-weight-bold text-uppercase mb-4">
-    //           Footer Content
-    //         </h5>
-    //         <p>
-    //           Here you can use rows and columns to organize your footer content.
-    //         </p>
-    //         <p>
-    //           Lorem ipsum dolor sit amet, consectetur adipisicing elit. Fugit
-    //           amet numquam iure provident voluptate esse quasi, veritatis totam
-    //           voluptas nostrum.
-    //         </p>
-    //       </div>
+    <footer className="page-footer font-small teal pt-4 navbar-color">
+      <div className="container-fluid text-center text-md-left">
+        <div className="row">
+          <div className="col-md-3 mt-md-0 mt-3">
+            <h5 className="text-uppercase font-weight-bold">About US</h5>
+            <p>
+              Hệ thống quản lý điểm học sinh bậc Trung học phổ thông theo thông
+              tư 26/2020/TT-BGDĐT của bộ giáo dục và Đào tạo
+            </p>
+            <p>V/v sửa đổi quy chế đánh giá, xếp loại học sinh bậc THPT</p>
+          </div>
 
-    //       <hr className="clearfix w-100 d-md-none" />
+          <hr className="clearfix w-100 d-md-none pb-3"></hr>
+          <div className="col-md-3 mb-md-0 mb-3">
+            <h5 className="text-uppercase font-weight-bold">Hợp tác</h5>
+            <div>
+              <a href="#" className="color-link">
+                Trường đại học Bách Khoa
+              </a>
+            </div>
+            <div>
+              <a href="#" className="color-link">
+                Trường đại học Kinh tế
+              </a>
+            </div>
+            <div>
+              <a href="#" className="color-link">
+                Trường đại học Sư phạm
+              </a>
+            </div>
+            <div>
+              <a href="#" className="color-link">
+                Trường đại học Ngoại ngữ
+              </a>
+            </div>
+          </div>
 
-    //       <div className="col-md-2 col-lg-2 mx-auto my-md-4 my-0 mt-4 mb-1">
-    //         <h5 className="font-weight-bold text-uppercase mb-4">About</h5>
+          <div className="col-md-3 mb-md-0 mb-3">
+            <h5 className="text-uppercase font-weight-bold">Chỉ dẫn</h5>
+            <div>Địa chỉ: 54 Nguyễn Lương Bằng, TP Đà Nẵng</div>
+            <div>SĐT: 0974 436 947</div>
+            <div>Email: tranquangdieu@gmail.com</div>
+          </div>
 
-    //         <ul className="list-unstyled">
-    //           <li>
-    //             <p>
-    //               <a href="#!">PROJECTS</a>
-    //             </p>
-    //           </li>
-    //           <li>
-    //             <p>
-    //               <a href="#!">ABOUT US</a>
-    //             </p>
-    //           </li>
-    //           <li>
-    //             <p>
-    //               <a href="#!">BLOG</a>
-    //             </p>
-    //           </li>
-    //           <li>
-    //             <p>
-    //               <a href="#!">AWARDS</a>
-    //             </p>
-    //           </li>
-    //         </ul>
-    //       </div>
+          <div className="col-md-3 mb-md-0 mb-3">
+            <h5 className="text-uppercase font-weight-bold">Liên hệ</h5>
+            <div>Địa chỉ: 54 Nguyễn Lương Bằng, TP Đà Nẵng</div>
+            <div>Telephone: (+84) 0974 436 947</div>
+            <div>Mobile: 0974 436 947</div>
+            <div>Email: tranquangdieu@gmail.com</div>
+          </div>
+        </div>
+      </div>
 
-    //       <hr className="clearfix w-100 d-md-none" />
-
-    //       <div className="col-md-4 col-lg-3 mx-auto my-md-4 my-0 mt-4 mb-1">
-    //         <h5 className="font-weight-bold text-uppercase mb-4">Address</h5>
-
-    //         <ul className="list-unstyled">
-    //           <li>
-    //             <p>
-    //               <i className="fas fa-home mr-3"></i> New York, NY 10012, US
-    //             </p>
-    //           </li>
-    //           <li>
-    //             <p>
-    //               <i className="fas fa-envelope mr-3"></i> info@example.com
-    //             </p>
-    //           </li>
-    //           <li>
-    //             <p>
-    //               <i className="fas fa-phone mr-3"></i> + 01 234 567 88
-    //             </p>
-    //           </li>
-    //           <li>
-    //             <p>
-    //               <i className="fas fa-print mr-3"></i> + 01 234 567 89
-    //             </p>
-    //           </li>
-    //         </ul>
-    //       </div>
-
-    //       <hr className="clearfix w-100 d-md-none" />
-
-    //       <div className="col-md-2 col-lg-2 text-center mx-auto my-4">
-    //         <h5 className="font-weight-bold text-uppercase mb-4">Follow Us</h5>
-
-    //         <a type="button" className="btn-floating btn-fb">
-    //           <i className="fab fa-facebook-f"></i>
-    //         </a>
-    //         <a type="button" className="btn-floating btn-tw">
-    //           <i className="fab fa-twitter"></i>
-    //         </a>
-    //         <a type="button" className="btn-floating btn-gplus">
-    //           <i className="fab fa-google-plus-g"></i>
-    //         </a>
-    //         <a type="button" className="btn-floating btn-dribbble">
-    //           <i className="fab fa-dribbble"></i>
-    //         </a>
-    //       </div>
-    //     </div>
-    //   </div>
-
-    //   <div className="footer-copyright text-center py-3">
-    //     © 2020 Copyright:
-    //     <a href="https://mdbootstrap.com/"> MDBootstrap.com</a>
-    //   </div>
-    // </footer>
+      <div className="footer-copyright text-center py-3">
+        Copyright © 2020 Trường THPT Trần Quang Diệu
+      </div>
+    </footer>
   );
 }

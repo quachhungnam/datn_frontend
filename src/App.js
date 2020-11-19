@@ -5,38 +5,36 @@ import {
   Route,
   NavLink,
 } from "react-router-dom";
-import { Navbar, Nav, NavDropdown } from "react-bootstrap";
+import { Navbar, Nav, NavDropdown, Button } from "react-bootstrap";
 import Login from "./components/Login";
 import About from "./components/About";
 import Plan from "./components/Plan";
 import Suport from "./components/Suport";
 import Infor from "./components/Infor";
 import MyMarks from "./components/student/MyMarks";
-// import TeachClass from "./components/teacher/TeachClassList";
 import MyClass from "./components/teacher/MyClass";
 import Home from "./components/Home";
 import Index from "./components/Index";
-import { AuthContext } from "./context/AuthContext";
-import { logoutAction, checkTokenAction } from "./actions/authAction";
-import { DropdownStudent, DropdownTeacher } from "./components/DropdownUser";
 import TeachClassList from "./components/teacher/TeachClassList";
 import TeachClass from "./components/teacher/TeachClass";
 import InputMark from "./components/teacher/InputMark";
+import { AuthContext } from "./context/AuthContext";
+import { logoutAction, checkTokenAction } from "./actions/authAction";
+import { DropdownStudent, DropdownTeacher } from "./components/DropdownUser";
+import { PrivateRoute, PrivateRouteTeacher } from "./components/PrivateRoute";
 
 export default function App() {
   const [userState, dispatch] = useContext(AuthContext);
 
-  useEffect(() => {
-    checkTokenAction(dispatch);
-  }, []);
-
   const AuthButton = () => {
     return userState.user !== "" ? (
       <>
-        <span className="nav-link">{userState.user.username}</span>
+        <span className="nav-link">
+          <p className="auth-color">{userState.user.username}</p>{" "}
+        </span>
         <NavLink
           to="/login"
-          className="nav-link"
+          className="nav-link "
           onClick={() => {
             logoutAction(dispatch);
           }}
@@ -51,16 +49,21 @@ export default function App() {
     );
   };
 
-  const show_dropdown_user = () => {
+  const showDropdownUser = () => {
     if (userState.user !== "") {
       if (!userState.user.is_teacher) {
-        return <DropdownStudent></DropdownStudent>;
-      } else {
-        return <DropdownTeacher></DropdownTeacher>;
+        return <DropdownStudent />;
+      }
+      if (userState.user.is_teacher) {
+        return <DropdownTeacher />;
       }
     }
     return "";
   };
+
+  useEffect(() => {
+    checkTokenAction(dispatch);
+  }, []);
 
   return (
     <Router>
@@ -68,9 +71,9 @@ export default function App() {
         <Navbar
           collapseOnSelect
           expand="lg"
-          bg="dark"
+          className="navbar-color"
+          // bg="info"
           variant="dark"
-          className=".bg-info"
           sticky="top"
         >
           <Navbar.Brand href="/">THPT Trần Quang Diệu</Navbar.Brand>
@@ -83,8 +86,8 @@ export default function App() {
               <NavLink to="/plan" className="nav-link">
                 Kế hoạch
               </NavLink>
-              {show_dropdown_user()}
-              <NavDropdown title="Hỗ trợ" id="collasible-nav-dropdown">
+              {showDropdownUser()}
+              {/* <NavDropdown title="Hỗ trợ" id="collasible-nav-dropdown">
                 <NavDropdown.Item href="#action/3.1">
                   Sử dụng tài khoản
                 </NavDropdown.Item>
@@ -98,21 +101,16 @@ export default function App() {
                 <NavDropdown.Item href="#action/3.4">
                   Biểu mẫu thường dùng
                 </NavDropdown.Item>
-              </NavDropdown>
+              </NavDropdown> */}
               <NavLink to="/about" className="nav-link">
                 Giới thiệu
               </NavLink>
             </Nav>
-            <Nav>
-              {/* <Nav.Link href="#deets">More deets</Nav.Link> */}
-              {AuthButton()}
-            </Nav>
+            <Nav>{AuthButton()}</Nav>
           </Navbar.Collapse>
         </Navbar>
 
         <div>
-          {/* A <Switch> looks through its children <Route>s and
-            renders the first one that matches the current URL. */}
           <Switch>
             <Route exact path="/">
               <Index />
@@ -132,24 +130,20 @@ export default function App() {
             <Route exact path="/login">
               <Login />
             </Route>
-            <Route exact path="/infor">
-              <Infor />
-            </Route>
-            <Route exact path="/mymarks">
-              <MyMarks />
-            </Route>
-            <Route exact path="/myclass">
-              <MyClass />
-            </Route>
-            <Route exact path="/teachclasslist">
-              <TeachClassList />
-            </Route>
-            <Route exact path="/input">
-              <TeachClass />
-            </Route>
-            <Route exact path="/inputmark">
-              <InputMark />
-            </Route>
+            <PrivateRoute exact path="/infor" component={Infor} />
+            <PrivateRoute exact path="/mymarks" component={MyMarks} />
+            <PrivateRouteTeacher exact path="/myclass" component={MyClass} />
+            <PrivateRouteTeacher
+              exact
+              path="/teachclasslist"
+              component={TeachClassList}
+            />
+            <PrivateRouteTeacher exact path="/input" component={TeachClass} />
+            <PrivateRouteTeacher
+              exact
+              path="/inputmark"
+              component={InputMark}
+            />
           </Switch>
         </div>
       </div>
