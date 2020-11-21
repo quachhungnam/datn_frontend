@@ -46,7 +46,7 @@ export default function TeachClassList() {
       current_year = current_year - 1;
     }
     for (let i = 0; i < rs.length; i++) {
-      if (rs[i].from_year.slice(0, 4) == current_year) {
+      if (rs[i].from_year == current_year) {
         schoolyear_id = rs[i].id;
         setcurrentYear(rs[i].id);
       }
@@ -77,7 +77,7 @@ export default function TeachClassList() {
       >
         {listYear.map((item) => (
           <option className="dropdown-item" value={item.id} key={item.id}>
-            {item.from_year.slice(0, 4)} - {item.to_year.slice(0, 4)}
+            {item.from_year} - {item.to_year}
           </option>
         ))}
       </Form.Control>
@@ -169,7 +169,7 @@ function RowTable(props) {
       </td>
       <td>{props.course_year}</td>
       <td>{props.subject_name}</td>
-      <td>{props.from_year.slice(0, 4) + ' - ' + props.to_year.slice(0, 4)}</td>
+      <td>{props.from_year + ' - ' + props.to_year}</td>
     </tr>
   );
 }

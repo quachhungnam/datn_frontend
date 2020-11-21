@@ -75,7 +75,7 @@ async function update_marks(data) {
     }
 }
 
-async function get_record_student(studentId) {
+async function getRecordStudent(studentId) {
     try {
         let result = await fetch(`${API_URL}/api/learningoutcome/student/${studentId}/`, {
             method: 'GET',
@@ -92,9 +92,41 @@ async function get_record_student(studentId) {
     }
 }
 
-async function get_marks_student(studentId) {
+async function getMarksStudent(studentId) {
     try {
         let result = await fetch(`${API_URL}/api/marks/student/${studentId}/`, {
+            method: 'GET',
+            headers: {
+                Accept: 'application/json',
+                // Authorization: token,
+                'Content-Type': 'application/json',
+            },
+        });
+        let resultJson = await result.json();
+        return resultJson;
+    } catch (error) {
+        return error;
+    }
+}
+async function getMarksByYear(studentId, yearId) {
+    try {
+        let result = await fetch(`${API_URL}/api/marks/student/${studentId}/schoolyear/${yearId}/`, {
+            method: 'GET',
+            headers: {
+                Accept: 'application/json',
+                // Authorization: token,
+                'Content-Type': 'application/json',
+            },
+        });
+        let resultJson = await result.json();
+        return resultJson;
+    } catch (error) {
+        return error;
+    }
+}
+async function getMarksClass(classId, yearId) {
+    try {
+        let result = await fetch(`${API_URL}/api/marks/classes/${classId}/schoolyear/${yearId}/`, {
             method: 'GET',
             headers: {
                 Accept: 'application/json',
@@ -114,7 +146,9 @@ export {
     get_marksofclass_service,
     get_marksofstudent_service,
     update_marks,
-    get_record_student,
+    getRecordStudent,
     getMarksLecture,
-    get_marks_student
+    getMarksStudent,
+    getMarksByYear,
+    getMarksClass
 }

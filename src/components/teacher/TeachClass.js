@@ -177,12 +177,12 @@ export default function TeachClass(props) {
         timesDGTX2={timesDGTX2}
         student_name={item.student.user.username}
         lecture={item.lecture}
-        mid_first_semester={item.mid_stsemester_point}
-        end_first_semester={item.end_stsemester_point}
-        gpa_first_semester={item.gpa_stsemester_point}
-        mid_second_semester={item.mid_ndsemester_point}
-        end_second_semester={item.end_ndsemester_point}
-        gpa_second_semester={item.gpa_ndsemester_point}
+        mid_first_semester={item.mid_st_semester_point}
+        end_first_semester={item.end_st_semester_point}
+        gpa_first_semester={item.gpa_st_semester_point}
+        mid_second_semester={item.mid_nd_semester_point}
+        end_second_semester={item.end_nd_semester_point}
+        gpa_second_semester={item.gpa_nd_semester_point}
         gpa_year={item.gpa_year}
         enableInput={enableInput}
         updateFieldChanged={updateFieldChanged}
@@ -317,7 +317,7 @@ export default function TeachClass(props) {
                 <Row>
 
                 </Row>
-                
+
 
 
               </Card.Body>

@@ -26,7 +26,7 @@ export function DropdownTeacher() {
         </NavLink>
             <NavDropdown.Divider />
             <NavLink to="/myclass" className="dropdown-item">
-                Lớp sinh hoạt
+                Lớp chủ nhiệm
         </NavLink>
             <NavLink to="/teachclasslist" className="dropdown-item">
                 Lớp giảng dạy

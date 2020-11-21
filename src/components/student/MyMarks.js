@@ -4,8 +4,8 @@ import { Table, Container, Card, Button, Spinner } from "react-bootstrap";
 import { AuthContext } from "../../context/AuthContext";
 
 import {
-  get_record_student,
-  get_marks_student,
+  getRecordStudent,
+  getMarksStudent,
 } from "../../services/marksService";
 
 function MyMarks() {
@@ -27,7 +27,7 @@ function MyMarks() {
 
   const getAllMarks = async () => {
     setisLoading(true);
-    const rs = await get_marks_student(userState.user.user_id);
+    const rs = await getMarksStudent(userState.user.user_id);
     setisLoading(false);
     if (rs.count > 0) {
       const marksByYear = await groupBy(rs.results, "from_year");
@@ -36,7 +36,7 @@ function MyMarks() {
   };
 
   const getAllRecord = async () => {
-    const rs = await get_record_student(userState.user.user_id);
+    const rs = await getRecordStudent(userState.user.user_id);
     if (rs.count > 0) {
       setlistRecord(rs.results);
     }
@@ -194,7 +194,7 @@ function RowDetail(props) {
   const showMark1 = markRegular1.map((item, index) => (
     <span>{item.point}</span>
   ));
-  const showMark2 = markRegular1.map((item, index) => (
+  const showMark2 = markRegular2.map((item, index) => (
     <span>{item.point}</span>
   ));
 
@@ -225,8 +225,8 @@ function RowRecord(props) {
     <tr>
       <td>{props.stt}</td>
       <td>
-        {props.data.school_year.from_year.slice(0, 4)} {" - "}
-        {props.data.school_year.to_year.slice(0, 4)}
+        {props.data.school_year.from_year} {" - "}
+        {props.data.school_year.to_year}
       </td>
       <td>{props.data.gpa_first_semester}</td>
       <td>{props.data.conduct_stsemester}</td>
