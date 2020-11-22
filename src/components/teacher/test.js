@@ -184,6 +184,105 @@ for(let key in groupedPeople ){
 }
 
 
+
+// //khi them diem danh gia thuong xuyen thi hien len 1 column,n
+  // const filMarkSemester = (marks, semester) => {
+  //   return marks.marksregulary.filter((item) => item.semester == semester);
+  // };
+
+  // const showListDGTX2 = () => {
+  //   if (filMarkSemester(marks, 2).length == 0) {
+  //     return (
+  //       <td>
+  //         <Form.Row className="float-md-right">
+  //           {props.marksState.isAddDGTX2 == false ? (
+  //             <Form.Control
+  //               readonly
+  //               style={{ width: 80 }}
+  //               size="sm"
+  //               type="text"
+  //               placeholder="DGTX"
+  //               defaultValue={""}
+  //               disabled={false}
+  //             />
+  //           ) : (
+  //             ""
+  //           )}
+  //         </Form.Row>
+  //       </td>
+  //     );
+  //   }
+
+  //   let ele = [];
+  //   for (let i = 0; i < filMarkSemester(marks, 2).length; i++) {
+  //     let item;
+  //     item = (
+  //       <td>
+  //         <Form.Row className="float-md-right">
+  //           <Form.Control
+  //             readonly
+  //             style={{ width: 80 }}
+  //             size="sm"
+  //             type="text"
+  //             placeholder="DGTX"
+  //             defaultValue={filMarkSemester(marks, 2)[i].point}
+  //             disabled={false}
+  //           />
+  //         </Form.Row>
+  //       </td>
+  //     );
+  //     ele.push(item);
+  //   }
+
+  //   return ele;
+  // };
+  // const showListDGTX1 = () => {
+  //   if (filMarkSemester(marks, 1).length == 0) {
+  //     return (
+  //       <td>
+  //         <Form.Row className="float-md-right">
+  //           {props.marksState.isAddDGTX1 == false ? (
+  //             <Form.Control
+  //               readonly
+  //               style={{ width: 80 }}
+  //               size="sm"
+  //               type="text"
+  //               placeholder="DGTX"
+  //               defaultValue={""}
+  //               disabled={false}
+  //             />
+  //           ) : (
+  //             ""
+  //           )}
+  //         </Form.Row>
+  //       </td>
+  //     );
+  //   }
+
+  //   let ele = [];
+  //   for (let i = 0; i < filMarkSemester(marks, 1).length; i++) {
+  //     let item;
+  //     item = (
+  //       <td>
+  //         <Form.Row className="float-md-right">
+  //           <Form.Control
+  //             readonly
+  //             style={{ width: 80 }}
+  //             size="sm"
+  //             type="text"
+  //             placeholder="DGTX"
+  //             defaultValue={filMarkSemester(marks, 1)[i].point}
+  //             disabled={false}
+  //           />
+  //         </Form.Row>
+  //       </td>
+  //     );
+  //     ele.push(item);
+  //   }
+
+  //   return ele;
+  // };
+
 // const groupByBrand = groupBy('brand');
 // const groupByColor = groupBy('color');
 

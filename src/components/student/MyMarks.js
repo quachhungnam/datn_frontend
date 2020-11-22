@@ -85,8 +85,8 @@ function MyMarks() {
                 />
               </Button>
             ) : (
-              ""
-            )}
+                ""
+              )}
           </Card.Title>
         </Card.Header>
         <Card.Body>
@@ -141,6 +141,7 @@ function TableRecordDetail(props) {
   const listMarks = listMarksYear.map((item, index) => {
     return (
       <RowDetail
+        key={index}
         stt={index + 1}
         year={props.year}
         subject_name={item.lecture.subject.subject_name}

@@ -22,13 +22,13 @@ import { get_teacher_class } from "../../services/classesService";
 import { AuthContext } from "../../context/AuthContext";
 import { getStudentLecture } from "../../services/studentService";
 import { ExportData } from "../../utils/exportData";
-import { getMarksByYear } from "../../services/marksService";
+import { getMarksByYear, getMarksClass } from "../../services/marksService";
 
 export default function MyClass() {
   const [userState, dispatch] = React.useContext(AuthContext);
   const [listYear, setlistYear] = useState([]);
   const [currentYear, setcurrentYear] = useState(0);
-  const [listTeacherClass, setlistTeacherClass] = useState([]);
+  const [listClass, setlistClass] = useState([]);
   const [listStudent, setlistStudent] = useState([]);
   const [isLoading, setisLoading] = useState(false);
 
@@ -49,9 +49,9 @@ export default function MyClass() {
     if (rs.results.length > 0) {
       const arrTeacherClass = rs.results;
       getListStudent(arrTeacherClass[0].classes.id, yearId);
-      setlistTeacherClass(arrTeacherClass);
+      setlistClass(arrTeacherClass);
     } else {
-      setlistTeacherClass([]);
+      setlistClass([]);
       setlistStudent([]);
     }
     setisLoading(false);
@@ -103,7 +103,7 @@ export default function MyClass() {
     );
   };
 
-  const showlistLecture = listTeacherClass.map((item, index) => (
+  const showListClass = listClass.map((item, index) => (
     <RowTable
       key={index}
       class_name={item.classes.class_name}
@@ -179,12 +179,15 @@ export default function MyClass() {
     }
   };
   //Xuat diem cua 1 lop chu nhiem
-  const exportMarksClass = async (classes, semester) => {
+  const exportMarksClass = async (semester) => {
     try {
       setisLoading(true);
-      const rs = await getMarksByYear(classes, currentYear);
-      const kq = standardExport(rs.results, semester);
-      ExportData(kq, "marks");
+      const classes = listClass.length > 0 ? listClass[0] : null;
+      if (classes) {
+        const rs = await getMarksClass(classes.id, currentYear);
+        const kq = standardExport(rs.results, semester);
+        ExportData(kq, "marks");
+      }
     } catch (ex) {
     } finally {
       setisLoading(false);
@@ -198,10 +201,6 @@ export default function MyClass() {
       exportMarksStudent={exportMarksStudent}
     />
   ));
-
-  const showAlert = () => {
-    alert("Xuat ket qua ra excel");
-  };
 
   useEffect(() => {
     getlistFirst();
@@ -245,7 +244,7 @@ export default function MyClass() {
                 <th>Năm học</th>
               </tr>
             </thead>
-            <tbody>{showlistLecture}</tbody>
+            <tbody>{showListClass}</tbody>
           </Table>
 
           <Table striped bordered hover size="sm">
@@ -263,9 +262,27 @@ export default function MyClass() {
             <tbody>{showListStudent}</tbody>
           </Table>
           <DropdownButton id="dropdown-basic-button" title="Export">
-            <Dropdown.Item>Học kỳ 1</Dropdown.Item>
-            <Dropdown.Item>Học kỳ 2</Dropdown.Item>
-            <Dropdown.Item>Cả năm</Dropdown.Item>
+            <Dropdown.Item
+              onClick={() => {
+                exportMarksClass(1);
+              }}
+            >
+              Học kỳ 1
+            </Dropdown.Item>
+            <Dropdown.Item
+              onClick={() => {
+                exportMarksClass(2);
+              }}
+            >
+              Học kỳ 2
+            </Dropdown.Item>
+            <Dropdown.Item
+              onClick={() => {
+                exportMarksClass(3);
+              }}
+            >
+              Cả năm
+            </Dropdown.Item>
           </DropdownButton>
         </Card.Body>
       </Card>
@@ -277,13 +294,21 @@ function StudentDetail(props) {
   return (
     <tr>
       <td>{props.stt}</td>
-      <td>{props.user.first_name + " " + props.user.last_name}</td>
+      <td>{props.user.last_name + " " + props.user.first_name}</td>
       <td>{props.user.birthday}</td>
       <td>{props.user.gender ? "Nam" : "Nữ"}</td>
       <td>{props.user.email}</td>
       <td>{props.user.phone_number}</td>
       <td>
         <DropdownButton id="dropdown-basic-button" size="sm" title="Action">
+          <Dropdown.Item
+            onClick={() => {
+              props.exportMarksStudent(props.user, 1);
+            }}
+          >
+            Xem bảng điểm
+          </Dropdown.Item>
+          <Dropdown.Divider />
           <Dropdown.Item
             onClick={() => {
               props.exportMarksStudent(props.user, 1);
