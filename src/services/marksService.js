@@ -140,6 +140,42 @@ async function getMarksClass(classId, yearId) {
         return error;
     }
 }
+async function addMarksReg(data) {
+    try {
+        let result = await fetch(`${API_URL}/api/marksregularys/`, {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                // Authorization: token,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+        });
+        let resultJson = await result.json();
+        return resultJson;
+    } catch (error) {
+        return error;
+    }
+}
+
+async function deleteMarksReg(id) {
+    try {
+        let result = await fetch(`${API_URL}/api/marksregularys/${id}/`, {
+            method: 'DELETE',
+            headers: {
+                Accept: 'application/json',
+                // Authorization: token,
+                'Content-Type': 'application/json',
+            },
+        });
+        let resultJson = await result.json();
+        return resultJson;
+    } catch (error) {
+        return error;
+    }
+}
+
+
 
 
 export {
@@ -150,5 +186,7 @@ export {
     getMarksLecture,
     getMarksStudent,
     getMarksByYear,
-    getMarksClass
+    getMarksClass,
+    addMarksReg,
+    deleteMarksReg
 }
