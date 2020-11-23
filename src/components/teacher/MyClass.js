@@ -46,7 +46,7 @@ export default function MyClass() {
   const getTeacherClass = async (teacherId, yearId) => {
     setisLoading(true);
     const rs = await get_teacher_class(teacherId, yearId);
-    if (rs.results.length > 0) {
+    if (rs.count) {
       const arrTeacherClass = rs.results;
       getListStudent(arrTeacherClass[0].classes.id, yearId);
       setlistClass(arrTeacherClass);
@@ -229,8 +229,8 @@ export default function MyClass() {
                   />
                 </Button>
               ) : (
-                ""
-              )}
+                  ""
+                )}
             </Row>
           </Form.Group>
           <br></br>

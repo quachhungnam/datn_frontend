@@ -5,22 +5,20 @@ import {
   Col,
   Table,
   DropdownButton,
-  NavDropdown,
   Dropdown,
   Button,
   Card,
   Form,
   Spinner,
-  Tab,
   Modal,
   Badge,
 } from "react-bootstrap";
 // import { useParams } from "react-router-dom";
 import * as FileSaver from "file-saver";
 import * as XLSX from "xlsx";
+import validator from "validator";
+
 import {
-  get_marksofclass_service,
-  get_marksofstudent_service,
   update_marks,
   getMarksLecture,
   addMarksReg,
@@ -36,16 +34,13 @@ export default function TeachClass(props) {
     isEditDGTX1: false,
     isDeleteDGTX1: false,
     isAddGK1: false,
-    isEditGK1: false,
     isAddCK1: false,
-    isEditCK1: false,
 
     isAddDGTX2: false,
-    isEditDGTX: false,
+    isEditDGTX2: false,
+    isDeleteDGTX2: false,
     isAddGK2: false,
-    isEditGK2: false,
     isAddCK2: false,
-    isEditCK2: false,
   };
   const location = useLocation();
   const [listMarks, setlistMarks] = useState([]);
@@ -55,6 +50,7 @@ export default function TeachClass(props) {
   const [isUpdating, setisUpdating] = useState(false);
 
   const [listMarksReg, setListMarksReg] = useState([]);
+  const [listMarksReg2, setListMarksReg2] = useState([]);
   const [marksState, dispatch] = React.useReducer((prevState, action) => {
     switch (action.type) {
       case "ADD_DGTX1":
@@ -72,6 +68,17 @@ export default function TeachClass(props) {
           ...init_state,
           isDeleteDGTX1: true,
         };
+      case "ADD_GK1":
+        return {
+          ...init_state,
+          isAddGK1: true,
+        };
+
+      case "ADD_CK1":
+        return {
+          ...init_state,
+          isAddCK1: true,
+        };
       case "ADD_DGTX2":
         return {
           ...init_state,
@@ -82,45 +89,20 @@ export default function TeachClass(props) {
           ...init_state,
           isEditDGTX2: true,
         };
-      case "ADD_GK1":
+      case "DELETE_DGTX2":
         return {
           ...init_state,
-          isAddGK1: true,
-        };
-      case "EDIT_GK1":
-        return {
-          ...init_state,
-          isEditGK1: true,
-        };
-      case "ADD_CK1":
-        return {
-          ...init_state,
-          isAddCK1: true,
-        };
-      case "EDIT_CK1":
-        return {
-          ...init_state,
-          isEditCK1: true,
+          isDeleteDGTX2: true,
         };
       case "ADD_GK2":
         return {
           ...init_state,
           isAddGK2: true,
         };
-      case "EDIT_GK2":
-        return {
-          ...init_state,
-          isEditGK2: true,
-        };
       case "ADD_CK2":
         return {
           ...init_state,
           isAddCK2: true,
-        };
-      case "EDIT_CK2":
-        return {
-          ...init_state,
-          isEditCK2: true,
         };
       default:
         return {
@@ -167,6 +149,16 @@ export default function TeachClass(props) {
     });
     setListMarksReg(newArr);
   };
+  const updateMarksReg2 = (values) => {
+    let newArr = listMarksReg2.map((item, idx) => {
+      if (item.marks_ref == values.marks_ref) {
+        return { ...item, point: values.point };
+      } else {
+        return item;
+      }
+    });
+    setListMarksReg2(newArr);
+  };
 
   const showStudentsMarks = listMarks.map((item, index) => {
     return (
@@ -193,6 +185,7 @@ export default function TeachClass(props) {
         enableInput={enableInput}
         updateFieldChanged={updateFieldChanged}
         updateMarksReg={updateMarksReg}
+        updateMarksReg2={updateMarksReg2}
       />
     );
   });
@@ -245,9 +238,20 @@ export default function TeachClass(props) {
     return Promise.all(allNewMarks);
   };
 
-  const showId = async () => {
+  const addNewMarksReg = async () => {
     setisUpdating(true);
     const rs = await addManyMarksReg(listMarksReg);
+    rs.map((item, index) => {
+      if (!item.id) {
+        alert("err");
+      }
+    });
+    console.log(rs);
+    setisUpdating(false);
+  };
+  const addNewMarksReg2 = async () => {
+    setisUpdating(true);
+    const rs = await addManyMarksReg(listMarksReg2);
     rs.map((item, index) => {
       if (!item.id) {
         alert("err");
@@ -279,7 +283,63 @@ export default function TeachClass(props) {
     setListMarksReg(newList);
   };
 
-  const updateMarksRegulary = async (data) => {};
+  const sumarryMarks = () => {
+    const standardList = listMarks.map((item, idx) => {
+      const listReg = item.marksregulary;
+      const listReg1 = listReg.filter((itemReg) => itemReg.semester == 1);
+      const listReg2 = listReg.filter((itemReg) => itemReg.semester == 2);
+      let sumReg1 = 0;
+      let sumReg2 = 0;
+      for (let reg1 of listReg1) {
+        sumReg1 = sumReg1 + parseFloat(reg1.point);
+      }
+      for (let reg2 of listReg2) {
+        sumReg2 = sumReg2 + parseFloat(reg2.point);
+      }
+      const GK1 = parseFloat(item.mid_st_semester_point);
+      const CK1 = parseFloat(item.end_st_semester_point);
+      const GK2 = parseFloat(item.mid_nd_semester_point);
+      const CK2 = parseFloat(item.end_nd_semester_point);
+
+      const TB_HK1 = (sumReg1 + GK1 * 2 + CK1 * 3) / (5 + listReg1.length);
+      const TB_HK2 = (sumReg2 + GK2 * 2 + CK2 * 3) / (5 + listReg2.length);
+
+      const TB_HK_1 = TB_HK1.toFixed(2);
+      const TB_HK_2 = TB_HK2.toFixed(2);
+
+      const TB_NAM = (
+        (parseFloat(TB_HK_1) + parseFloat(TB_HK_2) * 2) /
+        3
+      ).toFixed(2);
+
+      console.log(TB_HK_1);
+      console.log(TB_HK_2);
+      console.log(TB_NAM);
+      // const TB_HK2 = (sumReg2 + GK1 * 2 + CK1 * 3) / (5 + listReg1.length);
+    });
+  };
+
+  const onAddMarksReg2 = async () => {
+    // setisUpdating(true);
+    // const rs = await addManyMarksReg(listMarks);
+    // rs.map((item, index) => {
+    //   if (!item.id) {
+    //     alert("err");
+    //   }
+    // });
+    // console.log(rs);
+    // setisUpdating(false);
+    const newList = listMarks.map((item, idx) => {
+      let newItem = {
+        marks_ref: item.id,
+        semester: 2,
+        point: null,
+      };
+      return newItem;
+    });
+
+    setListMarksReg2(newList);
+  };
 
   useEffect(() => {
     getlistMarks();
@@ -330,16 +390,48 @@ export default function TeachClass(props) {
                 <Table striped bordered hover size="sm">
                   <HeadTable
                     onAddMarksReg={onAddMarksReg}
+                    onAddMarksReg2={onAddMarksReg2}
                     enableInput={setenableInput2}
                     addMarks={dispatch}
+                    addNewMarksReg={addNewMarksReg}
+                    addNewMarksReg2={addNewMarksReg2}
+                    marksState={marksState}
                   />
                   <tbody>{showStudentsMarks}</tbody>
                 </Table>
-                <Button type="submit">Lưu điểm</Button>
-                <Button type="reset">Reset</Button>{" "}
-                <Button onClick={showId}>Show Thu</Button>{" "}
-                <ExportCSV csvData={listMarks} fileName={"namexcel"} />
-                <Row></Row>
+                <Form.Row>
+                  <Button type="submit">Lưu điểm</Button>
+
+                  <DropdownButton
+                    id="dropdown-basic-button"
+                    title="Tổng kết"
+                    variant="success"
+                  >
+                    <Dropdown.Item
+                      onClick={() => {
+                        sumarryMarks();
+                      }}
+                    >
+                      Tổng kết điểm Học kỳ 1
+                    </Dropdown.Item>
+
+                    <Dropdown.Item>Tổng kết điểm Học kỳ 2</Dropdown.Item>
+
+                    <Dropdown.Item>Tổng kết điểm cả năm</Dropdown.Item>
+                  </DropdownButton>
+
+                  <DropdownButton
+                    id="dropdown-basic-button"
+                    title="Xuất điểm"
+                    variant="info"
+                  >
+                    <Dropdown.Item>Xuất điểm Học kỳ 1</Dropdown.Item>
+
+                    <Dropdown.Item>Xuất điểm Học kỳ 2</Dropdown.Item>
+
+                    <Dropdown.Item>Xuất điểm cả năm</Dropdown.Item>
+                  </DropdownButton>
+                </Form.Row>
               </Card.Body>
             </Form>
           </Card>
@@ -372,6 +464,8 @@ function HeadTable(props) {
   };
   const onAddMarksReg2 = () => {
     props.addMarks({ type: "ADD_DGTX2" });
+    // THEM TAT CA DIEM DGTX LAN 1 VAO DB
+    props.onAddMarksReg2();
   };
   const onAddMarksGK2 = () => {
     props.addMarks({ type: "ADD_GK2" });
@@ -403,29 +497,44 @@ function HeadTable(props) {
       </tr>
       <tr>
         <th colSpan={1}>
-          <DropdownButton id="dropdown-basic-button" size="sm" title="...">
-            <Dropdown.Item
-              onClick={() => {
-                confirmAddMarksReg();
-              }}
-            >
-              Thêm điểm ĐGTX{" "}
-            </Dropdown.Item>
-            <Dropdown.Item
-              onClick={() => {
-                props.addMarks({ type: "EDIT_DGTX1" });
-              }}
-            >
-              Sửa điểm ĐGTX
-            </Dropdown.Item>
-            <Dropdown.Item
-              onClick={() => {
-                props.addMarks({ type: "DELETE_DGTX1" });
-              }}
-            >
-              Xóa điểm ĐGTX
-            </Dropdown.Item>
-          </DropdownButton>
+          <Form.Row>
+            <DropdownButton id="dropdown-basic-button" size="sm" title="...">
+              <Dropdown.Item
+                onClick={() => {
+                  confirmAddMarksReg();
+                }}
+              >
+                Thêm điểm ĐGTX{" "}
+              </Dropdown.Item>
+              <Dropdown.Item
+                onClick={() => {
+                  props.addMarks({ type: "EDIT_DGTX1" });
+                }}
+              >
+                Sửa điểm ĐGTX
+              </Dropdown.Item>
+              <Dropdown.Item
+                onClick={() => {
+                  props.addMarks({ type: "DELETE_DGTX1" });
+                }}
+              >
+                Xóa điểm ĐGTX
+              </Dropdown.Item>
+            </DropdownButton>{" "}
+            {props.marksState.isAddDGTX1 ? (
+              <Button
+                variant="success"
+                size="sm"
+                onClick={() => {
+                  props.addNewMarksReg();
+                }}
+              >
+                Lưu
+              </Button>
+            ) : (
+              ""
+            )}
+          </Form.Row>
         </th>
         <th>
           <DropdownButton id="dropdown-basic-button" size="sm" title="...">
@@ -466,17 +575,39 @@ function HeadTable(props) {
         </th>
         <th>TB Kỳ</th>
         <th colSpan={1}>
-          {" "}
-          <DropdownButton id="dropdown-basic-button" size="sm" title="...">
-            <Dropdown.Item
-              onClick={() => {
-                onAddMarksReg2();
-              }}
-            >
-              Thêm điểm ĐGTX{" "}
-            </Dropdown.Item>
-            <Dropdown.Item>Sửa điểm ĐGTX </Dropdown.Item>
-          </DropdownButton>{" "}
+          <Form.Row>
+            {" "}
+            <DropdownButton id="dropdown-basic-button" size="sm" title="...">
+              <Dropdown.Item
+                onClick={() => {
+                  onAddMarksReg2();
+                }}
+              >
+                Thêm điểm ĐGTX{" "}
+              </Dropdown.Item>
+              <Dropdown.Item>Sửa điểm ĐGTX </Dropdown.Item>
+              <Dropdown.Item
+                onClick={() => {
+                  props.addMarks({ type: "DELETE_DGTX2" });
+                }}
+              >
+                Xóa điểm ĐGTX{" "}
+              </Dropdown.Item>
+            </DropdownButton>{" "}
+            {props.marksState.isAddDGTX2 ? (
+              <Button
+                variant="success"
+                size="sm"
+                onClick={() => {
+                  props.addNewMarksReg2();
+                }}
+              >
+                Lưu
+              </Button>
+            ) : (
+              ""
+            )}
+          </Form.Row>
         </th>
         <th>
           {" "}
@@ -513,11 +644,14 @@ function RowTable(props) {
   const markRegular1 = props.marksregulary.filter((item) => item.semester == 1);
   const markRegular2 = props.marksregulary.filter((item) => item.semester == 2);
   const [isEdit, setIsEdit] = useState(false);
+  const [isEdit2, setIsEdit2] = useState(false);
   const [listMarksReg1, setListMarksReg1] = useState(markRegular1);
   const [listMarksReg2, setListMarksReg2] = useState(markRegular2);
 
   //THEM DIEM DANH GIA THUONG XUYEN
   //Lay gia tri input diem danh gia thuong xuyen 1
+  const sizeInput = isEdit == true ? 65 : 40;
+  const sizeInput2 = isEdit2 == true ? 65 : 40;
   const onChangeNewMarksReg = (event) => {
     const { name, value } = event.target;
     let obj = {
@@ -525,6 +659,15 @@ function RowTable(props) {
       point: value,
     };
     props.updateMarksReg(obj);
+  };
+
+  const onChangeNewMarksReg2 = (event) => {
+    const { name, value } = event.target;
+    let obj = {
+      marks_ref: props.idx,
+      point: value,
+    };
+    props.updateMarksReg2(obj);
   };
 
   const showInputMarksReg = () => {
@@ -543,9 +686,34 @@ function RowTable(props) {
       );
     }
   };
+  const showInputMarksReg2 = () => {
+    if (props.marksState.isAddDGTX2) {
+      return (
+        <Form.Control
+          readonly
+          style={{ width: 65 }}
+          size="sm"
+          type="text"
+          placeholder="DGTX"
+          defaultValue={""}
+          disabled={false}
+          onChange={onChangeNewMarksReg2}
+        />
+      );
+    }
+  };
   //CAP NHAT DIEM
   const setEditMarksReg = () => {
     setIsEdit(true);
+  };
+  const cancelUpdate = () => {
+    setIsEdit(false);
+  };
+  const setEditMarksReg2 = () => {
+    setIsEdit2(true);
+  };
+  const cancelUpdate2 = () => {
+    setIsEdit2(false);
   };
   //cap nhat diem ngay tai day
   const updateManyMarksReg = async (data) => {
@@ -567,10 +735,26 @@ function RowTable(props) {
         return item;
       });
       const rs = await updateManyMarksReg(standartList);
-      // console.log(rs);
     } catch (ex) {
     } finally {
       setIsEdit(false);
+    }
+  };
+
+  const onUpdateMarksReg2 = async () => {
+    try {
+      const standartList = listMarksReg2.map((item) => {
+        if (item.is_public == "Fasle") {
+          item.is_public = 0;
+        } else {
+          item.is_public = 1;
+        }
+        return item;
+      });
+      const rs = await updateManyMarksReg(standartList);
+    } catch (ex) {
+    } finally {
+      setIsEdit2(false);
     }
   };
   // Lay gia tri cac cot diem khac
@@ -593,11 +777,28 @@ function RowTable(props) {
     });
     setListMarksReg1(newList);
   };
+  const handleInputMarksReg2 = (data, event) => {
+    const { name, value } = event.target;
+    let newList = listMarksReg2.map((item) => {
+      if (item.id == data.id) {
+        return { ...item, point: value };
+      } else {
+        return item;
+      }
+    });
+    setListMarksReg2(newList);
+  };
 
-  //XOA DIEM DANH GIA THUONG XUYEN
+  //XOA DIEM DANH GIA THUONG XUYEN 1
   const onDelMarksReg1 = async (markReg) => {
     let newList = listMarksReg1.filter((item) => item.id != markReg.id);
     setListMarksReg1(newList);
+    const rs = await deleteMarksReg(markReg.id);
+  };
+
+  const onDelMarksReg2 = async (markReg) => {
+    let newList = listMarksReg2.filter((item) => item.id != markReg.id);
+    setListMarksReg2(newList);
     const rs = await deleteMarksReg(markReg.id);
   };
 
@@ -611,7 +812,7 @@ function RowTable(props) {
       {" "}
       <Form.Control
         readonly
-        style={{ width: 65 }}
+        style={{ width: sizeInput }}
         size="sm"
         type="text"
         placeholder="DGTX"
@@ -630,18 +831,30 @@ function RowTable(props) {
   ));
   // HIEN THI DIEM DANH GIA THUONG XUYEN 2
   const showMark2 = listMarksReg2.map((item, index) => (
-    <span>
+    <div
+      onDoubleClick={() => {
+        setEditMarksReg2();
+      }}
+    >
       {" "}
       <Form.Control
         readonly
-        style={{ width: 65 }}
+        style={{ width: sizeInput2 }}
         size="sm"
         type="text"
         placeholder="DGTX"
         defaultValue={item.point}
-        disabled={false}
+        disabled={!isEdit2}
+        onChange={(e) => handleInputMarksReg2(item, e)}
       />
-    </span>
+      {props.marksState.isDeleteDGTX2 == true ? (
+        <Badge pill variant="danger" onClick={() => onDelMarksReg2(item)}>
+          X
+        </Badge>
+      ) : (
+        ""
+      )}
+    </div>
   ));
 
   return (
@@ -653,15 +866,27 @@ function RowTable(props) {
         <Form.Row>
           {showMark1}
           {isEdit ? (
-            <Button
-              variant="success"
-              size="sm"
-              onClick={() => {
-                onUpdateMarksReg();
-              }}
-            >
-              Lưu
-            </Button>
+            <>
+              {" "}
+              <Button
+                variant="success"
+                size="sm"
+                onClick={() => {
+                  onUpdateMarksReg();
+                }}
+              >
+                Lưu
+              </Button>{" "}
+              <Button
+                variant="danger"
+                size="sm"
+                onClick={() => {
+                  cancelUpdate();
+                }}
+              >
+                Hủy
+              </Button>
+            </>
           ) : (
             ""
           )}{" "}
@@ -694,7 +919,36 @@ function RowTable(props) {
       </td>
       <td>{props.gpa_st_semester_point}</td>
       <td>
-        <Form.Row>{showMark2}</Form.Row>
+        <Form.Row>
+          {" "}
+          {showMark2}
+          {isEdit2 ? (
+            <>
+              {" "}
+              <Button
+                variant="success"
+                size="sm"
+                onClick={() => {
+                  onUpdateMarksReg2();
+                }}
+              >
+                Lưu
+              </Button>{" "}
+              <Button
+                variant="danger"
+                size="sm"
+                onClick={() => {
+                  cancelUpdate2();
+                }}
+              >
+                Hủy
+              </Button>
+            </>
+          ) : (
+            ""
+          )}{" "}
+          {showInputMarksReg2()}
+        </Form.Row>
       </td>
       <td>
         <Form.Control
