@@ -24,7 +24,8 @@ import {
   update_marks,
   getMarksLecture,
   addMarksReg,
-  deleteMarksReg
+  deleteMarksReg,
+  updateMarksReg,
 } from "../../services/marksService";
 import InputMark from "./InputMark";
 import { useLocation } from "react-router-dom";
@@ -33,6 +34,7 @@ export default function TeachClass(props) {
   const init_state = {
     isAddDGTX1: false,
     isEditDGTX1: false,
+    isDeleteDGTX1: false,
     isAddGK1: false,
     isEditGK1: false,
     isAddCK1: false,
@@ -64,6 +66,11 @@ export default function TeachClass(props) {
         return {
           ...init_state,
           isEditDGTX1: true,
+        };
+      case "DELETE_DGTX1":
+        return {
+          ...init_state,
+          isDeleteDGTX1: true,
         };
       case "ADD_DGTX2":
         return {
@@ -160,6 +167,7 @@ export default function TeachClass(props) {
     });
     setListMarksReg(newArr);
   };
+
   const showStudentsMarks = listMarks.map((item, index) => {
     return (
       <RowTable
@@ -410,6 +418,13 @@ function HeadTable(props) {
             >
               Sửa điểm ĐGTX
             </Dropdown.Item>
+            <Dropdown.Item
+              onClick={() => {
+                props.addMarks({ type: "DELETE_DGTX1" });
+              }}
+            >
+              Xóa điểm ĐGTX
+            </Dropdown.Item>
           </DropdownButton>
         </th>
         <th>
@@ -497,16 +512,102 @@ function RowTable(props) {
   const [marks, setmarks] = useState(props.item_value);
   const markRegular1 = props.marksregulary.filter((item) => item.semester == 1);
   const markRegular2 = props.marksregulary.filter((item) => item.semester == 2);
+  const [isEdit, setIsEdit] = useState(false);
   const [listMarksReg1, setListMarksReg1] = useState(markRegular1);
   const [listMarksReg2, setListMarksReg2] = useState(markRegular2);
 
-  const show = async (markRegId) => {
-    let newList = listMarksReg1.filter((item) => item.id != markRegId);
-    setListMarksReg1(newList);
-    const rs = await deleteMarksReg(markRegId);
+  //THEM DIEM DANH GIA THUONG XUYEN
+  //Lay gia tri input diem danh gia thuong xuyen 1
+  const onChangeNewMarksReg = (event) => {
+    const { name, value } = event.target;
+    let obj = {
+      marks_ref: props.idx,
+      point: value,
+    };
+    props.updateMarksReg(obj);
   };
+
+  const showInputMarksReg = () => {
+    if (props.marksState.isAddDGTX1) {
+      return (
+        <Form.Control
+          readonly
+          style={{ width: 65 }}
+          size="sm"
+          type="text"
+          placeholder="DGTX"
+          defaultValue={""}
+          disabled={false}
+          onChange={onChangeNewMarksReg}
+        />
+      );
+    }
+  };
+  //CAP NHAT DIEM
+  const setEditMarksReg = () => {
+    setIsEdit(true);
+  };
+  //cap nhat diem ngay tai day
+  const updateManyMarksReg = async (data) => {
+    const allRespone = data.map((item) => {
+      const rs = updateMarksReg(item);
+      return rs;
+    });
+    return Promise.all(allRespone);
+  };
+
+  const onUpdateMarksReg = async () => {
+    try {
+      const standartList = listMarksReg1.map((item) => {
+        if (item.is_public == "Fasle") {
+          item.is_public = 0;
+        } else {
+          item.is_public = 1;
+        }
+        return item;
+      });
+      const rs = await updateManyMarksReg(standartList);
+      // console.log(rs);
+    } catch (ex) {
+    } finally {
+      setIsEdit(false);
+    }
+  };
+  // Lay gia tri cac cot diem khac
+  const handleInput = (event) => {
+    const { name, value } = event.target;
+    let obj = marks;
+    obj[`${name}`] = value;
+    setmarks({ ...marks, [name]: value });
+    props.updateFieldChanged(obj);
+  };
+  //Lay gia tri input cap nhat diem DGTX1
+  const handleInputMarksReg = (data, event) => {
+    const { name, value } = event.target;
+    let newList = listMarksReg1.map((item) => {
+      if (item.id == data.id) {
+        return { ...item, point: value };
+      } else {
+        return item;
+      }
+    });
+    setListMarksReg1(newList);
+  };
+
+  //XOA DIEM DANH GIA THUONG XUYEN
+  const onDelMarksReg1 = async (markReg) => {
+    let newList = listMarksReg1.filter((item) => item.id != markReg.id);
+    setListMarksReg1(newList);
+    const rs = await deleteMarksReg(markReg.id);
+  };
+
+  //HIEN THI DIEM DANH GIA THUONG XUYEN 1
   const showMark1 = listMarksReg1.map((item, index) => (
-    <div>
+    <div
+      onDoubleClick={() => {
+        setEditMarksReg();
+      }}
+    >
       {" "}
       <Form.Control
         readonly
@@ -515,10 +616,11 @@ function RowTable(props) {
         type="text"
         placeholder="DGTX"
         defaultValue={item.point}
-        disabled={!props.marksState.isEditDGTX1}
+        disabled={!isEdit}
+        onChange={(e) => handleInputMarksReg(item, e)}
       />
-      {props.marksState.isEditDGTX1 == true ? (
-        <Badge pill variant="danger" onClick={() => show(item.id)}>
+      {props.marksState.isDeleteDGTX1 == true ? (
+        <Badge pill variant="danger" onClick={() => onDelMarksReg1(item)}>
           X
         </Badge>
       ) : (
@@ -526,7 +628,7 @@ function RowTable(props) {
       )}
     </div>
   ));
-
+  // HIEN THI DIEM DANH GIA THUONG XUYEN 2
   const showMark2 = listMarksReg2.map((item, index) => (
     <span>
       {" "}
@@ -542,43 +644,6 @@ function RowTable(props) {
     </span>
   ));
 
-  const addNewMarksReg = () => {
-    if (props.marksState.isAddDGTX1) {
-      return (
-        <Form.Control
-          readonly
-          style={{ width: 65 }}
-          size="sm"
-          type="text"
-          placeholder="DGTX"
-          defaultValue={""}
-          disabled={false}
-          id="1223"
-          onChange={onChangeMarksReg}
-        />
-      );
-    }
-  };
-  const onChangeMarksReg = (event) => {
-    const { name, value } = event.target;
-
-    let obj = {
-      marks_ref: props.idx,
-      point: value,
-    };
-    props.updateMarksReg(obj);
-    //luu vao dau????
-    // luu vao 1 cai gi do
-    console.log(JSON.stringify(obj));
-  };
-  const handleInput = (event) => {
-    const { name, value } = event.target;
-    let obj = marks;
-    obj[`${name}`] = value;
-    setmarks({ ...marks, [name]: value });
-    props.updateFieldChanged(obj);
-  };
-
   return (
     <tr>
       <td>{props.stt}</td>
@@ -586,7 +651,21 @@ function RowTable(props) {
       <td>{props.student.username}</td>
       <td>
         <Form.Row>
-          {showMark1} {addNewMarksReg()}
+          {showMark1}
+          {isEdit ? (
+            <Button
+              variant="success"
+              size="sm"
+              onClick={() => {
+                onUpdateMarksReg();
+              }}
+            >
+              Lưu
+            </Button>
+          ) : (
+            ""
+          )}{" "}
+          {showInputMarksReg()}
         </Form.Row>
       </td>
       <td>

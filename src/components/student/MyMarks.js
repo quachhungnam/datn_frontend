@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Table, Container, Card, Button, Spinner } from "react-bootstrap";
+import {
+  Table,
+  Container,
+  Card,
+  Button,
+  Spinner,
+  Badge,
+} from "react-bootstrap";
 import { AuthContext } from "../../context/AuthContext";
 
-import {
-  getRecordStudent,
-  getMarksStudent,
-} from "../../services/marksService";
+import { getRecordStudent, getMarksStudent } from "../../services/marksService";
 
 function MyMarks() {
   const [userState, dispatch] = React.useContext(AuthContext);
@@ -85,8 +89,8 @@ function MyMarks() {
                 />
               </Button>
             ) : (
-                ""
-              )}
+              ""
+            )}
           </Card.Title>
         </Card.Header>
         <Card.Body>
@@ -193,10 +197,15 @@ function RowDetail(props) {
   const markRegular2 = props.marksregulary.filter((item) => item.semester == 2);
 
   const showMark1 = markRegular1.map((item, index) => (
-    <span>{item.point}</span>
+    <span>
+      {" "}
+      <Badge variant="light">{item.point}</Badge>
+    </span>
   ));
   const showMark2 = markRegular2.map((item, index) => (
-    <span>{item.point}</span>
+    <span>
+      <Badge variant="light">{item.point}</Badge>
+    </span>
   ));
 
   return (

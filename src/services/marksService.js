@@ -157,6 +157,23 @@ async function addMarksReg(data) {
         return error;
     }
 }
+async function updateMarksReg( data) {
+    try {
+        let result = await fetch(`${API_URL}/api/marksregularys/${data.id}/`, {
+            method: 'PATCH',
+            headers: {
+                Accept: 'application/json',
+                // Authorization: token,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+        });
+        let resultJson = await result.json();
+        return resultJson;
+    } catch (error) {
+        return error;
+    }
+}
 
 async function deleteMarksReg(id) {
     try {
@@ -188,5 +205,6 @@ export {
     getMarksByYear,
     getMarksClass,
     addMarksReg,
-    deleteMarksReg
+    deleteMarksReg,
+    updateMarksReg
 }
