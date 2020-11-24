@@ -80,12 +80,12 @@ export default function App() {
           <Navbar.Toggle aria-controls="responsive-navbar-nav" />
           <Navbar.Collapse id="responsive-navbar-nav">
             <Nav className="mr-auto">
-              <NavLink to="/home" className="nav-link">
+              {/* <NavLink to="/home" className="nav-link">
                 Trang chủ
               </NavLink>
               <NavLink to="/plan" className="nav-link">
                 Kế hoạch
-              </NavLink>
+              </NavLink> */}
               {showDropdownUser()}
               {/* <NavDropdown title="Hỗ trợ" id="collasible-nav-dropdown">
                 <NavDropdown.Item href="#action/3.1">

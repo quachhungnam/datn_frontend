@@ -43,7 +43,8 @@ export default function TeachClass(props) {
   const lectureId = location.state;
   const [listMarks, setlistMarks] = useState([]);
   const [lecture, setLecture] = useState(null);
-  const [isUpdating, setisUpdating] = useState(false);
+  const [isLoading, setisLoading] = useState(false);
+  const [isUpdate, setisUpdate] = useState(false);
   const [listMarksReg, setListMarksReg] = useState([]);
   const [listMarksReg2, setListMarksReg2] = useState([]);
   const today = new Date();
@@ -101,6 +102,10 @@ export default function TeachClass(props) {
           ...initMarksState,
           isAddCK2: true,
         };
+      case "default":
+        return {
+          ...initMarksState,
+        };
       default:
         return {
           ...initMarksState,
@@ -121,7 +126,7 @@ export default function TeachClass(props) {
   };
   const getlistMarks = async () => {
     try {
-      setisUpdating(true);
+      setisLoading(true);
       const rs = await getMarksLecture(lectureId);
       if (rs.count > 0) {
         const results = rs.results;
@@ -129,7 +134,7 @@ export default function TeachClass(props) {
       }
     } catch (ex) {
     } finally {
-      setisUpdating(false);
+      setisLoading(false);
     }
   };
   // LAY GIA TRI TU INPUT CAC COT DIEM KHAC
@@ -179,6 +184,13 @@ export default function TeachClass(props) {
     }
     return false;
   };
+
+  // XOA DGTX
+  const delMarksReg = async (markRegId) => {
+    setisUpdate(true);
+    const rs = await deleteMarksReg(markRegId);
+    setisUpdate(false);
+  };
   // HIEN THI DANH SACH DIEM
   const showStudentsMarks = listMarks.map((item, index) => {
     return (
@@ -200,12 +212,12 @@ export default function TeachClass(props) {
         marksregulary={item.marksregulary}
         is_public={item.is_public}
         is_locked={item.is_locked}
-        // st_due_input={lecture!=null?lecture.st_due_input:null}
-        // nd_due_input={lecture!=null?lecture.nd_due_input:null}
+
         limitDateInput={limitDateInput}
         updateFieldChanged={updateFieldChanged}
         updateMarksReg={updateMarksReg}
         updateMarksReg2={updateMarksReg2}
+        delMarksReg={delMarksReg}
       />
     );
   });
@@ -223,7 +235,7 @@ export default function TeachClass(props) {
 
   const onupdateMarks = async (event) => {
     event.preventDefault();
-    setisUpdating(true);
+    setisUpdate(true);
     const rs = await updateManyMarks(listMarks);
     rs.map((item, index) => {
       if (!item.id) {
@@ -231,7 +243,7 @@ export default function TeachClass(props) {
       }
     });
     console.log(rs);
-    setisUpdating(false);
+    setisUpdate(false);
   };
 
   const addManyMarksReg = async (data) => {
@@ -243,19 +255,19 @@ export default function TeachClass(props) {
   };
   // THEM DIEM DGTX1 VAO DATABASE
   const addNewMarksReg = async () => {
-    setisUpdating(true);
+    setisUpdate(true);
     const rs = await addManyMarksReg(listMarksReg);
     rs.map((item, index) => {
       if (!item.id) {
         alert("err");
       }
     });
-    console.log(rs);
-    setisUpdating(false);
+
+    setisUpdate(false);
   };
   // THEM DIEM DGTX2 VAO DATABASE
   const addNewMarksReg2 = async () => {
-    setisUpdating(true);
+    setisUpdate(true);
     const rs = await addManyMarksReg(listMarksReg2);
     rs.map((item, index) => {
       if (!item.id) {
@@ -263,7 +275,7 @@ export default function TeachClass(props) {
       }
     });
     console.log(rs);
-    setisUpdating(false);
+    setisUpdate(false);
   };
   // THEM DIEM DGTX1
   const onAddMarksReg = async () => {
@@ -308,7 +320,9 @@ export default function TeachClass(props) {
         (parseFloat(TB_HK_1) + parseFloat(TB_HK_2) * 2) /
         3
       ).toFixed(2);
-
+      let newItem = {
+        id: item.id,
+      };
       console.log(TB_HK_1);
       console.log(TB_HK_2);
       console.log(TB_NAM);
@@ -374,9 +388,6 @@ export default function TeachClass(props) {
   // XUAT DIEM CUA 1 LECTURE
   const exportMarksClass = async (semester) => {
     try {
-      // const classes = listClass.length > 0 ? listClass[0] : null;
-
-      // const rs = await getMarksClass(classes.id, currentYear);
       const kq = standardExport(listMarks, semester);
       ExportData(kq, "marks");
     } catch (ex) {
@@ -397,10 +408,15 @@ export default function TeachClass(props) {
     setListMarksReg2(newList);
   };
 
+  const shownewMarrks = () => {
+    console.log(listMarks);
+  };
   useEffect(() => {
-    getlistMarks();
     getLecture();
   }, []);
+  useEffect(() => {
+    getlistMarks();
+  }, [isUpdate]);
 
   return (
     <Container fluid>
@@ -422,7 +438,7 @@ export default function TeachClass(props) {
                     lecture.school_year.to_year
                   : ""}
 
-                {isUpdating ? (
+                {isLoading ? (
                   <Button
                     variant="primary"
                     size="sm"
@@ -460,6 +476,13 @@ export default function TeachClass(props) {
                 </Table>
                 <Form.Row>
                   <Button type="submit">Lưu điểm</Button>
+                  <Button
+                    onClick={() => {
+                      shownewMarrks();
+                    }}
+                  >
+                    Test
+                  </Button>
 
                   <DropdownButton
                     id="dropdown-basic-button"
@@ -609,15 +632,26 @@ function HeadTable(props) {
                 </Dropdown.Item>
               </DropdownButton>{" "}
               {props.marksState.isAddDGTX1 ? (
-                <Button
-                  variant="success"
-                  size="sm"
-                  onClick={() => {
-                    props.addNewMarksReg();
-                  }}
-                >
-                  Lưu
-                </Button>
+                <>
+                  <Button
+                    variant="success"
+                    size="sm"
+                    onClick={() => {
+                      props.addNewMarksReg();
+                    }}
+                  >
+                    Lưu
+                  </Button>
+                  <Button
+                    variant="danger"
+                    size="sm"
+                    onClick={() => {
+                      props.addMarks({ type: "EDIT_DGTX1" });
+                    }}
+                  >
+                    Hủy
+                  </Button>
+                </>
               ) : (
                 ""
               )}
@@ -693,15 +727,26 @@ function HeadTable(props) {
                 </Dropdown.Item>
               </DropdownButton>{" "}
               {props.marksState.isAddDGTX2 ? (
-                <Button
-                  variant="success"
-                  size="sm"
-                  onClick={() => {
-                    props.addNewMarksReg2();
-                  }}
-                >
-                  Lưu
-                </Button>
+                <>
+                  <Button
+                    variant="success"
+                    size="sm"
+                    onClick={() => {
+                      props.addNewMarksReg2();
+                    }}
+                  >
+                    Lưu
+                  </Button>
+                  <Button
+                    variant="danger"
+                    size="sm"
+                    onClick={() => {
+                      props.addMarks({ type: "EDIT_DGTX1" });
+                    }}
+                  >
+                    Hủy
+                  </Button>
+                </>
               ) : (
                 ""
               )}
@@ -758,6 +803,10 @@ function RowTable(props) {
 
   //THEM DIEM DANH GIA THUONG XUYEN
   //Lay gia tri input diem danh gia thuong xuyen 1
+  useEffect(() => {
+    setListMarksReg1(markRegular1);
+    setListMarksReg2(markRegular2);
+  }, [props.marksregulary]);
 
   const onChangeNewMarksReg = (event) => {
     const { name, value } = event.target;
@@ -792,6 +841,7 @@ function RowTable(props) {
         />
       );
     }
+    return "";
   };
   const showInputMarksReg2 = () => {
     if (props.marksState.isAddDGTX2) {
@@ -808,6 +858,7 @@ function RowTable(props) {
         />
       );
     }
+    return "";
   };
   //CAP NHAT DIEM
   const setEditMarksReg = (semester) => {
@@ -911,7 +962,8 @@ function RowTable(props) {
       const newList = listMarksReg2.filter((item) => item.id != markReg.id);
       setListMarksReg2(newList);
     }
-    const rs = await deleteMarksReg(markReg.id);
+    props.delMarksReg(markReg.id);
+    // const rs = await deleteMarksReg(markReg.id);
   };
 
   //HIEN THI DIEM DANH GIA THUONG XUYEN 1
