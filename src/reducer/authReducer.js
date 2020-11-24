@@ -1,3 +1,4 @@
+import { authHeader } from '../services/authHeader'
 export default function AuthReducer(initialState, action) {
     switch (action.type) {
         case "RESTORE_TOKEN":
@@ -13,6 +14,7 @@ export default function AuthReducer(initialState, action) {
 
         case "LOGIN_SUCCESS":
             localStorage.setItem("user", JSON.stringify(action.user));
+            authHeader.Authorization = 'Bearer ' + action.user.access
             return {
                 ...initialState,
                 user: action.user,

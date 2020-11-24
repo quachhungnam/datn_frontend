@@ -61,7 +61,7 @@ export default function InputMark(props) {
   };
 
   const go_back = () => {
-    props.on_back();
+    // props.on_back();
   };
 
   const falldiem = () => {
