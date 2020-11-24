@@ -150,7 +150,7 @@ export default function TeachClass(props) {
     setlistMarks(newArr);
   };
   // CAP NHAT DIEM DGTX1 VAO STATE
-  const updateMarksReg = (values) => {
+  const updateMarksRegState = (values) => {
     let newArr = listMarksReg.map((item, idx) => {
       if (item.marks_ref == values.marks_ref) {
         // return values;
@@ -162,7 +162,7 @@ export default function TeachClass(props) {
     setListMarksReg(newArr);
   };
   // CAP NHAT DIEM DANH GIA THUONG XUYEN 2 VAO STATE
-  const updateMarksReg2 = (values) => {
+  const updateMarksRegState2 = (values) => {
     let newArr = listMarksReg2.map((item, idx) => {
       if (item.marks_ref == values.marks_ref) {
         return { ...item, point: values.point };
@@ -191,6 +191,20 @@ export default function TeachClass(props) {
     const rs = await deleteMarksReg(markRegId);
     setisUpdate(false);
   };
+
+  // CAP NHAT DIEM DGTX
+  const updateManyMarksReg = async (data) => {
+    const allRespone = data.map((item) => {
+      const rs = updateMarksReg(item);
+      return rs;
+    });
+    return Promise.all(allRespone);
+  };
+  const updateReg = async (data) => {
+    setisUpdate(true);
+    const rs = await updateManyMarksReg(data);
+    setisUpdate(false);
+  };
   // HIEN THI DANH SACH DIEM
   const showStudentsMarks = listMarks.map((item, index) => {
     return (
@@ -212,12 +226,12 @@ export default function TeachClass(props) {
         marksregulary={item.marksregulary}
         is_public={item.is_public}
         is_locked={item.is_locked}
-
         limitDateInput={limitDateInput}
         updateFieldChanged={updateFieldChanged}
-        updateMarksReg={updateMarksReg}
-        updateMarksReg2={updateMarksReg2}
+        updateMarksRegState={updateMarksRegState}
+        updateMarksRegState2={updateMarksRegState2}
         delMarksReg={delMarksReg}
+        updateReg={updateReg}
       />
     );
   });
@@ -292,7 +306,7 @@ export default function TeachClass(props) {
   };
 
   // TINH DIEM TRUNG BINH
-  const sumarryMarks = () => {
+  const sumarryMarks = async (semester) => {
     const standardList = listMarks.map((item, idx) => {
       const listReg = item.marksregulary;
       const listReg1 = listReg.filter((itemReg) => itemReg.semester == 1);
@@ -313,21 +327,44 @@ export default function TeachClass(props) {
       const TB_HK1 = (sumReg1 + GK1 * 2 + CK1 * 3) / (5 + listReg1.length);
       const TB_HK2 = (sumReg2 + GK2 * 2 + CK2 * 3) / (5 + listReg2.length);
 
-      const TB_HK_1 = TB_HK1.toFixed(2);
-      const TB_HK_2 = TB_HK2.toFixed(2);
+      const TB_HK_1 = TB_HK1.toFixed(1);
+      const TB_HK_2 = TB_HK2.toFixed(1);
 
       const TB_NAM = (
         (parseFloat(TB_HK_1) + parseFloat(TB_HK_2) * 2) /
         3
-      ).toFixed(2);
+      ).toFixed(1);
+
       let newItem = {
         id: item.id,
+        gpa_st_semester_point: TB_HK_1,
+        gpa_nd_semester_point: TB_HK_2,
+        gpa_year_point: TB_NAM,
       };
+      if (semester == 1) {
+        delete newItem.gpa_nd_semester_point;
+        delete newItem.gpa_year_point;
+      }
+      if (semester == 2) {
+        delete newItem.gpa_st_semester_point;
+        delete newItem.gpa_year_point;
+      }
       console.log(TB_HK_1);
       console.log(TB_HK_2);
       console.log(TB_NAM);
+      return newItem;
+
       // const TB_HK2 = (sumReg2 + GK1 * 2 + CK1 * 3) / (5 + listReg1.length);
     });
+    setisUpdate(true);
+    const rs = await updateManyMarks(standardList);
+    rs.map((item, index) => {
+      if (!item.id) {
+        alert("err");
+      }
+    });
+    console.log(rs);
+    setisUpdate(false);
   };
 
   // CHUAN HOA DIEM TRUOC KHI XUAT
@@ -492,7 +529,7 @@ export default function TeachClass(props) {
                     {limitDateInput(1) == true ? (
                       <Dropdown.Item
                         onClick={() => {
-                          sumarryMarks();
+                          sumarryMarks(1);
                         }}
                       >
                         Tổng kết điểm Học kỳ 1
@@ -503,8 +540,20 @@ export default function TeachClass(props) {
 
                     {limitDateInput(2) == true ? (
                       <>
-                        <Dropdown.Item>Tổng kết điểm Học kỳ 2</Dropdown.Item>
-                        <Dropdown.Item>Tổng kết điểm cả năm</Dropdown.Item>
+                        <Dropdown.Item
+                          onClick={() => {
+                            sumarryMarks(2);
+                          }}
+                        >
+                          Tổng kết điểm Học kỳ 2
+                        </Dropdown.Item>
+                        <Dropdown.Item
+                          onClick={() => {
+                            sumarryMarks(3);
+                          }}
+                        >
+                          Tổng kết điểm cả năm
+                        </Dropdown.Item>
                       </>
                     ) : (
                       ""
@@ -814,7 +863,7 @@ function RowTable(props) {
       marks_ref: props.idx,
       point: value,
     };
-    props.updateMarksReg(obj);
+    props.updateMarksRegState(obj);
   };
 
   const onChangeNewMarksReg2 = (event) => {
@@ -823,7 +872,7 @@ function RowTable(props) {
       marks_ref: props.idx,
       point: value,
     };
-    props.updateMarksReg2(obj);
+    props.updateMarksRegState2(obj);
   };
 
   const showInputMarksReg = () => {
@@ -897,7 +946,9 @@ function RowTable(props) {
         }
         return item;
       });
-      const rs = await updateManyMarksReg(standartList);
+      // const rs = await updateManyMarksReg(standartList);
+
+      await props.updateReg(standartList);
     } catch (ex) {
     } finally {
       setIsEdit(false);
@@ -914,7 +965,8 @@ function RowTable(props) {
         }
         return item;
       });
-      const rs = await updateManyMarksReg(standartList);
+      // const rs = await updateManyMarksReg(standartList);
+      props.updateReg(standartList);
     } catch (ex) {
     } finally {
       setIsEdit2(false);
