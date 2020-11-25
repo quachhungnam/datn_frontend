@@ -513,13 +513,7 @@ export default function TeachClass(props) {
                 </Table>
                 <Form.Row>
                   <Button type="submit">Lưu điểm</Button>
-                  <Button
-                    onClick={() => {
-                      shownewMarrks();
-                    }}
-                  >
-                    Test
-                  </Button>
+                  &nbsp;
 
                   <DropdownButton
                     id="dropdown-basic-button"
@@ -559,7 +553,7 @@ export default function TeachClass(props) {
                       ""
                     )}
                   </DropdownButton>
-
+                  &nbsp;
                   <DropdownButton
                     id="dropdown-basic-button"
                     title="Xuất điểm"

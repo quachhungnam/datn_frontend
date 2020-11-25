@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Form, Button, Col, Row, Spinner } from "react-bootstrap";
+import { Form, Button, Col, Row, Spinner, Alert, Badge } from "react-bootstrap";
 import validator from "validator";
 import { changePassword } from "../services/authService";
 export default function ChangePassword(props) {
@@ -10,6 +10,7 @@ export default function ChangePassword(props) {
   };
   const [password, set_password] = useState(init_password);
   const [isLoading, setisLoading] = useState(false);
+  const [message, setMessage] = useState(null);
   const handle_input = (event) => {
     event.preventDefault();
     const { name, value } = event.target;
@@ -20,7 +21,7 @@ export default function ChangePassword(props) {
     event.preventDefault();
 
     if (password.old_password === "" || password.new_password === "") {
-      alert("Vui lòng nhập đầy đủ các trường!");
+      setMessage("Vui lòng nhập đầy đủ các trường!");
       return;
     }
 
@@ -29,26 +30,33 @@ export default function ChangePassword(props) {
       password.confirmpassword
     );
     if (!is_same_pass) {
-      alert("Xác nhận mật khẩu ko đúng!");
+      setMessage("Xác nhận mật khẩu ko đúng!");
       return;
     }
     setisLoading(true);
-    // props.change_password(password);
     let rs = await changePassword(password);
     setisLoading(false);
     if (rs.status === "success") {
-      alert("Đổi mật khẩu thành công");
+      setMessage("Đổi mật khẩu thành công!");
       set_password(init_password);
       return;
     }
-    alert("Thất bại!");
+    setMessage("Đổi mật khẩu thất bại!");
   };
   const clean_pass = (event) => {
     set_password(init_password);
-    // event.preventDefault();
-    // const { name, value } = event.target;
-    // set_password({ ...password, [name]: value });
   };
+
+  const showMessage = () => {
+    if (message != null) {
+      return (
+        <h5>
+          <Badge variant="danger">{message}</Badge>
+        </h5>
+      );
+    }
+  };
+
   return (
     <Form onSubmit={action_change_pass}>
       <Form.Group as={Row}>
@@ -97,25 +105,11 @@ export default function ChangePassword(props) {
 
       <Form.Group as={Row}>
         <Col sm={{ span: 10, offset: 2 }}>
-          {/* <Button type="submit" disabled={userState.isloading}>
-              {userState.isloading ?
-                <Spinner
-                  as="span"
-                  animation="grow"
-                  size="sm"
-                  role="status"
-                  aria-hidden="true"
-                />
-                : ""
-              }
-        Đăng nhập
-        </Button> */}
-          <Button type="submit">Đổi mật khẩu</Button>
+          <Button type="submit" variant="success">Đổi mật khẩu</Button>
           &nbsp;
           <Button onClick={clean_pass} type="reset" className="bg-info">
             Xóa
           </Button>
-
           {isLoading ? (
             <Button variant="primary" size="sm" disabled>
               <Spinner
@@ -127,8 +121,9 @@ export default function ChangePassword(props) {
               />
             </Button>
           ) : (
-              ""
-            )}
+            ""
+          )}
+          {showMessage()}
         </Col>
       </Form.Group>
     </Form>

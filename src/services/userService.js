@@ -20,6 +20,42 @@ async function getUserService(id) {
         return error;
     }
 }
+async function getStudentService(id) {
+    try {
+        let result = await fetch(`${API_URL}/api/students/${id}/`, {
+            method: 'GET',
+            headers: {
+                Accept: 'application/json',
+                Authorization: authHeader.Authorization,
+                'Content-Type': 'application/json',
+            },
+
+        });
+        let resultJson = await result.json();
+        return resultJson;
+    } catch (error) {
+        console.log(`Error is: ${error}`);
+        return error;
+    }
+}
+async function getTeacherService(id) {
+    try {
+        let result = await fetch(`${API_URL}/api/teachers/${id}/`, {
+            method: 'GET',
+            headers: {
+                Accept: 'application/json',
+                Authorization: authHeader.Authorization,
+                'Content-Type': 'application/json',
+            },
+
+        });
+        let resultJson = await result.json();
+        return resultJson;
+    } catch (error) {
+        console.log(`Error is: ${error}`);
+        return error;
+    }
+}
 async function updateUserService(data) {
     try {
         let result = await fetch(`${API_URL}/api/users/${data.id}/`, {
@@ -39,4 +75,4 @@ async function updateUserService(data) {
     }
 }
 
-export { getUserService, updateUserService }
+export { getUserService, updateUserService, getStudentService, getTeacherService }

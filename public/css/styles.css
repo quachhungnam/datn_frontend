@@ -22,3 +22,6 @@
 .inline-h5 {
   display: inline;
 }
+.txt-upcase {
+  text-transform: uppercase;
+}
