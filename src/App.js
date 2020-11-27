@@ -5,7 +5,7 @@ import {
   Route,
   NavLink,
 } from "react-router-dom";
-import { Navbar, Nav, NavDropdown, Button } from "react-bootstrap";
+import { Navbar, Nav} from "react-bootstrap";
 import Login from "./components/Login";
 import About from "./components/About";
 import Plan from "./components/Plan";
@@ -30,7 +30,7 @@ export default function App() {
     return userState.user !== "" ? (
       <>
         <span className="nav-link">
-          <p className="auth-color">{userState.user.username}</p>{" "}
+          <p className="auth-color">{userState.user.username}</p>
         </span>
         <NavLink
           to="/login"

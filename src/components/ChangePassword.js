@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Form, Button, Col, Row, Spinner, Alert, Badge } from "react-bootstrap";
+import { Form, Button, Col, Row, Spinner, Badge } from "react-bootstrap";
 import validator from "validator";
 import { changePassword } from "../services/authService";
 export default function ChangePassword(props) {
@@ -43,9 +43,9 @@ export default function ChangePassword(props) {
     }
     setMessage("Đổi mật khẩu thất bại!");
   };
-  const clean_pass = (event) => {
-    set_password(init_password);
-  };
+  // const clean_pass = (event) => {
+  //   set_password(init_password);
+  // };
 
   const showMessage = () => {
     if (message != null) {
@@ -65,7 +65,6 @@ export default function ChangePassword(props) {
         </Form.Label>
         <Col sm={5}>
           <Form.Control
-            //   disabled={userState.isloading}
             name="old_password"
             type="password"
             placeholder="Mật khẩu cũ"
@@ -73,14 +72,13 @@ export default function ChangePassword(props) {
           />
         </Col>
       </Form.Group>
-
+      <hr />
       <Form.Group as={Row} controlId="formHorizontalPassword">
         <Form.Label column sm={2}>
           <b>Mật khẩu mới</b>
         </Form.Label>
         <Col sm={5}>
           <Form.Control
-            //   disabled={userState.isloading}
             name="new_password"
             type="password"
             placeholder="Mật khẩu mới"
@@ -94,7 +92,6 @@ export default function ChangePassword(props) {
         </Form.Label>
         <Col sm={5}>
           <Form.Control
-            //   disabled={userState.isloading}
             name="confirmpassword"
             type="password"
             placeholder="Xác nhận mật khẩu mới"
@@ -102,14 +99,14 @@ export default function ChangePassword(props) {
           />
         </Col>
       </Form.Group>
-
+      <hr />
       <Form.Group as={Row}>
         <Col sm={{ span: 10, offset: 2 }}>
           <Button type="submit" variant="success">Đổi mật khẩu</Button>
           &nbsp;
-          <Button onClick={clean_pass} type="reset" className="bg-info">
+          {/* <Button onClick={clean_pass} type="reset" className="bg-info">
             Xóa
-          </Button>
+          </Button> */}
           {isLoading ? (
             <Button variant="primary" size="sm" disabled>
               <Spinner
@@ -121,8 +118,8 @@ export default function ChangePassword(props) {
               />
             </Button>
           ) : (
-            ""
-          )}
+              ""
+            )}
           {showMessage()}
         </Col>
       </Form.Group>

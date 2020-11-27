@@ -1,5 +1,5 @@
 import React from "react";
-import { Container, Card, Row, Col, Link, Accordion } from "react-bootstrap";
+import { Container, Card} from "react-bootstrap";
 import Footer from "./Footer";
 function About() {
   return (

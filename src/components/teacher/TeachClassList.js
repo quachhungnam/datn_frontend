@@ -2,9 +2,6 @@ import React, { useState, useEffect } from "react";
 import {
   Container,
   Table,
-  DropdownButton,
-  NavDropdown,
-  Dropdown,
   Form,
   Row,
   Col,
@@ -13,7 +10,6 @@ import {
   Spinner,
 } from "react-bootstrap";
 import {
-  // BrowserRouter as Router,
   NavLink,
 } from "react-router-dom";
 import { get_schoolyear_service } from "../../services/schoolYearService";
@@ -22,7 +18,7 @@ import { AuthContext } from "../../context/AuthContext";
 
 export default function TeachClassList() {
 
-  const [userState, dispatch] = React.useContext(AuthContext);
+  const [userState] = React.useContext(AuthContext);
   const [listYear, setlistYear] = useState([]);
   const [currentYear, setcurrentYear] = useState(0);
   const [listLecture, setlistLecture] = useState([]);
@@ -46,7 +42,7 @@ export default function TeachClassList() {
       current_year = current_year - 1;
     }
     for (let i = 0; i < rs.length; i++) {
-      if (rs[i].from_year == current_year) {
+      if (rs[i].from_year === current_year) {
         schoolyear_id = rs[i].id;
         setcurrentYear(rs[i].id);
       }

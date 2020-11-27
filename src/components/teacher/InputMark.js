@@ -1,16 +1,16 @@
 import React, { useState } from "react";
 import { Container, Table, Button, Form, Card, Modal } from "react-bootstrap";
-import { Link, useLocation } from "react-router-dom";
+import {  useLocation } from "react-router-dom";
 export default function InputMark(props) {
   let location = useLocation();
   console.log(location);
 
-  const [numOfDGTX, set_numOfDGTX] = useState(3);
+  // const [numOfDGTX, set_numOfDGTX] = useState(3);
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-  const [diemGK, set_diemGK] = useState([]);
+  // const [diemGK, set_diemGK] = useState([]);
   const [alldiem, setalldiem] = useState(props.list_marks);
   const post_diem = (p) => {
     // alert('oook')
@@ -24,7 +24,7 @@ export default function InputMark(props) {
   };
   const updateFieldChanged = (values) => {
     let newArr = alldiem.map((item, i) => {
-      if (item.id == values.id) {
+      if (item.id===values.id) {
         return values;
         // return { ...item, value: values.v };
       } else {
@@ -39,7 +39,7 @@ export default function InputMark(props) {
       marktype={props.marktype}
       item_value={item}
       key={index}
-      numofdgtx={numOfDGTX}
+      // numofdgtx={numOfDGTX}
       id={item.id}
       student_name={item.student.user.username}
       lecture={item.lecture}
@@ -83,7 +83,7 @@ export default function InputMark(props) {
 
         <Card.Body>
           <Table striped bordered hover size="sm">
-            <HeadTable numofdgtx={numOfDGTX} />
+            <HeadTable  />
             <tbody>
               {list_student}
               {/* <RowTable
@@ -130,18 +130,18 @@ function HeadTable(props) {
 
 function RowTable(props) {
   const [diem, setdiem] = useState(props.item_value);
-  const [diemGK, set_diemGK] = useState([]);
+  // const [diemGK, set_diemGK] = useState([]);
 
   const update_mark = () => {
     props.post_d(diem);
   };
-  const list = () => {
-    let ele = [];
-    for (let i = 0; i < props.numofdgtx; i++) {
-      ele.push(<td>1</td>);
-    }
-    return ele;
-  };
+  // const list = () => {
+  //   let ele = [];
+  //   for (let i = 0; i < props.numofdgtx; i++) {
+  //     ele.push(<td>1</td>);
+  //   }
+  //   return ele;
+  // };
 
   // const handleChange = (e) => {
   //   setPerson({
@@ -179,7 +179,7 @@ function RowTable(props) {
 
   // const updateFieldChanged = (name, index) => (event) => {
   //   let newArr = datas.map((item, i) => {
-  //     if (index == i) {
+  //     if (index===i) {
   //       return { ...item, [name]: event.target.value };
   //     } else {
   //       return item;
@@ -190,20 +190,20 @@ function RowTable(props) {
 
   const marks_name = () => {
     let name_value = "";
-    if (props.marktype.type == 1 && props.marktype.code_semester == 1) {
+    if (props.marktype.type===1 && props.marktype.code_semester===1) {
     }
-    if (props.marktype.type == 2 && props.marktype.code_semester == 1) {
+    if (props.marktype.type===2 && props.marktype.code_semester===1) {
       name_value = "mid_first_semester";
     }
-    if (props.marktype.type == 3 && props.marktype.code_semester == 1) {
+    if (props.marktype.type===3 && props.marktype.code_semester===1) {
       name_value = "end_first_semester";
     }
-    if (props.marktype.type == 1 && props.marktype.code_semester == 2) {
+    if (props.marktype.type===1 && props.marktype.code_semester===2) {
     }
-    if (props.marktype.type == 2 && props.marktype.code_semester == 2) {
+    if (props.marktype.type===2 && props.marktype.code_semester===2) {
       name_value = "mid_second_semester";
     }
-    if (props.marktype.type == 3 && props.marktype.code_semester == 2) {
+    if (props.marktype.type===3 && props.marktype.code_semester===2) {
       name_value = "end_second_semester";
     }
     return name_value;
@@ -212,20 +212,20 @@ function RowTable(props) {
   const marks_value = () => {
     let value = 0;
 
-    if (props.marktype.type == 1 && props.marktype.code_semester == 1) {
+    if (props.marktype.type===1 && props.marktype.code_semester===1) {
     }
-    if (props.marktype.type == 2 && props.marktype.code_semester == 1) {
+    if (props.marktype.type===2 && props.marktype.code_semester===1) {
       value = props.mid_first_semester;
     }
-    if (props.marktype.type == 3 && props.marktype.code_semester == 1) {
+    if (props.marktype.type===3 && props.marktype.code_semester===1) {
       value = props.end_first_semester;
     }
-    if (props.marktype.type == 1 && props.marktype.code_semester == 2) {
+    if (props.marktype.type===1 && props.marktype.code_semester===2) {
     }
-    if (props.marktype.type == 2 && props.marktype.code_semester == 2) {
+    if (props.marktype.type===2 && props.marktype.code_semester===2) {
       value = props.mid_second_semester;
     }
-    if (props.marktype.type == 3 && props.marktype.code_semester == 2) {
+    if (props.marktype.type===3 && props.marktype.code_semester===2) {
       value = props.end_second_semester;
     }
     return value;

@@ -17,22 +17,22 @@ export default function Footer() {
           <div className="col-md-3 mb-md-0 mb-3">
             <h5 className="text-uppercase font-weight-bold">Hợp tác</h5>
             <div>
-              <a href="#" className="color-link">
+              <a href="http://dut.udn.vn/" className="color-link">
                 Trường đại học Bách Khoa
               </a>
             </div>
             <div>
-              <a href="#" className="color-link">
+              <a href="http://due.udn.vn/" className="color-link">
                 Trường đại học Kinh tế
               </a>
             </div>
             <div>
-              <a href="#" className="color-link">
+              <a href="https://ued.udn.vn/" className="color-link">
                 Trường đại học Sư phạm
               </a>
             </div>
             <div>
-              <a href="#" className="color-link">
+              <a href="http://ufl.udn.vn/vie/" className="color-link">
                 Trường đại học Ngoại ngữ
               </a>
             </div>

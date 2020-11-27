@@ -3,7 +3,6 @@ import {
   Container,
   Table,
   DropdownButton,
-  NavDropdown,
   Dropdown,
   Form,
   Row,
@@ -12,11 +11,6 @@ import {
   Card,
   Spinner,
 } from "react-bootstrap";
-import {
-  Link,
-  // BrowserRouter as Router,
-  NavLink,
-} from "react-router-dom";
 import { get_schoolyear_service } from "../../services/schoolYearService";
 import { get_teacher_class } from "../../services/classesService";
 import { AuthContext } from "../../context/AuthContext";
@@ -25,7 +19,7 @@ import { ExportData } from "../../utils/exportData";
 import { getMarksByYear, getMarksClass } from "../../services/marksService";
 
 export default function MyClass() {
-  const [userState, dispatch] = React.useContext(AuthContext);
+  const [userState] = React.useContext(AuthContext);
   const [listYear, setlistYear] = useState([]);
   const [currentYear, setcurrentYear] = useState(0);
   const [listClass, setlistClass] = useState([]);
@@ -65,7 +59,7 @@ export default function MyClass() {
       current_year = current_year - 1;
     }
     for (let i = 0; i < rs.length; i++) {
-      if (rs[i].from_year == current_year) {
+      if (rs[i].from_year === current_year) {
         schoolyear_id = rs[i].id;
         setcurrentYear(rs[i].id);
       }
@@ -113,20 +107,20 @@ export default function MyClass() {
   ));
 
   const standardExport = (data, semester) => {
-    let dataStandard = [];
-    data.map((item, index) => {
+    // let dataStandard = [];
+    const dataStandard=data.map((item, index) => {
       let DGTX1 = "=";
       let DGTX2 = "=";
 
       const markRegular1 = item.marksregulary.filter(
-        (item) => item.semester == 1
+        (item) => item.semester === 1
       );
       for (let i = 0; i < markRegular1.length; i++) {
         DGTX1 = DGTX1 + "+" + markRegular1[i].point;
       }
 
       const markRegular2 = item.marksregulary.filter(
-        (item) => item.semester == 2
+        (item) => item.semester === 2
       );
       for (let i = 0; i < markRegular2.length; i++) {
         DGTX2 = DGTX2 + "+" + markRegular2[i].point;
@@ -147,22 +141,22 @@ export default function MyClass() {
         TB_HK2: item.gpa_nd_semester_point,
         TB_Nam: item.gpa_year_point,
       };
-      if (semester == 1) {
+      if (semester === 1) {
         delete newItem.DGTX_HK2;
         delete newItem.GK2;
         delete newItem.CK2;
         delete newItem.TB_HK2;
         delete newItem.TB_Nam;
       }
-      if (semester == 2) {
+      if (semester === 2) {
         delete newItem.DGTX_HK1;
         delete newItem.GK1;
         delete newItem.CK1;
         delete newItem.TB_HK1;
         delete newItem.TB_Nam;
       }
-
-      dataStandard.push(newItem);
+      return newItem
+      // dataStandard.push(newItem);
     });
     return dataStandard;
   };

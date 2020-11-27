@@ -50,7 +50,7 @@ function Infor() {
     try {
       setisLoading(true);
       let rs = await getUserService(userState.user.user_id);
-      if (userState.user.is_teacher == false) {
+      if (userState.user.is_teacher === false) {
         const rsMoreInfor = await getStudentService(userState.user.user_id);
         setMoreInfor(rsMoreInfor);
       }
@@ -74,7 +74,13 @@ function Infor() {
       setisLoading(false);
       return;
     }
-    let rs = await updateUserService(user);
+    const newInfor = {
+      id: user.id,
+      email: user.email,
+      phone_number: user.phone_number,
+      address: user.address,
+    };
+    const rs = await updateUserService(newInfor);
     if (rs.id) {
       setMessage("Đổi thông tin thành công!");
     }
@@ -102,7 +108,7 @@ function Infor() {
   };
 
   const showStudentInfor = () => {
-    if (moreInfor != null && userState.user.is_teacher == false) {
+    if (moreInfor != null && userState.user.is_teacher === false) {
       return (
         <>
           <Alert variant="white">
@@ -117,7 +123,9 @@ function Infor() {
               <Col md={2}>Trạng thái:</Col>
               <Col>
                 <b className="text-uppercase">
-                  {moreInfor.is_graduate ? "Đã tốt nghiệp" : "Chưa tốt nghiệp"}
+                  {moreInfor.is_graduate === true
+                    ? "Đã tốt nghiệp"
+                    : "Chưa tốt nghiệp"}
                 </b>
               </Col>
             </Row>
@@ -127,12 +135,10 @@ function Infor() {
               <Col>
                 <b className="text-uppercase">
                   {moreInfor.classes != null
-                    ? moreInfor.classes__class_name + ", Khóa: "
+                    ? moreInfor.classes.class_name +
+                      "- Khóa: " +
+                      moreInfor.classes.course_year
                     : "Chưa phân lớp"}
-
-                  {moreInfor.classes != null
-                    ? moreInfor.classes__course_year
-                    : ""}
                 </b>
               </Col>
             </Row>
@@ -142,7 +148,7 @@ function Infor() {
       );
     }
 
-    if (moreInfor != null && userState.user.is_teacher == true) {
+    if (moreInfor != null && userState.user.is_teacher === true) {
       return (
         <>
           <Alert variant="white">
@@ -202,7 +208,11 @@ function Infor() {
                 <Col>
                   <Alert variant="info">
                     <Row>
-                      <Col md={2}>Mã học sinh:</Col>
+                      <Col md={2}>
+                        {userState.user.is_teacher === false
+                          ? "Mã học sinh:"
+                          : "Mã giáo viên:"}
+                      </Col>
                       <Col>
                         <b className="text-uppercase">{user.username}</b>
                       </Col>
@@ -222,9 +232,9 @@ function Infor() {
                       <Col>
                         <b>
                           {" "}
-                          {user.gender == 1
+                          {user.gender === 1
                             ? "Nam"
-                            : user.gender == 0
+                            : user.gender === 0
                             ? "Nữ"
                             : "Khác"}
                         </b>
@@ -247,15 +257,11 @@ function Infor() {
               <Alert variant="white">
                 <Row>
                   <Col>
-                    <Row>
-                      <Col md={2}>
-                        {" "}
-                        <Form.Label>
-                          <b>Email</b>
-                        </Form.Label>
-                      </Col>
+                    <Form.Group as={Row}>
+                      <Form.Label column md={2}>
+                        <b>Email</b>
+                      </Form.Label>
                       <Col>
-                        {" "}
                         <Form.Control
                           type="email"
                           placeholder="Nhập email"
@@ -264,19 +270,15 @@ function Infor() {
                           onChange={handleInput}
                         />
                       </Col>
-                    </Row>
+                    </Form.Group>
                   </Col>
 
-                  <Col>
-                    <Row>
-                      <Col md={3}>
-                        {" "}
-                        <Form.Label>
-                          <b>Số điện thoại</b>
-                        </Form.Label>
-                      </Col>
+                  <Col md={{ offset: 1 }}>
+                    <Form.Group as={Row}>
+                      <Form.Label column md={2}>
+                        <b>Số ĐT</b>
+                      </Form.Label>
                       <Col>
-                        {" "}
                         <Form.Control
                           placeholder="Nhập số điện thoại"
                           defaultValue={user.phone_number}
@@ -284,16 +286,15 @@ function Infor() {
                           onChange={handleInput}
                         />
                       </Col>
-                    </Row>
+                    </Form.Group>
                   </Col>
                 </Row>
                 <hr />
-                <Row>
-                  <Col md={1}>
-                    <b>Địa chỉ</b>{" "}
-                  </Col>
+                <Form.Group as={Row}>
+                  <Form.Label column md={1}>
+                    <b>Địa chỉ</b>
+                  </Form.Label>
                   <Col>
-                    {" "}
                     <Form.Control
                       placeholder="Nhập địa chỉ"
                       defaultValue={user.address}
@@ -301,7 +302,7 @@ function Infor() {
                       onChange={handleInput}
                     />
                   </Col>
-                </Row>
+                </Form.Group>
               </Alert>
               <hr />
               <Row>

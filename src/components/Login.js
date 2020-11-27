@@ -8,6 +8,7 @@ import {
   Spinner,
   Badge,
   Card,
+  
 } from "react-bootstrap";
 import { Redirect } from "react-router-dom";
 import { loginAction } from "../actions/authAction";
@@ -29,9 +30,9 @@ export default function Login() {
     loginAction(dispatch, user);
   };
 
-  const resetUser = () => {
-    setUser(initUser);
-  };
+  // const resetUser = () => {
+  //   setUser(initUser);
+  // };
 
   if (userState.user !== "") {
     return <Redirect to="/" />;
@@ -44,6 +45,9 @@ export default function Login() {
         <Card>
           <Card.Header>
             <Card.Title>
+        
+
+             
               Thông tin đăng nhập
               {userState.isloading ? (
                 <Button
@@ -63,6 +67,7 @@ export default function Login() {
               ) : (
                 ""
               )}
+            
             </Card.Title>
           </Card.Header>
           <Card.Body>
@@ -99,13 +104,13 @@ export default function Login() {
 
               <Form.Group as={Row}>
                 <Col sm={{ span: 10, offset: 2 }}>
-                  <Button type="submit" disabled={userState.isloading}>
+                  <Button variant="success" type="submit" disabled={userState.isloading}>
                     Đăng nhập
                   </Button>
                   &nbsp;
-                  <Button onClick={resetUser} type="reset" className="bg-info">
+                  {/* <Button onClick={resetUser} type="reset" className="bg-info">
                     Xóa
-                  </Button>
+                  </Button> */}
                 </Col>
               </Form.Group>
 

@@ -3,45 +3,42 @@ import {
   Card,
   Carousel,
   Container,
-  Form,
-  Button,
-  Spinner,
   Alert,
 } from "react-bootstrap";
 
-import { uploadFile } from "../services/studentService";
+// import { uploadFile } from "../services/studentService";
 import Footer from "./Footer";
 export default function Index() {
   const [index, setIndex] = useState(0);
-  const [files, setfiles] = useState();
-  const [isLoading, setisLoading] = useState(false);
+  // const [files, setfiles] = useState();
+  // const [isLoading, setisLoading] = useState(false);
   // const [formData, setformData] = useState(new FormData())
   const handleSelect = (selectedIndex, e) => {
     setIndex(selectedIndex);
   };
 
-  const handleFilesChosen = async (event) => {
-    let f = event.target.files[0];
-    console.log(f);
+  // const handleFilesChosen = async (event) => {
+  //   let f = event.target.files[0];
+  //   console.log(f);
 
-    await setfiles(f);
-    // alert(JSON.stringify(event.target.files))
-    // this.setState({
-    //   files: event.target.files
-    // });
-  };
+  //   await setfiles(f);
+  //   // alert(JSON.stringify(event.target.files))
+  //   // this.setState({
+  //   //   files: event.target.files
+  //   // });
+  // };
 
-  const onSendFile = async (event) => {
-    event.preventDefault();
-    console.log(files);
-    let formData = new FormData();
-    formData.append("fileanh", files);
-    formData.append("name", "name222");
-    console.log(formData);
-    setisLoading(true);
-    await uploadFile(formData);
-    setisLoading(false);
-  };
+  // const onSendFile = async (event) => {
+  //   event.preventDefault();
+  //   console.log(files);
+  //   let formData = new FormData();
+  //   formData.append("fileanh", files);
+  //   formData.append("name", "name222");
+  //   console.log(formData);
+  //   setisLoading(true);
+  //   await uploadFile(formData);
+  //   setisLoading(false);
+  // };
   return (
     <>
       <Container>

@@ -13,7 +13,7 @@ import { AuthContext } from "../../context/AuthContext";
 import { getRecordStudent, getMarksStudent } from "../../services/marksService";
 
 function MyMarks() {
-  const [userState, dispatch] = React.useContext(AuthContext);
+  const [userState] = React.useContext(AuthContext);
   const [listRecord, setlistRecord] = useState([]);
   const [listMarks, setlistMarks] = useState({});
   const [isLoading, setisLoading] = useState(false);
@@ -28,6 +28,37 @@ function MyMarks() {
       return acc;
     }, {});
   }
+
+  const sumMarks = (dataMarks) => {
+    const listReg = dataMarks.marksregulary;
+    const listReg1 = listReg.filter((itemReg) => itemReg.semester === 1);
+    const listReg2 = listReg.filter((itemReg) => itemReg.semester === 2);
+    let sumReg1 = 0;
+    let sumReg2 = 0;
+    for (let reg1 of listReg1) {
+      sumReg1 = sumReg1 + parseFloat(reg1.point);
+    }
+    for (let reg2 of listReg2) {
+      sumReg2 = sumReg2 + parseFloat(reg2.point);
+    }
+    const GK1 = parseFloat(dataMarks.mid_st_semester_point);
+    const CK1 = parseFloat(dataMarks.end_st_semester_point);
+    const GK2 = parseFloat(dataMarks.mid_nd_semester_point);
+    const CK2 = parseFloat(dataMarks.end_nd_semester_point);
+
+    const TB_HK1 = (sumReg1 + GK1 * 2 + CK1 * 3) / (5 + listReg1.length);
+    const TB_HK2 = (sumReg2 + GK2 * 2 + CK2 * 3) / (5 + listReg2.length);
+
+    const TB_HK_1 = TB_HK1.toFixed(1);
+    const TB_HK_2 = TB_HK2.toFixed(1);
+
+    const TB_NAM = (
+      (parseFloat(TB_HK_1) + parseFloat(TB_HK_2) * 2) /
+      3
+    ).toFixed(1);
+
+    return [TB_HK_1, TB_HK_2, TB_NAM];
+  };
 
   const getAllMarks = async () => {
     setisLoading(true);
@@ -46,9 +77,19 @@ function MyMarks() {
     }
   };
 
-  const showRecord = listRecord.map((item, index) => (
-    <RowRecord key={index} stt={index + 1} data={item} />
-  ));
+  const sumAllMarksStudent = (data) => {
+    let TBK1 = 0;
+    let TBK2 = 0;
+    let TBK3 = 0;
+    let l = data.length;
+    for (let i = 0; i < data.length; i++) {
+      const [k1, k2, k3] = sumMarks(data[i]);
+      TBK1 = parseFloat(TBK1) + parseFloat(k1);
+      TBK2 = parseFloat(TBK2) + parseFloat(k2);
+      TBK3 = parseFloat(TBK3) + parseFloat(k3);
+    }
+    return [TBK1 / l, TBK2 / l, TBK3 / l];
+  };
 
   const showMarksDetail = () => {
     let arrMarks = [];
@@ -56,6 +97,30 @@ function MyMarks() {
       let year = key;
       let newList = listMarks[key];
       let ele = <TableRecordDetail key={year} year={key} listMarks={newList} />;
+      arrMarks.push(ele);
+    }
+    return arrMarks;
+  };
+
+  const getConduct = (data, year) => {
+    const dataOfYear = data.filter(
+      (item) => item.school_year.from_year === year
+    );
+    const st_semester_conduct = 2;
+    const nd_semester_conduct = 3;
+    const year_conduct = (st_semester_conduct + nd_semester_conduct * 2) / 3;
+    
+    return [st_semester_conduct, nd_semester_conduct, year_conduct];
+  };
+
+  const showMarkRe = () => {
+    let arrMarks = [];
+    for (let key in listMarks) {
+      let year = key;
+      let newList = listMarks[key];
+      const [TBK1, TBK2, TBK3] = sumAllMarksStudent(newList);
+      const [con1,con2,con3]=getConduct(listRecord, year);
+      let ele = <RowRecord year={year} TBK1={TBK1} TBK2={TBK2} TBK3={TBK3} con1={con1}/>;
       arrMarks.push(ele);
     }
     return arrMarks;
@@ -115,7 +180,7 @@ function MyMarks() {
                 <th>Xếp loại học lực</th>
               </tr>
             </thead>
-            <tbody>{showRecord}</tbody>
+            <tbody>{showMarkRe()}</tbody>
           </Table>
         </Card.Body>
       </Card>
@@ -138,11 +203,43 @@ function MyMarks() {
 // bang diem chi tiet
 function TableRecordDetail(props) {
   const listMarksYear = props.listMarks;
-  const showgi = () => {
-    alert(JSON.stringify(listMarksYear));
+  const sumMarks = (dataMarks) => {
+    const listReg = dataMarks.marksregulary;
+    const listReg1 = listReg.filter((itemReg) => itemReg.semester === 1);
+    const listReg2 = listReg.filter((itemReg) => itemReg.semester === 2);
+    let sumReg1 = 0;
+    let sumReg2 = 0;
+    for (let reg1 of listReg1) {
+      sumReg1 = sumReg1 + parseFloat(reg1.point);
+    }
+    for (let reg2 of listReg2) {
+      sumReg2 = sumReg2 + parseFloat(reg2.point);
+    }
+    const GK1 = parseFloat(dataMarks.mid_st_semester_point);
+    const CK1 = parseFloat(dataMarks.end_st_semester_point);
+    const GK2 = parseFloat(dataMarks.mid_nd_semester_point);
+    const CK2 = parseFloat(dataMarks.end_nd_semester_point);
+
+    const TB_HK1 = (sumReg1 + GK1 * 2 + CK1 * 3) / (5 + listReg1.length);
+    const TB_HK2 = (sumReg2 + GK2 * 2 + CK2 * 3) / (5 + listReg2.length);
+
+    const TB_HK_1 = TB_HK1.toFixed(1);
+    const TB_HK_2 = TB_HK2.toFixed(1);
+
+    const TB_NAM = (
+      (parseFloat(TB_HK_1) + parseFloat(TB_HK_2) * 2) /
+      3
+    ).toFixed(1);
+
+    return [TB_HK_1, TB_HK_2, TB_NAM];
   };
 
+  // const showgi = () => {
+  //   alert(JSON.stringify(listMarksYear));
+  // };
+
   const listMarks = listMarksYear.map((item, index) => {
+    const [sum1, sum2, sum3] = sumMarks(item);
     return (
       <RowDetail
         key={index}
@@ -151,13 +248,11 @@ function TableRecordDetail(props) {
         subject_name={item.lecture.subject.subject_name}
         mid_st_semester_point={item.mid_st_semester_point}
         end_st_semester_point={item.end_st_semester_point}
-        gpa_st_semester_point={item.gpa_st_semester_point}
+        gpa_st_semester_point={sum1}
         mid_nd_semester_point={item.mid_nd_semester_point}
         end_nd_semester_point={item.end_nd_semester_point}
-        gpa_nd_semester_point={item.gpa_nd_semester_point}
-        gpa_year_point={item.gpa_year_point}
-        is_public={item.is_public}
-        is_locked={item.is_locked}
+        gpa_nd_semester_point={sum2}
+        gpa_year_point={sum3}
         st_due_input={item.st_due_input}
         nd_due_input={item.nd_due_input}
         marksregulary={item.marksregulary}
@@ -193,8 +288,8 @@ function TableRecordDetail(props) {
 }
 // tung mon hoc
 function RowDetail(props) {
-  const markRegular1 = props.marksregulary.filter((item) => item.semester == 1);
-  const markRegular2 = props.marksregulary.filter((item) => item.semester == 2);
+  const markRegular1 = props.marksregulary.filter((item) => item.semester === 1);
+  const markRegular2 = props.marksregulary.filter((item) => item.semester === 2);
 
   const showMark1 = markRegular1.map((item, index) => (
     <span>
@@ -233,20 +328,17 @@ function RowDetail(props) {
 function RowRecord(props) {
   return (
     <tr>
-      <td>{props.stt}</td>
-      <td>
-        {props.data.school_year.from_year} {" - "}
-        {props.data.school_year.to_year}
-      </td>
-      <td>{props.data.gpa_first_semester}</td>
-      <td>{props.data.conduct_stsemester}</td>
-      <td>{props.data.rating_stsemester}</td>
-      <td>{props.data.gpa_second_semester} </td>
-      <td>{props.data.conduct_ndsemester}</td>
-      <td>{props.data.rating_ndsemester}</td>
-      <td>{props.data.gpa_year} </td>
-      <td>{props.data.conduct_gpasemester}</td>
-      <td>{props.data.rating}</td>
+      <td>{}</td>
+      <td>{props.year}</td>
+      <td>{props.TBK1}</td>
+      <td>{props.con1}</td>
+      <td>{}</td>
+      <td> {props.TBK2}</td>
+      <td></td>
+      <td></td>
+      <td>{props.TBK3}</td>
+      <td></td>
+      <td></td>
     </tr>
   );
 }

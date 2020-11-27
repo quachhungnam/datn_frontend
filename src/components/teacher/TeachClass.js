@@ -21,9 +21,9 @@ import {
   updateMarksReg,
 } from "../../services/marksService";
 import { getLectureDetail } from "../../services/lectureService";
-import validator from "validator";
+// import validator from "validator";
 import { useLocation } from "react-router-dom";
-import { ExportCSV } from "../ExportCSV";
+// import { ExportCSV } from "../ExportCSV";
 import { ExportData } from "../../utils/exportData";
 export default function TeachClass(props) {
   const initMarksState = {
@@ -140,7 +140,7 @@ export default function TeachClass(props) {
   // LAY GIA TRI TU INPUT CAC COT DIEM KHAC
   const updateFieldChanged = (values) => {
     let newArr = listMarks.map((item, i) => {
-      if (item.id == values.id) {
+      if (item.id === values.id) {
         return values;
         // return { ...item, value: values.v };
       } else {
@@ -152,7 +152,7 @@ export default function TeachClass(props) {
   // CAP NHAT DIEM DGTX1 VAO STATE
   const updateMarksRegState = (values) => {
     let newArr = listMarksReg.map((item, idx) => {
-      if (item.marks_ref == values.marks_ref) {
+      if (item.marks_ref === values.marks_ref) {
         // return values;
         return { ...item, point: values.point };
       } else {
@@ -164,7 +164,7 @@ export default function TeachClass(props) {
   // CAP NHAT DIEM DANH GIA THUONG XUYEN 2 VAO STATE
   const updateMarksRegState2 = (values) => {
     let newArr = listMarksReg2.map((item, idx) => {
-      if (item.marks_ref == values.marks_ref) {
+      if (item.marks_ref === values.marks_ref) {
         return { ...item, point: values.point };
       } else {
         return item;
@@ -175,10 +175,10 @@ export default function TeachClass(props) {
   // HAN NHAP DIEM
   const limitDateInput = (semester) => {
     if (lecture != null) {
-      if (semester == 1) {
+      if (semester === 1) {
         return lecture.st_due_input >= standardDay;
       }
-      if (semester == 2) {
+      if (semester === 2) {
         return lecture.nd_due_input >= standardDay;
       }
     }
@@ -188,7 +188,7 @@ export default function TeachClass(props) {
   // XOA DGTX
   const delMarksReg = async (markRegId) => {
     setisUpdate(true);
-    const rs = await deleteMarksReg(markRegId);
+    await deleteMarksReg(markRegId);
     setisUpdate(false);
   };
 
@@ -202,11 +202,46 @@ export default function TeachClass(props) {
   };
   const updateReg = async (data) => {
     setisUpdate(true);
-    const rs = await updateManyMarksReg(data);
+    await updateManyMarksReg(data);
     setisUpdate(false);
   };
   // HIEN THI DANH SACH DIEM
+  const sumMarks = (dataMarks) => {
+    const listReg = dataMarks.marksregulary;
+    const listReg1 = listReg.filter((itemReg) => itemReg.semester === 1);
+    const listReg2 = listReg.filter((itemReg) => itemReg.semester === 2);
+    let sumReg1 = 0;
+    let sumReg2 = 0;
+    for (let reg1 of listReg1) {
+      sumReg1 = sumReg1 + parseFloat(reg1.point);
+    }
+    for (let reg2 of listReg2) {
+      sumReg2 = sumReg2 + parseFloat(reg2.point);
+    }
+    const GK1 = parseFloat(dataMarks.mid_st_semester_point);
+    const CK1 = parseFloat(dataMarks.end_st_semester_point);
+    const GK2 = parseFloat(dataMarks.mid_nd_semester_point);
+    const CK2 = parseFloat(dataMarks.end_nd_semester_point);
+    // console.log(dataMarks.mid_st_semester_point);
+    // if (dataMarks.mid_st_semester_point == null) {
+    //   console.log("null");
+    // }
+
+    const TB_HK1 = (sumReg1 + GK1 * 2 + CK1 * 3) / (5 + listReg1.length);
+    const TB_HK2 = (sumReg2 + GK2 * 2 + CK2 * 3) / (5 + listReg2.length);
+
+    const TB_HK_1 = TB_HK1.toFixed(1);
+    const TB_HK_2 = TB_HK2.toFixed(1);
+
+    const TB_NAM = (
+      (parseFloat(TB_HK_1) + parseFloat(TB_HK_2) * 2) /
+      3
+    ).toFixed(1);
+
+    return [TB_HK_1, TB_HK_2, TB_NAM];
+  };
   const showStudentsMarks = listMarks.map((item, index) => {
+    const [sum1, sum2, sum3] = sumMarks(item);
     return (
       <RowTable
         key={index}
@@ -215,14 +250,13 @@ export default function TeachClass(props) {
         marksState={marksState}
         idx={item.id}
         student={item.student.user}
-        lecture={item.lecture}
         mid_st_semester_point={item.mid_st_semester_point}
         end_st_semester_point={item.end_st_semester_point}
-        gpa_st_semester_point={item.gpa_st_semester_point}
+        gpa_st_semester_point={sum1}
         mid_nd_semester_point={item.mid_nd_semester_point}
         end_nd_semester_point={item.end_nd_semester_point}
-        gpa_nd_semester_point={item.gpa_nd_semester_point}
-        gpa_year_point={item.gpa_year_point}
+        gpa_nd_semester_point={sum2}
+        gpa_year_point={sum3}
         marksregulary={item.marksregulary}
         is_public={item.is_public}
         is_locked={item.is_locked}
@@ -251,11 +285,11 @@ export default function TeachClass(props) {
     event.preventDefault();
     setisUpdate(true);
     const rs = await updateManyMarks(listMarks);
-    rs.map((item, index) => {
-      if (!item.id) {
-        alert("err");
-      }
-    });
+    // rs.map((item, index) => {
+    //   if (!item.id) {
+    //     alert("err");
+    //   }
+    // });
     console.log(rs);
     setisUpdate(false);
   };
@@ -270,12 +304,12 @@ export default function TeachClass(props) {
   // THEM DIEM DGTX1 VAO DATABASE
   const addNewMarksReg = async () => {
     setisUpdate(true);
-    const rs = await addManyMarksReg(listMarksReg);
-    rs.map((item, index) => {
-      if (!item.id) {
-        alert("err");
-      }
-    });
+    await addManyMarksReg(listMarksReg);
+    // rs.map((item, index) => {
+    //   if (!item.id) {
+    //     alert("err");
+    //   }
+    // });
 
     setisUpdate(false);
   };
@@ -283,11 +317,11 @@ export default function TeachClass(props) {
   const addNewMarksReg2 = async () => {
     setisUpdate(true);
     const rs = await addManyMarksReg(listMarksReg2);
-    rs.map((item, index) => {
-      if (!item.id) {
-        alert("err");
-      }
-    });
+    // rs.map((item, index) => {
+    //   if (!item.id) {
+    //     alert("err");
+    //   }
+    // });
     console.log(rs);
     setisUpdate(false);
   };
@@ -306,83 +340,85 @@ export default function TeachClass(props) {
   };
 
   // TINH DIEM TRUNG BINH
-  const sumarryMarks = async (semester) => {
-    const standardList = listMarks.map((item, idx) => {
-      const listReg = item.marksregulary;
-      const listReg1 = listReg.filter((itemReg) => itemReg.semester == 1);
-      const listReg2 = listReg.filter((itemReg) => itemReg.semester == 2);
-      let sumReg1 = 0;
-      let sumReg2 = 0;
-      for (let reg1 of listReg1) {
-        sumReg1 = sumReg1 + parseFloat(reg1.point);
-      }
-      for (let reg2 of listReg2) {
-        sumReg2 = sumReg2 + parseFloat(reg2.point);
-      }
-      const GK1 = parseFloat(item.mid_st_semester_point);
-      const CK1 = parseFloat(item.end_st_semester_point);
-      const GK2 = parseFloat(item.mid_nd_semester_point);
-      const CK2 = parseFloat(item.end_nd_semester_point);
 
-      const TB_HK1 = (sumReg1 + GK1 * 2 + CK1 * 3) / (5 + listReg1.length);
-      const TB_HK2 = (sumReg2 + GK2 * 2 + CK2 * 3) / (5 + listReg2.length);
+  // const sumarryMarks = async (semester) => {
+  //   const standardList = listMarks.map((item, idx) => {
+  //     const listReg = item.marksregulary;
+  //     const listReg1 = listReg.filter((itemReg) => itemReg.semester == 1);
+  //     const listReg2 = listReg.filter((itemReg) => itemReg.semester == 2);
+  //     let sumReg1 = 0;
+  //     let sumReg2 = 0;
+  //     for (let reg1 of listReg1) {
+  //       sumReg1 = sumReg1 + parseFloat(reg1.point);
+  //     }
+  //     for (let reg2 of listReg2) {
+  //       sumReg2 = sumReg2 + parseFloat(reg2.point);
+  //     }
+  //     const GK1 = parseFloat(item.mid_st_semester_point);
+  //     const CK1 = parseFloat(item.end_st_semester_point);
+  //     const GK2 = parseFloat(item.mid_nd_semester_point);
+  //     const CK2 = parseFloat(item.end_nd_semester_point);
 
-      const TB_HK_1 = TB_HK1.toFixed(1);
-      const TB_HK_2 = TB_HK2.toFixed(1);
+  //     const TB_HK1 = (sumReg1 + GK1 * 2 + CK1 * 3) / (5 + listReg1.length);
+  //     const TB_HK2 = (sumReg2 + GK2 * 2 + CK2 * 3) / (5 + listReg2.length);
 
-      const TB_NAM = (
-        (parseFloat(TB_HK_1) + parseFloat(TB_HK_2) * 2) /
-        3
-      ).toFixed(1);
+  //     const TB_HK_1 = TB_HK1.toFixed(1);
+  //     const TB_HK_2 = TB_HK2.toFixed(1);
 
-      let newItem = {
-        id: item.id,
-        gpa_st_semester_point: TB_HK_1,
-        gpa_nd_semester_point: TB_HK_2,
-        gpa_year_point: TB_NAM,
-      };
-      if (semester == 1) {
-        delete newItem.gpa_nd_semester_point;
-        delete newItem.gpa_year_point;
-      }
-      if (semester == 2) {
-        delete newItem.gpa_st_semester_point;
-        delete newItem.gpa_year_point;
-      }
-      console.log(TB_HK_1);
-      console.log(TB_HK_2);
-      console.log(TB_NAM);
-      return newItem;
+  //     const TB_NAM = (
+  //       (parseFloat(TB_HK_1) + parseFloat(TB_HK_2) * 2) /
+  //       3
+  //     ).toFixed(1);
 
-      // const TB_HK2 = (sumReg2 + GK1 * 2 + CK1 * 3) / (5 + listReg1.length);
-    });
-    setisUpdate(true);
-    const rs = await updateManyMarks(standardList);
-    rs.map((item, index) => {
-      if (!item.id) {
-        alert("err");
-      }
-    });
-    console.log(rs);
-    setisUpdate(false);
-  };
+  //     let newItem = {
+  //       id: item.id,
+  //       gpa_st_semester_point: TB_HK_1,
+  //       gpa_nd_semester_point: TB_HK_2,
+  //       gpa_year_point: TB_NAM,
+  //     };
+  //     if (semester == 1) {
+  //       delete newItem.gpa_nd_semester_point;
+  //       delete newItem.gpa_year_point;
+  //     }
+  //     if (semester == 2) {
+  //       delete newItem.gpa_st_semester_point;
+  //       delete newItem.gpa_year_point;
+  //     }
+  //     console.log(TB_HK_1);
+  //     console.log(TB_HK_2);
+  //     console.log(TB_NAM);
+  //     return newItem;
+
+  //     // const TB_HK2 = (sumReg2 + GK1 * 2 + CK1 * 3) / (5 + listReg1.length);
+  //   });
+  //   setisUpdate(true);
+  //   const rs = await updateManyMarks(standardList);
+  //   rs.map((item, index) => {
+  //     if (!item.id) {
+  //       alert("err");
+  //     }
+  //   });
+  //   console.log(rs);
+  //   setisUpdate(false);
+  // };
 
   // CHUAN HOA DIEM TRUOC KHI XUAT
   const standardExport = (data, semester) => {
-    let dataStandard = [];
-    data.map((item, index) => {
+    // let dataStandard = [];
+    const dataStandard=data.map((item, index) => {
+      const [sum1, sum2, sum3] = sumMarks(item);
       let DGTX1 = "=";
       let DGTX2 = "=";
 
       const markRegular1 = item.marksregulary.filter(
-        (item) => item.semester == 1
+        (item) => item.semester === 1
       );
       for (let i = 0; i < markRegular1.length; i++) {
         DGTX1 = DGTX1 + "+" + markRegular1[i].point;
       }
 
       const markRegular2 = item.marksregulary.filter(
-        (item) => item.semester == 2
+        (item) => item.semester === 2
       );
       for (let i = 0; i < markRegular2.length; i++) {
         DGTX2 = DGTX2 + "+" + markRegular2[i].point;
@@ -392,33 +428,33 @@ export default function TeachClass(props) {
         TaiKhoan: item.student.user.username,
         Ho: item.student.user.last_name,
         Ten: item.student.user.first_name,
-        Mon: item.lecture.subject.subject_name,
+        Mon: lecture.subject.subject_name,
         DGTX_HK1: DGTX1,
         GK1: item.mid_st_semester_point,
         CK1: item.end_st_semester_point,
-        TB_HK1: item.gpa_st_semester_point,
+        TB_HK1: sum1,
         DGTX_HK2: DGTX2,
         GK2: item.mid_nd_semester_point,
         CK2: item.end_nd_semester_point,
-        TB_HK2: item.gpa_nd_semester_point,
-        TB_Nam: item.gpa_year_point,
+        TB_HK2: sum2,
+        TB_Nam: sum3,
       };
-      if (semester == 1) {
+      if (semester === 1) {
         delete newItem.DGTX_HK2;
         delete newItem.GK2;
         delete newItem.CK2;
         delete newItem.TB_HK2;
         delete newItem.TB_Nam;
       }
-      if (semester == 2) {
+      if (semester === 2) {
         delete newItem.DGTX_HK1;
         delete newItem.GK1;
         delete newItem.CK1;
         delete newItem.TB_HK1;
         delete newItem.TB_Nam;
       }
-
-      dataStandard.push(newItem);
+      return newItem
+      // dataStandard.push(newItem);
     });
     return dataStandard;
   };
@@ -445,9 +481,9 @@ export default function TeachClass(props) {
     setListMarksReg2(newList);
   };
 
-  const shownewMarrks = () => {
-    console.log(listMarks);
-  };
+  // const shownewMarrks = () => {
+  //   console.log(listMarks);
+  // };
   useEffect(() => {
     getLecture();
   }, []);
@@ -511,11 +547,11 @@ export default function TeachClass(props) {
                   />
                   <tbody>{showStudentsMarks}</tbody>
                 </Table>
+                <hr/>
                 <Form.Row>
-                  <Button type="submit">Lưu điểm</Button>
+                  <Button variant="success" type="submit">Lưu điểm</Button>
                   &nbsp;
-
-                  <DropdownButton
+                  {/* <DropdownButton
                     id="dropdown-basic-button"
                     title="Tổng kết"
                     variant="success"
@@ -552,12 +588,12 @@ export default function TeachClass(props) {
                     ) : (
                       ""
                     )}
-                  </DropdownButton>
+                  </DropdownButton> */}
                   &nbsp;
                   <DropdownButton
                     id="dropdown-basic-button"
                     title="Xuất điểm"
-                    variant="info"
+                    variant="success"
                   >
                     <Dropdown.Item
                       onClick={() => {
@@ -649,7 +685,7 @@ function HeadTable(props) {
       </tr>
       <tr>
         <th colSpan={1}>
-          {props.limitDateInput(1) == true ? (
+          {props.limitDateInput(1) === true ? (
             <Form.Row>
               <DropdownButton id="dropdown-basic-button" size="sm" title="...">
                 <Dropdown.Item
@@ -704,7 +740,7 @@ function HeadTable(props) {
           )}
         </th>
         <th>
-          {props.limitDateInput(1) == true ? (
+          {props.limitDateInput(1) === true ? (
             <DropdownButton id="dropdown-basic-button" size="sm" title="...">
               <Dropdown.Item
                 onClick={() => {
@@ -733,7 +769,7 @@ function HeadTable(props) {
           </Modal.Footer>
         </Modal>
         <th>
-          {props.limitDateInput(1) == true ? (
+          {props.limitDateInput(1) === true ? (
             <DropdownButton id="dropdown-basic-button" size="sm" title="...">
               <Dropdown.Item
                 onClick={() => {
@@ -749,7 +785,7 @@ function HeadTable(props) {
         </th>
         <th>TB Kỳ</th>
         <th colSpan={1}>
-          {props.limitDateInput(2) == true ? (
+          {props.limitDateInput(2) === true ? (
             <Form.Row>
               {" "}
               <DropdownButton id="dropdown-basic-button" size="sm" title="...">
@@ -800,7 +836,7 @@ function HeadTable(props) {
         </th>
         <th>
           {" "}
-          {props.limitDateInput(2) == true ? (
+          {props.limitDateInput(2) === true ? (
             <DropdownButton id="dropdown-basic-button" size="sm" title="...">
               <Dropdown.Item
                 onClick={() => {
@@ -837,8 +873,8 @@ function HeadTable(props) {
 
 function RowTable(props) {
   const [marks, setmarks] = useState(props.item_value);
-  const markRegular1 = props.marksregulary.filter((item) => item.semester == 1);
-  const markRegular2 = props.marksregulary.filter((item) => item.semester == 2);
+  const markRegular1 = props.marksregulary.filter((item) => item.semester === 1);
+  const markRegular2 = props.marksregulary.filter((item) => item.semester === 2);
   const [isEdit, setIsEdit] = useState(false);
   const [isEdit2, setIsEdit2] = useState(false);
   const [listMarksReg1, setListMarksReg1] = useState(markRegular1);
@@ -852,7 +888,7 @@ function RowTable(props) {
   }, [props.marksregulary]);
 
   const onChangeNewMarksReg = (event) => {
-    const { name, value } = event.target;
+    const {value } = event.target;
     let obj = {
       marks_ref: props.idx,
       point: value,
@@ -861,7 +897,7 @@ function RowTable(props) {
   };
 
   const onChangeNewMarksReg2 = (event) => {
-    const { name, value } = event.target;
+    const { value } = event.target;
     let obj = {
       marks_ref: props.idx,
       point: value,
@@ -905,35 +941,35 @@ function RowTable(props) {
   };
   //CAP NHAT DIEM
   const setEditMarksReg = (semester) => {
-    if (semester == 1) {
+    if (semester === 1) {
       setIsEdit(true);
     }
-    if (semester == 2) {
+    if (semester === 2) {
       setIsEdit2(true);
     }
   };
   const cancelUpdate = (semester) => {
-    if (semester == 1) {
+    if (semester === 1) {
       setIsEdit(false);
     }
-    if (semester == 2) {
+    if (semester === 2) {
       setIsEdit2(false);
     }
   };
 
   //cap nhat diem ngay tai day
-  const updateManyMarksReg = async (data) => {
-    const allRespone = data.map((item) => {
-      const rs = updateMarksReg(item);
-      return rs;
-    });
-    return Promise.all(allRespone);
-  };
+  // const updateManyMarksReg = async (data) => {
+  //   const allRespone = data.map((item) => {
+  //     const rs = updateMarksReg(item);
+  //     return rs;
+  //   });
+  //   return Promise.all(allRespone);
+  // };
 
   const onUpdateMarksReg = async () => {
     try {
       const standartList = listMarksReg1.map((item) => {
-        if (item.is_public == "Fasle") {
+        if (item.is_public === "Fasle") {
           item.is_public = 0;
         } else {
           item.is_public = 1;
@@ -952,7 +988,7 @@ function RowTable(props) {
   const onUpdateMarksReg2 = async () => {
     try {
       const standartList = listMarksReg2.map((item) => {
-        if (item.is_public == "Fasle") {
+        if (item.is_public === "Fasle") {
           item.is_public = 0;
         } else {
           item.is_public = 1;
@@ -976,9 +1012,9 @@ function RowTable(props) {
   };
   //Lay gia tri input cap nhat diem DGTX1
   const handleInputMarksReg = (data, event) => {
-    const { name, value } = event.target;
+    const { value } = event.target;
     let newList = listMarksReg1.map((item) => {
-      if (item.id == data.id) {
+      if (item.id === data.id) {
         return { ...item, point: value };
       } else {
         return item;
@@ -987,9 +1023,9 @@ function RowTable(props) {
     setListMarksReg1(newList);
   };
   const handleInputMarksReg2 = (data, event) => {
-    const { name, value } = event.target;
+    const {  value } = event.target;
     let newList = listMarksReg2.map((item) => {
-      if (item.id == data.id) {
+      if (item.id === data.id) {
         return { ...item, point: value };
       } else {
         return item;
@@ -1000,12 +1036,12 @@ function RowTable(props) {
 
   //XOA DIEM DANH GIA THUONG XUYEN 1
   const onDelMarksReg = async (markReg, semester) => {
-    if (semester == 1) {
-      const newList = listMarksReg1.filter((item) => item.id != markReg.id);
+    if (semester === 1) {
+      const newList = listMarksReg1.filter((item) => item.id !== markReg.id);
       setListMarksReg1(newList);
     }
-    if (semester == 2) {
-      const newList = listMarksReg2.filter((item) => item.id != markReg.id);
+    if (semester === 2) {
+      const newList = listMarksReg2.filter((item) => item.id !== markReg.id);
       setListMarksReg2(newList);
     }
     props.delMarksReg(markReg.id);
@@ -1016,7 +1052,7 @@ function RowTable(props) {
   const showMark1 = listMarksReg1.map((item, index) => (
     <div
       onDoubleClick={() => {
-        if (props.limitDateInput(1) == true) {
+        if (props.limitDateInput(1) === true) {
           setEditMarksReg(1);
         }
       }}
@@ -1032,7 +1068,7 @@ function RowTable(props) {
         disabled={!isEdit}
         onChange={(e) => handleInputMarksReg(item, e)}
       />
-      {props.marksState.isDeleteDGTX1 == true ? (
+      {props.marksState.isDeleteDGTX1 === true ? (
         <Badge pill variant="danger" onClick={() => onDelMarksReg(item, 1)}>
           X
         </Badge>
@@ -1045,7 +1081,7 @@ function RowTable(props) {
   const showMark2 = listMarksReg2.map((item, index) => (
     <div
       onDoubleClick={() => {
-        if (props.limitDateInput(2) == true) {
+        if (props.limitDateInput(2) === true) {
           setEditMarksReg(2);
         }
       }}
@@ -1061,7 +1097,7 @@ function RowTable(props) {
         disabled={!isEdit2}
         onChange={(e) => handleInputMarksReg2(item, e)}
       />
-      {props.marksState.isDeleteDGTX2 == true ? (
+      {props.marksState.isDeleteDGTX2 === true ? (
         <Badge pill variant="danger" onClick={() => onDelMarksReg(item, 2)}>
           X
         </Badge>
