@@ -8,16 +8,14 @@ import {
   Button,
   Card,
   Spinner,
+  Alert,
 } from "react-bootstrap";
-import {
-  NavLink,
-} from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { get_schoolyear_service } from "../../services/schoolYearService";
 import { get_lecture_teacher_service } from "../../services/lectureService";
 import { AuthContext } from "../../context/AuthContext";
 
 export default function TeachClassList() {
-
   const [userState] = React.useContext(AuthContext);
   const [listYear, setlistYear] = useState([]);
   const [currentYear, setcurrentYear] = useState(0);
@@ -26,12 +24,17 @@ export default function TeachClassList() {
   const getlistLecture = async (teacherId, yearId) => {
     setisLoading(true);
     const rs = await get_lecture_teacher_service(teacherId, yearId);
-    if (rs.results.length > 0) {
-      const arr_lecture = rs.results;
-      setlistLecture(arr_lecture);
+    if (!rs.error) {
+      if (rs.results.length > 0) {
+        const arr_lecture = rs.results;
+        setlistLecture(arr_lecture);
+      } else {
+      }
+      setisLoading(false);
     } else {
+
     }
-    setisLoading(false);
+
   };
 
   const getcurrentYear = (rs) => {
@@ -101,11 +104,12 @@ export default function TeachClassList() {
     <Container>
       <br></br>
       <Card>
-        <Card.Header>
-          {" "}
-          <Card.Title>Danh sách lớp giảng dạy</Card.Title>{" "}
-        </Card.Header>
         <Card.Body>
+
+          <Alert variant="success">
+            <h5 className="txt-upcase">Danh sách lớp giảng dạy</h5>
+          </Alert>
+          <hr />
           <Form.Group>
             <Row>
               <Col md={3}>{listselectYear()}</Col>
@@ -165,7 +169,7 @@ function RowTable(props) {
       </td>
       <td>{props.course_year}</td>
       <td>{props.subject_name}</td>
-      <td>{props.from_year + ' - ' + props.to_year}</td>
+      <td>{props.from_year + " - " + props.to_year}</td>
     </tr>
   );
 }

@@ -1,5 +1,5 @@
 import { authHeader } from './authHeader'
-const API_URL = 'http://127.0.0.1:8000'
+import { API_URL } from './urlService'
 // http://127.0.0.1:8000/api/token/
 async function checkToken(token) {
     try {

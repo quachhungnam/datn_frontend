@@ -206,7 +206,7 @@ function Infor() {
                 </Col>
                 {/* BASIC INFOR */}
                 <Col>
-                  <Alert variant="info">
+                  <Alert variant="success">
                     <Row>
                       <Col md={2}>
                         {userState.user.is_teacher === false

@@ -1,5 +1,4 @@
-const API_URL = 'http://127.0.0.1:8000'
-
+import { API_URL } from './urlService'
 async function get_list_student_service(class_id) {
     try {
         let result = await fetch(`${API_URL}/api/lectures/classes/${class_id}/`, {

@@ -1,6 +1,8 @@
+
+import { API_URL } from './urlService'
 import { authHeader } from './authHeader'
 
-const API_URL = "http://127.0.0.1:8000";
+// const API_URL = "http://127.0.0.1:8000";
 // http://127.0.0.1:8000/api/token/
 
 async function get_lecture_service(token, id) {

@@ -1,5 +1,4 @@
-const API_URL = "http://127.0.0.1:8000";
-// http://127.0.0.1:8000/api/token/
+import { API_URL } from './urlService'// http://127.0.0.1:8000/api/token/
 async function get_schoolyear_service() {
   try {
     let result = await fetch(`${API_URL}/api/schoolyears/`, {

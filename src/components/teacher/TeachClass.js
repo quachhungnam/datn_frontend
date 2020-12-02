@@ -12,6 +12,7 @@ import {
   Spinner,
   Modal,
   Badge,
+  Alert,
 } from "react-bootstrap";
 import {
   update_marks,
@@ -28,7 +29,7 @@ import {
   validateListMarksCK1,
   validateListMarksGK2,
   validateListMarksCK2,
-  validateMarksReg,
+  // validateMarksReg,
 } from "../../utils/validateMarksReg";
 import { ExportData } from "../../utils/exportData";
 export default function TeachClass(props) {
@@ -273,6 +274,7 @@ export default function TeachClass(props) {
         updateMarksRegState2={updateMarksRegState2}
         delMarksReg={delMarksReg}
         updateReg={updateReg}
+        setMessage={setMessage}
       />
     );
   });
@@ -291,7 +293,7 @@ export default function TeachClass(props) {
   const onupdateMarks = async (event) => {
     event.preventDefault();
     setisUpdate(true);
-    const rs = await updateManyMarks(listMarks);
+   await updateManyMarks(listMarks);
     setisUpdate(false);
   };
 
@@ -305,13 +307,13 @@ export default function TeachClass(props) {
       };
       return newItem;
     });
-    if (validateListMarksGK1(listGK1) == false) {
-      setMessage("Điểm nhập không hợp lệ!");
+    if (validateListMarksGK1(listGK1) === false) {
+      setMessage("Điểm không hợp lệ!");
       return;
     }
     setMessage("Vui lòng đợi...");
-    const rs = await updateManyMarks(listGK1);
-    setMessage("Cập nhật điểm Giữa kỳ thành công.");
+    await updateManyMarks(listGK1);
+    setMessage("Cập nhật điểm giữa kỳ thành công.");
   };
   const onUpdateMarksGK2 = async () => {
     // event.preventDefault();
@@ -324,12 +326,12 @@ export default function TeachClass(props) {
       return newItem;
     });
     if (validateListMarksGK2(listGK2) == false) {
-      setMessage("Điểm nhập không hợp lệ!");
+      setMessage("Điểm không hợp lệ!");
       return;
     }
     setMessage("Vui lòng đợi...");
-    const rs = await updateManyMarks(listGK2);
-    setMessage("Cập nhật điểm Giữa kỳ thành công.");
+    await updateManyMarks(listGK2);
+    setMessage("Cập nhật điểm giữa kỳ thành công.");
   };
 
   const onUpdateMarksCK1 = async () => {
@@ -342,13 +344,13 @@ export default function TeachClass(props) {
       };
       return newItem;
     });
-    if (validateListMarksCK1(listCK1) == false) {
-      setMessage("Điểm nhập không hợp lệ!");
+    if (validateListMarksCK1(listCK1) === false) {
+      setMessage("Điểm không hợp lệ!");
       return;
     }
     setMessage("Vui lòng đợi...");
-    const rs = await updateManyMarks(listCK1);
-    setMessage("Cập nhật điểm Cuối kỳ thành công.");
+    await updateManyMarks(listCK1);
+    setMessage("Cập nhật điểm cuối kỳ thành công.");
   };
   const onUpdateMarksCK2 = async () => {
     // event.preventDefault();
@@ -360,13 +362,13 @@ export default function TeachClass(props) {
       };
       return newItem;
     });
-    if (validateListMarksCK2(listCK2) == false) {
-      setMessage("Điểm nhập không hợp lệ!");
+    if (validateListMarksCK2(listCK2) === false) {
+      setMessage("Điểm không hợp lệ!");
       return;
     }
     setMessage("Vui lòng đợi...");
-    const rs = await updateManyMarks(listCK2);
-    setMessage("Cập nhật điểm Cuối kỳ thành công.");
+    await updateManyMarks(listCK2);
+    setMessage("Cập nhật điểm cuối kỳ thành công.");
   };
 
   const addManyMarksReg = async (data) => {
@@ -380,13 +382,13 @@ export default function TeachClass(props) {
   const addNewMarksReg = async () => {
     const valid = validateListMarksReg(listMarksReg);
     if (!valid) {
-      setMessage("Nhập điểm không hợp lệ");
+      setMessage("Điểm không hợp lệ!");
       return;
     }
     setisUpdate(true);
-    setMessage("Vui lòng đợi!");
+    setMessage("Vui lòng đợi...");
 
-    const rs = await addManyMarksReg(listMarksReg);
+    await addManyMarksReg(listMarksReg);
     // const kq = rs.map((item, index) => {
     //   if (!item.id) {
     //     setMessage('Lỗi điểm')
@@ -404,7 +406,7 @@ export default function TeachClass(props) {
     }
     setisUpdate(true);
     setMessage("Vui lòng đợi!");
-    const rs = await addManyMarksReg(listMarksReg2);
+    await addManyMarksReg(listMarksReg2);
     // rs.map((item, index) => {
     //   if (!item.id) {
     //     alert("err");
@@ -516,10 +518,45 @@ export default function TeachClass(props) {
       );
     }
   };
+  const showLecture = () => {
+    if (lecture != null) {
+      return (
+        <Alert variant="success">
+          <Row>
+            <Col md={2}> Năm học:</Col>
+            <Col>
+              {" "}
+              <b>{lecture.school_year.from_year}</b>
+            </Col>
+          </Row>
+          <Row>
+            <Col md={2}> Lớp:</Col>
+            <Col>
+              <b>{lecture.classes.class_name}</b>{" "}
+            </Col>
+          </Row>
+          <Row>
+            <Col md={2}> Khóa:</Col>
+            <Col>
+              <b>{lecture.classes.course_year}</b>{" "}
+            </Col>
+          </Row>
+          <Row>
+            <Col md={2}> Môn:</Col>
+            <Col>
+              {" "}
+              <b> {lecture.subject.subject_name}</b>
+            </Col>
+          </Row>
+        </Alert>
+      );
+    }
+  };
 
   useEffect(() => {
     getLecture();
   }, []);
+
   useEffect(() => {
     getlistMarks();
   }, [isUpdate]);
@@ -529,43 +566,32 @@ export default function TeachClass(props) {
       <Row>
         <Col>
           <Card>
-            <Card.Header>
-              <Card.Title>
-                {lecture != null
-                  ? "Điểm chi tiết môn: " +
-                    lecture.subject.subject_name +
-                    ", Lớp: " +
-                    lecture.classes.class_name +
-                    ", Khóa: " +
-                    lecture.classes.course_year +
-                    ", Năm học: " +
-                    lecture.school_year.from_year +
-                    "-" +
-                    lecture.school_year.to_year
-                  : ""}
-                {showMessage()}
-                {isLoading ? (
-                  <Button
-                    variant="primary"
-                    size="sm"
-                    disabled
-                    className="float-md-right"
-                  >
-                    <Spinner
-                      as="span"
-                      animation="border"
-                      size="sm"
-                      role="status"
-                      aria-hidden="true"
-                    />
-                  </Button>
-                ) : (
-                  ""
-                )}
-              </Card.Title>
-            </Card.Header>
             <Form method="POST" onSubmit={onupdateMarks}>
               <Card.Body>
+                {showLecture()}
+                <Row>
+                  <Col md={9}>{showMessage()}</Col>
+                  <Col>
+                    {isLoading ? (
+                      <Button
+                        variant="primary"
+                        size="sm"
+                        disabled
+                        className="float-md-right"
+                      >
+                        <Spinner
+                          as="span"
+                          animation="border"
+                          size="sm"
+                          role="status"
+                          aria-hidden="true"
+                        />
+                      </Button>
+                    ) : (
+                      ""
+                    )}
+                  </Col>
+                </Row>
                 <Table striped bordered hover size="sm">
                   <HeadTable
                     onAddMarksReg={onAddMarksReg}
@@ -665,7 +691,12 @@ function HeadTable(props) {
   const showDropDGTX1 = () => {
     return props.limitDateInput(1) === true ? (
       <Form.Row>
-        <DropdownButton id="dropdown-basic-button" size="sm" title="...">
+        <DropdownButton
+          id="dropdown-basic-button"
+          variant="success"
+          size="sm"
+          title="..."
+        >
           <Dropdown.Item
             onClick={() => {
               confirmAddMarksReg();
@@ -720,7 +751,12 @@ function HeadTable(props) {
   const showDropGK1 = () => {
     return props.limitDateInput(1) === true ? (
       <Form.Row>
-        <DropdownButton id="dropdown-basic-button" size="sm" title="...">
+        <DropdownButton
+          id="dropdown-basic-button"
+          variant="success"
+          size="sm"
+          title="..."
+        >
           <Dropdown.Item
             onClick={() => {
               onAddMarksGK1();
@@ -762,7 +798,12 @@ function HeadTable(props) {
   const showDropCK1 = () => {
     return props.limitDateInput(1) === true ? (
       <Form.Row>
-        <DropdownButton id="dropdown-basic-button" size="sm" title="...">
+        <DropdownButton
+          id="dropdown-basic-button"
+          variant="success"
+          size="sm"
+          title="..."
+        >
           <Dropdown.Item
             onClick={() => {
               onAddMarksCK1();
@@ -805,7 +846,12 @@ function HeadTable(props) {
     return props.limitDateInput(2) === true ? (
       <Form.Row>
         {" "}
-        <DropdownButton id="dropdown-basic-button" size="sm" title="...">
+        <DropdownButton
+          id="dropdown-basic-button"
+          variant="success"
+          size="sm"
+          title="..."
+        >
           <Dropdown.Item
             onClick={() => {
               onAddMarksReg2();
@@ -854,7 +900,12 @@ function HeadTable(props) {
   const showDropGK2 = () => {
     return props.limitDateInput(2) === true ? (
       <Form.Row>
-        <DropdownButton id="dropdown-basic-button" size="sm" title="...">
+        <DropdownButton
+          id="dropdown-basic-button"
+          variant="success"
+          size="sm"
+          title="..."
+        >
           <Dropdown.Item
             onClick={() => {
               onAddMarksGK2();
@@ -895,7 +946,12 @@ function HeadTable(props) {
   const showDropCK2 = () => {
     return props.limitDateInput(2) ? (
       <Form.Row>
-        <DropdownButton id="dropdown-basic-button" size="sm" title="...">
+        <DropdownButton
+          id="dropdown-basic-button"
+          variant="success"
+          size="sm"
+          title="..."
+        >
           <Dropdown.Item
             onClick={() => {
               onAddMarksCK2();
@@ -937,7 +993,7 @@ function HeadTable(props) {
     <thead>
       <tr>
         <th rowSpan="3">STT</th>
-        <th rowSpan="3">Mã HS</th>
+        <th rowSpan="3">Mã HS </th>
         <th rowSpan="3">Họ Tên</th>
         <th colSpan={4}>Học kỳ 1 (Hạn nhập điểm: {props.limitInput1}) </th>
         <th colSpan={4}>Học kỳ 2 (Hạn nhập điểm: {props.limitInput2})</th>
@@ -1082,7 +1138,7 @@ function RowTable(props) {
     try {
       const valid = validateListMarksReg(listMarksReg1);
       if (valid === false) {
-        alert("loiiii");
+        props.setMessage("Nhập điểm không hợp lệ!");
         return;
       }
 
@@ -1165,6 +1221,12 @@ function RowTable(props) {
     props.delMarksReg(markReg.id);
     // const rs = await deleteMarksReg(markReg.id);
   };
+  // const selectMarks = (item, semester, event) => {
+  //   if (event.target.checked == true) {
+  //     console.log("chọn rồi, chuẩn bị xóa");
+  //     console.log(item);
+  //   }
+  // };
 
   //HIEN THI DIEM DANH GIA THUONG XUYEN 1
   const showMark1 = listMarksReg1.map((item, index) => (
@@ -1191,9 +1253,12 @@ function RowTable(props) {
         onChange={(e) => handleInputMarksReg(item, e)}
       />
       {props.marksState.isDeleteDGTX1 === true ? (
-        <Badge pill variant="danger" onClick={() => onDelMarksReg(item, 1)}>
-          X
-        </Badge>
+        <>
+          {/* <Form.Check onChange={(e) => selectMarks(item, 1, e)} /> */}
+          <Badge pill variant="danger" onClick={() => onDelMarksReg(item, 1)}>
+            X
+          </Badge>
+        </>
       ) : (
         ""
       )}
@@ -1372,3 +1437,4 @@ function RowTable(props) {
     </tr>
   );
 }
+

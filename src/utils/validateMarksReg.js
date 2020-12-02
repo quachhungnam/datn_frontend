@@ -67,7 +67,7 @@ const validateMarksGK2 = (marks) => {
 }
 const validateListMarksGK2 = (ListMarks) => {
     for (let i = 0; i < ListMarks.length; i++) {
-        if (validateMarksCK2(ListMarks[i]) === false) {
+        if (validateMarksGK2(ListMarks[i]) === false) {
             return false
         }
     }

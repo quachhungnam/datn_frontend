@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { Container, Card, Nav, Pagination } from "react-bootstrap";
-// import { Editor } from "react-draft-wysiwyg";
+import { Container, Card, Nav } from "react-bootstrap";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import parse from "html-react-parser";
-// import * as ReactQuill from "react-quill"; // Typescript
 import { getNotice } from "../services/noticeService";
 export default function Home() {
   const [listNotice, setListNotice] = useState([]);
@@ -17,27 +15,51 @@ export default function Home() {
     }
   };
 
-  const showListNotice = listNotice.map((item) => (
-    <Card>
-      <Card.Header>
-        <span className="text-danger">
-          <b>
-            {item.post_date}
-            {":"}
-          </b>{" "}
-        </span>
-        <span className="text-primary">
-          {" "}
-          <b>{item.title}</b>{" "}
-        </span>
-      </Card.Header>
-      <Card.Body> {parse(item.content)}</Card.Body>
-    </Card>
-  ));
+  const showListNotice = () => {
+    if (listNotice.length !==0) {
+      const ListNotice = listNotice.map((item) => (
+        <Card>
+          <Card.Header>
+            <span className="text-danger">
+              <b>
+                {item.post_date}
+                {":"}
+              </b>{" "}
+            </span>
+            <span className="text-primary">
+              {" "}
+              <b>{item.title}</b>{" "}
+            </span>
+          </Card.Header>
+          <Card.Body> {parse(item.content)}</Card.Body>
+        </Card>
+      ));
+      return ListNotice;
+    }
+    return "";
+  };
+
+  // const showListNotice = listNotice.map((item) => (
+  //   <Card>
+  //     <Card.Header>
+  //       <span className="text-danger">
+  //         <b>
+  //           {item.post_date}
+  //           {":"}
+  //         </b>{" "}
+  //       </span>
+  //       <span className="text-primary">
+  //         {" "}
+  //         <b>{item.title}</b>{" "}
+  //       </span>
+  //     </Card.Header>
+  //     <Card.Body> {parse(item.content)}</Card.Body>
+  //   </Card>
+  // ));
 
   useEffect(() => {
     getAllNotice();
-  }, [listNotice]);
+  }, listNotice);
 
   return (
     <Container>
@@ -49,11 +71,10 @@ export default function Home() {
                 <b>Thông báo</b>
               </Nav.Link>
             </Nav.Item>
-      
           </Nav>
         </Card.Header>
 
-        <Card.Body>{showListNotice}</Card.Body>
+        <Card.Body>{showListNotice()}</Card.Body>
         {/* <Card.Footer>
           <Pagination>
             <Pagination.Item>1</Pagination.Item>

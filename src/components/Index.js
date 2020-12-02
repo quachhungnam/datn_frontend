@@ -3,7 +3,7 @@ import {
   Card,
   Carousel,
   Container,
-  Alert,
+  Jumbotron,
 } from "react-bootstrap";
 
 // import { uploadFile } from "../services/studentService";
@@ -41,9 +41,9 @@ export default function Index() {
   // };
   return (
     <>
-      <Container>
+      <Container fluid>
         <Card>
-          <Card.Header>
+          <Card.Body>
             <Carousel activeIndex={index} onSelect={handleSelect}>
               <Carousel.Item>
                 <img
@@ -74,14 +74,21 @@ export default function Index() {
                 />
               </Carousel.Item>
             </Carousel>
-          </Card.Header>
-
-          <Card.Body>
-            <Alert variant="info">
+            <hr />
+            <Jumbotron>
+              <h2>
+                Chào mừng bạn đến với hệ thống quản lý điểm trường THPT XYZ
+              </h2>
+              <p>
+                Theo thông tư 26/2020/TT-BGDĐT về việc sửa đổi Quy chế đánh giá,
+                xếp loại học sinh THCS và THPT
+              </p>
+            </Jumbotron>
+            {/* <Alert variant="success">
               <p>
                 <h3>Hệ thống quản lý điểm trường Trung học phổ thông</h3>{" "}
               </p>
-            </Alert>
+            </Alert> */}
 
             {/* <Form method="POST" onSubmit={onSendFile}>
             <Form.Group>

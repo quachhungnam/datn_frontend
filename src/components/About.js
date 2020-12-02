@@ -1,22 +1,22 @@
 import React from "react";
-import { Container, Card} from "react-bootstrap";
+import { Container, Card, Alert } from "react-bootstrap";
 import Footer from "./Footer";
 function About() {
   return (
     <>
       <Container>
         <Card>
-          <Card.Header>
-            <Card.Title>
-              <h4>CÁCH TÍNH ĐIỂM TRUNG BÌNH MÔN NĂM HỌC 2020-2021</h4>
-            </Card.Title>
-          </Card.Header>
           <Card.Body>
+            <Alert variant="success">
+              <h4>CÁCH TÍNH ĐIỂM TRUNG BÌNH MÔN NĂM HỌC 2020-2021</h4>
+            </Alert>
+
+            <hr />
             <Card>
-              <Card.Header>
-                <h4>Giới thiệu chung</h4>
-              </Card.Header>
               <Card.Body>
+                <h4>GIỚI THIỆU</h4>
+                <hr />
+
                 <div>
                   Điểm trung bình môn phản ánh khách quan quá trình học tập của
                   học sinh THCS, THPT. Thông qua điểm này để đánh giá quá trình
@@ -31,11 +31,11 @@ function About() {
                 </div>
               </Card.Body>
             </Card>
+            <hr />
             <Card>
-              <Card.Header>
-                <h4>Cách Tính điểm Trung bình môn học kỳ</h4>
-              </Card.Header>
               <Card.Body>
+                <h4>CÁCH TÍNH ĐIỂM TRUNG BÌNH MÔN HỌC KỲ</h4>
+                <hr />
                 <div>
                   Ngày 26/8/2020, Bộ GD&ĐT ban hành Thông tư 26/2020/TT-BGDĐT
                   sửa đổi Quy chế đánh giá, xếp loại học sinh THCS và THPT. Theo
@@ -58,11 +58,11 @@ function About() {
                 </div>
               </Card.Body>
             </Card>
+            <hr />
             <Card>
-              <Card.Header>
-                <h4>Cách tính điểm trung bình môn cả năm</h4>
-              </Card.Header>
               <Card.Body>
+                <h4>CÁCH TÍNH ĐIỂM TRUNG BÌNH MÔN CẢ NĂM</h4>
+                <hr />
                 <div>
                   Điểm trung bình môn cả năm là trung bình cộng của điểm trung
                   bình môn học kỳ 1 với điểm trung bình môn học kỳ 2 (lưu ý điểm

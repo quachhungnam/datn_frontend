@@ -1,5 +1,5 @@
 
-const API_URL = "http://127.0.0.1:8000";
+import { API_URL } from './urlService'
 async function getNotice() {
     try {
         let result = await fetch(`${API_URL}/api/notices/`, {

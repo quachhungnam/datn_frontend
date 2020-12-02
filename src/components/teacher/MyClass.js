@@ -10,6 +10,8 @@ import {
   Button,
   Card,
   Spinner,
+  Badge,
+  Alert,
 } from "react-bootstrap";
 import { get_schoolyear_service } from "../../services/schoolYearService";
 import { get_teacher_class } from "../../services/classesService";
@@ -25,7 +27,8 @@ export default function MyClass() {
   const [listClass, setlistClass] = useState([]);
   const [listStudent, setlistStudent] = useState([]);
   const [isLoading, setisLoading] = useState(false);
-
+  const [showDiem, setShowDiem] = useState(false);
+  const [studentDetail, setStudentDetail] = useState(null);
   //neu la nam hoc hien tai thi lay danh sach khac
 
   const getListStudent = async (classId, yearId) => {
@@ -108,7 +111,7 @@ export default function MyClass() {
 
   const standardExport = (data, semester) => {
     // let dataStandard = [];
-    const dataStandard=data.map((item, index) => {
+    const dataStandard = data.map((item, index) => {
       let DGTX1 = "=";
       let DGTX2 = "=";
 
@@ -155,7 +158,7 @@ export default function MyClass() {
         delete newItem.TB_HK1;
         delete newItem.TB_Nam;
       }
-      return newItem
+      return newItem;
       // dataStandard.push(newItem);
     });
     return dataStandard;
@@ -187,12 +190,30 @@ export default function MyClass() {
       setisLoading(false);
     }
   };
+
+  const showBangDiem = (user) => {
+    setStudentDetail(user);
+    setShowDiem(true);
+  };
+
+  const xemBangDiemHocSinh = () => {
+    return (
+      <BangDiemHocSinh
+        setShowDiem={setShowDiem}
+        studentDetail={studentDetail != null ? studentDetail : null}
+        currentYear={currentYear}
+        exportMarksStudent={exportMarksStudent}
+      />
+    );
+  };
+
   const showListStudent = listStudent.map((item, index) => (
     <StudentDetail
       key={index}
       stt={index + 1}
       user={item.user}
       exportMarksStudent={exportMarksStudent}
+      showBangDiem={showBangDiem}
     />
   ));
 
@@ -201,14 +222,12 @@ export default function MyClass() {
   }, []);
 
   return (
-    <Container>
-      <br></br>
+    <Container fluid>
       <Card>
-        <Card.Header>
-          {" "}
-          <Card.Title>Lớp chủ nhiệm</Card.Title>{" "}
-        </Card.Header>
         <Card.Body>
+          <Alert variant="success">
+            <h5 className="txt-upcase">Lớp chủ nhiệm</h5>
+          </Alert>
           <Form.Group>
             <Row>
               <Col md={3}>{listselectYear()}</Col>
@@ -223,61 +242,65 @@ export default function MyClass() {
                   />
                 </Button>
               ) : (
-                  ""
-                )}
+                ""
+              )}
             </Row>
           </Form.Group>
           <br></br>
-
+          {showListClass}
+          {/* 
           <Table striped bordered hover>
-            <thead>
-              <tr>
-                <th>Số TT</th>
-                <th>Lớp</th>
-                <th>Khóa</th>
-                <th>Năm học</th>
-              </tr>
-            </thead>
             <tbody>{showListClass}</tbody>
-          </Table>
+          </Table> */}
 
-          <Table striped bordered hover size="sm">
-            <thead>
-              <tr>
-                <th>Số TT</th>
-                <th>Họ và tên</th>
-                <th>Năm sinh</th>
-                <th>Giới tính</th>
-                <th>Email</th>
-                <th>Số điện thoại</th>
-                <th>Hành động</th>
-              </tr>
-            </thead>
-            <tbody>{showListStudent}</tbody>
-          </Table>
-          <DropdownButton id="dropdown-basic-button" title="Export">
-            <Dropdown.Item
-              onClick={() => {
-                exportMarksClass(1);
-              }}
-            >
-              Học kỳ 1
-            </Dropdown.Item>
-            <Dropdown.Item
-              onClick={() => {
-                exportMarksClass(2);
-              }}
-            >
-              Học kỳ 2
-            </Dropdown.Item>
-            <Dropdown.Item
-              onClick={() => {
-                exportMarksClass(3);
-              }}
-            >
-              Cả năm
-            </Dropdown.Item>
-          </DropdownButton>
+          {showDiem ? (
+            xemBangDiemHocSinh()
+          ) : (
+            <>
+              <Table striped bordered hover size="sm">
+                <thead>
+                  <tr>
+                    <th>Số TT</th>
+                    <th>Mã HS</th>
+                    <th>Họ và tên</th>
+                    <th>Năm sinh</th>
+                    <th>Giới tính</th>
+                    <th>Email</th>
+                    <th>Số điện thoại</th>
+                    <th>Hành động</th>
+                  </tr>
+                </thead>
+                <tbody>{showListStudent}</tbody>
+              </Table>
+              <DropdownButton
+                id="dropdown-basic-button"
+                variant="success"
+                title="Xuất điểm"
+              >
+                <Dropdown.Item
+                  onClick={() => {
+                    exportMarksClass(1);
+                  }}
+                >
+                  Học kỳ 1
+                </Dropdown.Item>
+                <Dropdown.Item
+                  onClick={() => {
+                    exportMarksClass(2);
+                  }}
+                >
+                  Học kỳ 2
+                </Dropdown.Item>
+                <Dropdown.Item
+                  onClick={() => {
+                    exportMarksClass(3);
+                  }}
+                >
+                  Cả năm
+                </Dropdown.Item>
+              </DropdownButton>
+            </>
+          )}
         </Card.Body>
       </Card>
     </Container>
@@ -285,19 +308,29 @@ export default function MyClass() {
 }
 
 function StudentDetail(props) {
+  const showBangDiem = (user) => {
+    props.showBangDiem(user);
+  };
   return (
     <tr>
       <td>{props.stt}</td>
+      <td>{props.user.username}</td>
       <td>{props.user.last_name + " " + props.user.first_name}</td>
       <td>{props.user.birthday}</td>
       <td>{props.user.gender ? "Nam" : "Nữ"}</td>
       <td>{props.user.email}</td>
       <td>{props.user.phone_number}</td>
       <td>
-        <DropdownButton id="dropdown-basic-button" size="sm" title="Action">
+        <DropdownButton
+          id="dropdown-basic-button"
+          size="sm"
+          title="..."
+          variant="success"
+        >
           <Dropdown.Item
             onClick={() => {
-              props.exportMarksStudent(props.user, 1);
+              showBangDiem(props.user);
+              // props.exportMarksStudent(props.user, 1);
             }}
           >
             Xem bảng điểm
@@ -332,11 +365,182 @@ function StudentDetail(props) {
 
 function RowTable(props) {
   return (
-    <tr>
-      <td>{props.index}</td>
-      <td>{props.class_name}</td>
-      <td>{props.course_year}</td>
-      <td>{props.school_year}</td>
-    </tr>
+    <Alert variant="success">
+      <Row>
+        <Col md={2}>
+          {" "}
+          <b>Lớp:</b>
+        </Col>
+        <Col>
+          <b className="text-uppercase">{props.class_name}</b>
+        </Col>
+      </Row>
+      <Row>
+        <Col md={2}>
+          {" "}
+          <b>Khóa:</b>
+        </Col>
+        <Col>
+          <b className="text-uppercase">{props.course_year}</b>
+        </Col>
+      </Row>
+      <Row>
+        <Col md={2}>
+          {" "}
+          <b>Năm học:</b>
+        </Col>
+        <Col>
+          <b className="text-uppercase">{props.school_year}</b>
+        </Col>
+      </Row>
+    </Alert>
+  );
+}
+
+function BangDiemHocSinh(props) {
+  const [listMarks, setListMarks] = useState([]);
+  const getAllMarkByYear = async () => {
+    try {
+      const rs = await getMarksByYear(
+        props.studentDetail.id,
+        props.currentYear
+      );
+      if (rs.count > 0) {
+        setListMarks(rs.results);
+      }
+    } catch (ex) {}
+  };
+  useEffect(() => {
+    getAllMarkByYear();
+    console.log(JSON.stringify(props.studentDetail));
+  }, []);
+
+  const showRowSubject = listMarks.map((item, idx) => {
+    const markRegular1 = item.marksregulary.filter(
+      (item) => item.semester === 1
+    );
+    const markRegular2 = item.marksregulary.filter(
+      (item) => item.semester === 2
+    );
+    const showMark1 = markRegular1.map((item, index) => (
+      <span>
+        {" "}
+        <Badge variant="light">{item.point}</Badge>
+      </span>
+    ));
+    const showMark2 = markRegular2.map((item, index) => (
+      <span>
+        <Badge variant="light">{item.point}</Badge>
+      </span>
+    ));
+    return (
+      <tr>
+        <td>{idx + 1}</td>
+        <td>{item.lecture.school_year.from_year}</td>
+        <td>{item.lecture.subject.subject_name}</td>
+
+        <td>{showMark1}</td>
+        <td>{item.mid_st_semester_point}</td>
+        <td>{item.end_st_semester_point}</td>
+        <td>{}</td>
+
+        <td>{showMark2}</td>
+        <td>{item.mid_nd_semester_point}</td>
+        <td>{item.end_nd_semester_point}</td>
+        <td>{}</td>
+        <td>{}</td>
+      </tr>
+    );
+  });
+
+  return (
+    <>
+      <Alert variant="info">
+        <Row>
+          <Col md={2}>
+            {" "}
+            <b>Mã học sinh:</b>
+          </Col>
+          <Col>
+            <b className="text-uppercase">{props.studentDetail.username}</b>
+          </Col>
+        </Row>
+        <Row>
+          <Col md={2}>
+            {" "}
+            <b>Họ tên:</b>
+          </Col>
+          <Col>
+            <b className="text-uppercase">
+              {props.studentDetail.last_name +
+                " " +
+                props.studentDetail.first_name}
+            </b>
+          </Col>
+        </Row>
+      </Alert>
+      <Table bordered size="sm">
+        <thead>
+          <tr>
+            <th rowSpan="2">STT</th>
+            <th rowSpan="2">Năm học </th>
+            <th rowSpan="2">Môn học</th>
+            <th colSpan="4">Học kỳ 1</th>
+            <th colSpan="4">Học kỳ 2</th>
+            <th rowSpan="2">Cả năm</th>
+          </tr>
+          <tr>
+            <th>Điểm ĐGTX</th>
+            <th>Giữa kỳ</th>
+            <th>Cuối kỳ</th>
+            <th>Trung bình môn</th>
+            <th>Điểm ĐGTX</th>
+            <th>Giữa kỳ</th>
+            <th>Cuối kỳ</th>
+            <th>Trung bình môn</th>
+          </tr>
+        </thead>
+        <tbody>{showRowSubject}</tbody>
+      </Table>
+      <hr />
+      <Form.Row>
+        <Button
+          variant="danger"
+          onClick={() => {
+            props.setShowDiem(false);
+          }}
+        >
+          Quay lại
+        </Button>
+        &nbsp;
+        <DropdownButton
+          id="dropdown-basic-button"
+          title="Xuất bảng điểm"
+          variant="success"
+        >
+          <Dropdown.Item
+            onClick={() => {
+              props.exportMarksStudent(props.studentDetail, 1);
+            }}
+          >
+            Xuất điểm học kỳ 1
+          </Dropdown.Item>
+          <Dropdown.Item
+            onClick={() => {
+              props.exportMarksStudent(props.studentDetail, 2);
+            }}
+          >
+            Xuất điểm học kỳ 2
+          </Dropdown.Item>
+          <Dropdown.Item
+            onClick={() => {
+              props.exportMarksStudent(props.studentDetail, 3);
+            }}
+          >
+            Xuất điểm cả năm
+          </Dropdown.Item>
+        </DropdownButton>
+      </Form.Row>
+    </>
   );
 }

@@ -8,7 +8,7 @@ import {
   Spinner,
   Badge,
   Card,
-  
+  Alert,
 } from "react-bootstrap";
 import { Redirect } from "react-router-dom";
 import { loginAction } from "../actions/authAction";
@@ -40,100 +40,100 @@ export default function Login() {
 
   return (
     <>
-      <Container>
-        <br></br>
+      <Container fluid>
         <Card>
-          <Card.Header>
-            <Card.Title>
-        
-
-             
-              Thông tin đăng nhập
-              {userState.isloading ? (
-                <Button
-                  className="float-md-right"
-                  variant="primary"
-                  size="sm"
-                  disabled
-                >
-                  <Spinner
-                    as="span"
-                    animation="border"
-                    size="sm"
-                    role="status"
-                    aria-hidden="true"
-                  />
-                </Button>
-              ) : (
-                ""
-              )}
-            
-            </Card.Title>
-          </Card.Header>
           <Card.Body>
-
-          
-            <Form onSubmit={handleLogin}>
-              <Form.Group as={Row}>
-                <Form.Label column sm={2}>
-                  <b>Tài khoản</b>
-                </Form.Label>
-                <Col sm={5}>
-                  <Form.Control
-                    disabled={userState.isloading}
-                    name="username"
-                    type="username"
-                    placeholder="Tài khoản"
-                    onChange={handleInput}
-                  />
-                </Col>
-              </Form.Group>
-
-              <Form.Group as={Row} controlId="formHorizontalPassword">
-                <Form.Label column sm={2}>
-                  <b>Mật khẩu</b>
-                </Form.Label>
-                <Col sm={5}>
-                  <Form.Control
-                    disabled={userState.isloading}
-                    name="password"
-                    type="password"
-                    placeholder="Mật khẩu"
-                    onChange={handleInput}
-                  />
-                </Col>
-              </Form.Group>
-
-              <Form.Group as={Row}>
-                <Col sm={{ span: 10, offset: 2 }}>
-                  <Button variant="success" type="submit" disabled={userState.isloading}>
-                    Đăng nhập
-                  </Button>
-                  &nbsp;
-                  {/* <Button onClick={resetUser} type="reset" className="bg-info">
-                    Xóa
-                  </Button> */}
-                </Col>
-              </Form.Group>
-
-              <Form.Group as={Row}>
-                <Col sm={{ span: 10, offset: 2 }}>
-                  {" "}
-                  {userState.errorMessage != null ? (
-                    <Badge pill variant="danger">
-                      {userState.errorMessage}
-                    </Badge>
-                  ) : (
-                    ""
-                  )}
-                </Col>
-              </Form.Group>
-            </Form>
+            <Row>
+              <Col md={{ span: 6, offset: 3 }}>
+                <Card>
+                  <Card.Body>
+                    <Alert variant="success">
+                      <h4 className="text-center"> ĐĂNG NHẬP</h4>
+                    </Alert>
+                    <hr />
+                    <Form onSubmit={handleLogin}>
+                      <Row>
+                        <Col md={3} className="font-weight-bold">
+                          Tài Khoản:
+                        </Col>
+                        <Col>
+                          <Form.Control
+                            disabled={userState.isloading}
+                            name="username"
+                            type="username"
+                            placeholder="Tài khoản"
+                            onChange={handleInput}
+                          />
+                        </Col>
+                      </Row>
+                      <br />
+                      <Row>
+                        <Col md={3} className="font-weight-bold">
+                          Mật khẩu:
+                        </Col>
+                        <Col>
+                          {" "}
+                          <Form.Control
+                            disabled={userState.isloading}
+                            name="password"
+                            type="password"
+                            placeholder="Mật khẩu"
+                            onChange={handleInput}
+                          />
+                        </Col>
+                      </Row>
+                      <hr />
+                      <Row>
+                        <Col md={{ offset: 3 }}>
+                          <Button
+                            variant="success"
+                            type="submit"
+                            disabled={userState.isloading}
+                          >
+                            Đăng nhập
+                          </Button>
+                        </Col>
+                        <Col>
+                          {userState.isloading ? (
+                            <Button
+                              className="float-md-right"
+                              variant="primary"
+                              size="sm"
+                              disabled
+                            >
+                              <Spinner
+                                as="span"
+                                animation="border"
+                                size="sm"
+                                role="status"
+                                aria-hidden="true"
+                              />
+                            </Button>
+                          ) : (
+                            ""
+                          )}
+                        </Col>
+                      </Row>
+                      <Row>
+                        <Col sm={{ offset: 3 }}>
+                          {userState.errorMessage != null ? (
+                            <h5>
+                              <Badge pill variant="danger">
+                                {userState.errorMessage}
+                              </Badge>
+                            </h5>
+                          ) : (
+                            ""
+                          )}
+                        </Col>
+                      </Row>
+                    </Form>
+                  </Card.Body>
+                </Card>
+              </Col>
+            </Row>
           </Card.Body>
         </Card>
-
-
-        
       </Container>
       <br></br>
       <Footer />

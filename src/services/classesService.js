@@ -1,6 +1,6 @@
 
 import { authHeader } from './authHeader'
-const API_URL = 'http://127.0.0.1:8000'
+import { API_URL } from './urlService'
 async function get_classesService(id) {
     try {
         let result = await fetch(`${API_URL}/api/classes/${id}/`, {
@@ -21,7 +21,7 @@ async function get_classesService(id) {
 }
 async function get_teacher_class(teacherId, yearId) {
     try {
-        let result = await fetch(`${API_URL}/api/activitiesclass/teacher/${teacherId}/schoolyear/${yearId}/`, {
+        let result = await fetch(`${API_URL}/api/adminclass/teacher/${teacherId}/schoolyear/${yearId}/`, {
             method: 'GET',
             headers: {
                 Accept: 'application/json',
