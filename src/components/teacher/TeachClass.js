@@ -31,6 +31,7 @@ import {
   validateListMarksCK2,
   // validateMarksReg,
 } from "../../utils/validateMarksReg";
+import {standarDate} from '../../utils/standardDate'
 import { ExportData } from "../../utils/exportData";
 export default function TeachClass(props) {
   const initMarksState = {
@@ -995,8 +996,8 @@ function HeadTable(props) {
         <th rowSpan="3">STT</th>
         <th rowSpan="3">Mã HS </th>
         <th rowSpan="3">Họ Tên</th>
-        <th colSpan={4}>Học kỳ 1 (Hạn nhập điểm: {props.limitInput1}) </th>
-        <th colSpan={4}>Học kỳ 2 (Hạn nhập điểm: {props.limitInput2})</th>
+        <th colSpan={4}>Học kỳ 1 (Hạn nhập điểm: {standarDate(props.limitInput1)}) </th>
+        <th colSpan={4}>Học kỳ 2 (Hạn nhập điểm: {standarDate(props.limitInput2)})</th>
         <th rowSpan="3">Cả năm</th>
       </tr>
 

@@ -5,7 +5,7 @@ export default function Footer() {
       <div className="container-fluid text-center text-md-left">
         <div className="row">
           <div className="col-md-3 mt-md-0 mt-3">
-            <h5 className="text-uppercase font-weight-bold">About US</h5>
+            <h5 className="text-uppercase font-weight-bold">Giới thiệu</h5>
             <p>
               Hệ thống quản lý điểm học sinh bậc Trung học phổ thông theo thông
               tư 26/2020/TT-BGDĐT của bộ giáo dục và Đào tạo
@@ -40,23 +40,23 @@ export default function Footer() {
 
           <div className="col-md-3 mb-md-0 mb-3">
             <h5 className="text-uppercase font-weight-bold">Chỉ dẫn</h5>
-            <div>Địa chỉ: 54 Nguyễn Lương Bằng, TP Đà Nẵng</div>
-            <div>SĐT: 0974 436 947</div>
-            <div>Email: tranquangdieu@gmail.com</div>
+            <div>Địa chỉ: 154 Lê Lợi, Hải Châu 1, Hòa Vang, Đà Nẵng</div>
+            <div>SĐT: 0236 3810 381</div>
+            <div>Email: thptphanchutrinh@gmail.com</div>
           </div>
 
           <div className="col-md-3 mb-md-0 mb-3">
             <h5 className="text-uppercase font-weight-bold">Liên hệ</h5>
             <div>Địa chỉ: 54 Nguyễn Lương Bằng, TP Đà Nẵng</div>
             <div>Telephone: (+84) 0974 436 947</div>
-            <div>Mobile: 0974 436 947</div>
-            <div>Email: tranquangdieu@gmail.com</div>
+            <div>Mobile:(+84.0236) 3736949</div>
+            <div>Email: : cntt@edu.ud.vn@gmail.com</div>
           </div>
         </div>
       </div>
 
       <div className="footer-copyright text-center py-3">
-        Copyright © 2020 Trường THPT Trần Quang Diệu
+        Copyright © 2020 Trường THPT Phan Chu Trinh
       </div>
     </footer>
   );

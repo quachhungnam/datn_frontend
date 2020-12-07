@@ -75,18 +75,18 @@ export default function App() {
           // bg="info"
           variant="dark"
           // sticky="top"
-          expand
+          
         >
-          <Navbar.Brand href="/">THPT Trần Quang Diệu</Navbar.Brand>
+          <Navbar.Brand href="/">Trường THPT Phan Châu Trinh</Navbar.Brand>
           <Navbar.Toggle aria-controls="responsive-navbar-nav" />
           <Navbar.Collapse id="responsive-navbar-nav">
             <Nav className="mr-auto">
               <NavLink to="/home" className="nav-link">
-                Trang chủ
+                Thông báo
               </NavLink>
-              <NavLink to="/plan" className="nav-link">
+              {/* <NavLink to="/plan" className="nav-link">
                 Kế hoạch
-              </NavLink>
+              </NavLink> */}
               {showDropdownUser()}
               {/* <NavDropdown title="Hỗ trợ" id="collasible-nav-dropdown">
                 <NavDropdown.Item href="#action/3.1">

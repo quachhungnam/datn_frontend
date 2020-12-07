@@ -109,7 +109,7 @@ function MyMarks() {
     const st_semester_conduct = 2;
     const nd_semester_conduct = 3;
     const year_conduct = (st_semester_conduct + nd_semester_conduct * 2) / 3;
-    
+
     return [st_semester_conduct, nd_semester_conduct, year_conduct];
   };
 
@@ -119,8 +119,16 @@ function MyMarks() {
       let year = key;
       let newList = listMarks[key];
       const [TBK1, TBK2, TBK3] = sumAllMarksStudent(newList);
-      const [con1,con2,con3]=getConduct(listRecord, year);
-      let ele = <RowRecord year={year} TBK1={TBK1} TBK2={TBK2} TBK3={TBK3} con1={con1}/>;
+      const [con1, con2, con3] = getConduct(listRecord, year);
+      let ele = (
+        <RowRecord
+          year={year}
+          TBK1={TBK1}
+          TBK2={TBK2}
+          TBK3={TBK3}
+          con1={con1}
+        />
+      );
       arrMarks.push(ele);
     }
     return arrMarks;
@@ -133,32 +141,28 @@ function MyMarks() {
 
   return (
     <Container fluid>
-      <br></br>
       <Card>
-        <Card.Header>
-          <Card.Title>
-            <h5 className="inline-h5">ĐIỂM TỔNG KẾT</h5>{" "}
-            {isLoading ? (
-              <Button
-                className="float-md-right"
-                variant="primary"
-                size="sm"
-                disabled
-              >
-                <Spinner
-                  as="span"
-                  animation="border"
-                  size="sm"
-                  role="status"
-                  aria-hidden="true"
-                />
-              </Button>
-            ) : (
-              ""
-            )}
-          </Card.Title>
-        </Card.Header>
         <Card.Body>
+          <h5 className="inline-h5">BẢNG ĐIỂM TỔNG KẾT</h5>{" "}
+          {isLoading ? (
+            <Button
+              className="float-md-right"
+              variant="primary"
+              size="sm"
+              disabled
+            >
+              <Spinner
+                as="span"
+                animation="border"
+                size="sm"
+                role="status"
+                aria-hidden="true"
+              />
+            </Button>
+          ) : (
+            ""
+          )}
+          <hr />
           <Table striped bordered hover size="sm">
             <thead>
               <tr>
@@ -187,12 +191,8 @@ function MyMarks() {
       <hr></hr>
 
       <Card>
-        <Card.Header>
-          <Card.Title>
-            <h5>ĐIỂM CHI TIẾT</h5>
-          </Card.Title>
-        </Card.Header>
         <Card.Body>
+          <h5>BẢNG ĐIỂM CHI TIẾT</h5>
           <hr></hr>
           {showMarksDetail()}
         </Card.Body>
@@ -288,8 +288,12 @@ function TableRecordDetail(props) {
 }
 // tung mon hoc
 function RowDetail(props) {
-  const markRegular1 = props.marksregulary.filter((item) => item.semester === 1);
-  const markRegular2 = props.marksregulary.filter((item) => item.semester === 2);
+  const markRegular1 = props.marksregulary.filter(
+    (item) => item.semester === 1
+  );
+  const markRegular2 = props.marksregulary.filter(
+    (item) => item.semester === 2
+  );
 
   const showMark1 = markRegular1.map((item, index) => (
     <span>
@@ -326,6 +330,12 @@ function RowDetail(props) {
 
 // bang diem tong ket
 function RowRecord(props) {
+  // const xetHK = (data)=>{
+  //   if(data==1){
+  //     return ""
+  //   }
+  // }
+
   return (
     <tr>
       <td>{}</td>

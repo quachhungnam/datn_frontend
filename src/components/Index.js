@@ -48,18 +48,20 @@ export default function Index() {
               <Carousel.Item>
                 <img
                   className="d-block w-100"
-                  src="https://image.thanhnien.vn/660/uploaded/thuyhang/2020_10_19/137b8d10fa3f04615d2e_ffko.jpg"
+                  src="http://127.0.0.1:8000/media/images/pct4.png/"
                   alt="First slide"
-                  height={400}
+                  // width={800}
+                  height={300}
                 />
               </Carousel.Item>
 
               <Carousel.Item>
                 <img
                   className="d-block w-100"
-                  src="https://i.vietgiaitri.com/2020/10/20/truong-thpt-thai-phien-cai-noi-dao-tao-nhan-tai-cho-thanh-pho-cang-6e0-5312618.jpg"
+                  src="http://127.0.0.1:8000/media/images/pct3.png/"
                   alt="Second slide"
-                  height={400}
+                  // width={800}
+                  height={300}
                 />
               </Carousel.Item>
 
@@ -67,17 +69,16 @@ export default function Index() {
                 <img
                   className="d-block w-100"
                   alt="Third slide"
-                  src="https://www.aland.edu.vn/uploads/images/userfiles/2020/01/07/truong-pho-thong-quoc-te-viet-nam-vis-aland-english.jpg"
-                  // width={200}
-                  height={400}
-                  width={500}
+                  src="http://127.0.0.1:8000/media/images/pct2.png/"
+                  // width={800}
+                  height={300}
                 />
               </Carousel.Item>
             </Carousel>
             <hr />
             <Jumbotron>
               <h2>
-                Chào mừng bạn đến với hệ thống quản lý điểm trường THPT XYZ
+                Chào mừng bạn đến với hệ thống quản lý điểm trường THPT Phan Chu Trinh
               </h2>
               <p>
                 Theo thông tư 26/2020/TT-BGDĐT về việc sửa đổi Quy chế đánh giá,

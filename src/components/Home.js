@@ -3,26 +3,50 @@ import { Container, Card, Nav } from "react-bootstrap";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import parse from "html-react-parser";
 import { getNotice } from "../services/noticeService";
+// import DataGrid from 'react-data-grid';
+// import 'react-data-grid/dist/react-data-grid.css';
+// import {ExcelFile, ExcelSheet} from "react-data-export";
 export default function Home() {
   const [listNotice, setListNotice] = useState([]);
+  const columns = [
+    { key: 'id', name: 'ID' },
+    { key: 'title', name: 'Title' }
+  ];
+
+  const rows = [
+    { id: 0, title: 'Example' },
+    { id: 1, title: 'Demo' }
+  ];
 
   const getAllNotice = async () => {
     try {
       const rs = await getNotice();
-      setListNotice(rs);
+      if (!rs.error) {
+        setListNotice(rs);
+      }
     } catch (ex) {
     } finally {
     }
   };
 
+  const standarDate = (data) => {
+    if (data.length >= 10) {
+      let d = data.slice(8, 10)
+      let m = data.slice(5, 7)
+      let y = data.slice(0, 4)
+      return d + "-" + m + "-" + y
+    }
+    return data
+  }
+
   const showListNotice = () => {
-    if (listNotice.length !==0) {
+    if (listNotice.length !== 0) {
       const ListNotice = listNotice.map((item) => (
         <Card>
           <Card.Header>
             <span className="text-danger">
               <b>
-                {item.post_date}
+                {standarDate(item.post_date)}
                 {":"}
               </b>{" "}
             </span>
@@ -74,7 +98,15 @@ export default function Home() {
           </Nav>
         </Card.Header>
 
-        <Card.Body>{showListNotice()}</Card.Body>
+        <Card.Body>{showListNotice()}
+          {/* <DataGrid
+            columns={columns}
+            rows={rows}
+          /> */}
+          {/* <ExcelFile>
+                <ExcelSheet dataSet={multiDataSet} name="Organization"/>
+            </ExcelFile> */}
+        </Card.Body>
         {/* <Card.Footer>
           <Pagination>
             <Pagination.Item>1</Pagination.Item>

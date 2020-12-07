@@ -21,10 +21,12 @@ import {
   updateUserService,
   getStudentService,
 } from "../services/userService";
-import { changePassword } from "../services/authService";
+// import { changePassword } from "../services/authService";
 import ChangePassword from "./ChangePassword";
 import { AuthContext } from "../context/AuthContext";
 import validator from "validator";
+import {standarDate} from '../utils/standardDate'
+
 
 function Infor() {
   let initUser = {
@@ -244,7 +246,7 @@ function Infor() {
                     <Row>
                       <Col md={2}>Năm sinh:</Col>
                       <Col>
-                        <b>{user.birthday}</b>
+                        <b>{standarDate(user.birthday)}</b>
                       </Col>
                     </Row>
                   </Alert>
