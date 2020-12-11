@@ -11,9 +11,9 @@ async function get_schoolyear_service() {
     });
     let resultJson = await result.json();
     return resultJson;
-  } catch (error) {
-    console.log(`Error is: ${error}`);
-    return error;
+  } catch (ex) {
+    console.log(`Error is: ${ex}`);
+    return { error: ex };
   }
 }
 

@@ -19,8 +19,8 @@ import { AuthContext } from "../../context/AuthContext";
 import { getStudentLecture } from "../../services/studentService";
 import { ExportData } from "../../utils/exportData";
 import { getMarksByYear, getMarksClass } from "../../services/marksService";
-import { standarDate } from '../../utils/standardDate'
-
+import { standarDate } from "../../utils/standardDate";
+import { sumMarks, standardExport } from "../../utils/marksUtils";
 export default function MyClass() {
   const [userState] = React.useContext(AuthContext);
   const [listYear, setlistYear] = useState([]);
@@ -110,150 +110,6 @@ export default function MyClass() {
     />
   ));
 
-  // const standardExport = (data, semester) => {
-  //   // let dataStandard = [];
-  //   const dataStandard = data.map((item, index) => {
-  //     let DGTX1 = "=";
-  //     let DGTX2 = "=";
-
-  //     const markRegular1 = item.marksregulary.filter(
-  //       (item) => item.semester === 1
-  //     );
-  //     for (let i = 0; i < markRegular1.length; i++) {
-  //       DGTX1 = DGTX1 + "+" + markRegular1[i].point;
-  //     }
-
-  //     const markRegular2 = item.marksregulary.filter(
-  //       (item) => item.semester === 2
-  //     );
-  //     for (let i = 0; i < markRegular2.length; i++) {
-  //       DGTX2 = DGTX2 + "+" + markRegular2[i].point;
-  //     }
-  //     let newItem = {
-  //       STT: index + 1,
-  //       TaiKhoan: item.student.user.username,
-  //       Ho: item.student.user.last_name,
-  //       Ten: item.student.user.first_name,
-  //       Mon: item.lecture.subject.subject_name,
-  //       DGTX_HK1: DGTX1,
-  //       GK1: item.mid_st_semester_point,
-  //       CK1: item.end_st_semester_point,
-  //       TB_HK1: item.gpa_st_semester_point,
-  //       DGTX_HK2: DGTX2,
-  //       GK2: item.mid_nd_semester_point,
-  //       CK2: item.end_nd_semester_point,
-  //       TB_HK2: item.gpa_nd_semester_point,
-  //       TB_Nam: item.gpa_year_point,
-  //     };
-  //     if (semester === 1) {
-  //       delete newItem.DGTX_HK2;
-  //       delete newItem.GK2;
-  //       delete newItem.CK2;
-  //       delete newItem.TB_HK2;
-  //       delete newItem.TB_Nam;
-  //     }
-  //     if (semester === 2) {
-  //       delete newItem.DGTX_HK1;
-  //       delete newItem.GK1;
-  //       delete newItem.CK1;
-  //       delete newItem.TB_HK1;
-  //       delete newItem.TB_Nam;
-  //     }
-  //     return newItem;
-  //     // dataStandard.push(newItem);
-  //   });
-  //   return dataStandard;
-  // };
-  const sumMarks = (dataMarks) => {
-    const listReg = dataMarks.marksregulary;
-    const listReg1 = listReg.filter((itemReg) => itemReg.semester === 1);
-    const listReg2 = listReg.filter((itemReg) => itemReg.semester === 2);
-    let sumReg1 = 0;
-    let sumReg2 = 0;
-    for (let reg1 of listReg1) {
-      sumReg1 = sumReg1 + parseFloat(reg1.point);
-    }
-    for (let reg2 of listReg2) {
-      sumReg2 = sumReg2 + parseFloat(reg2.point);
-    }
-    const GK1 = parseFloat(dataMarks.mid_st_semester_point);
-    const CK1 = parseFloat(dataMarks.end_st_semester_point);
-    const GK2 = parseFloat(dataMarks.mid_nd_semester_point);
-    const CK2 = parseFloat(dataMarks.end_nd_semester_point);
-    // console.log(dataMarks.mid_st_semester_point);
-    // if (dataMarks.mid_st_semester_point == null) {
-    //   console.log("null");
-    // }
-
-    const TB_HK1 = (sumReg1 + GK1 * 2 + CK1 * 3) / (5 + listReg1.length);
-    const TB_HK2 = (sumReg2 + GK2 * 2 + CK2 * 3) / (5 + listReg2.length);
-
-    const TB_HK_1 = TB_HK1.toFixed(1);
-    const TB_HK_2 = TB_HK2.toFixed(1);
-
-    const TB_NAM = (
-      (parseFloat(TB_HK_1) + parseFloat(TB_HK_2) * 2) /
-      3
-    ).toFixed(1);
-
-    return [TB_HK_1, TB_HK_2, TB_NAM];
-  };
-  const standardExport = (data, semester) => {
-    // let dataStandard = [];
-    const dataStandard = data.map((item, index) => {
-      const [sum1, sum2, sum3] = sumMarks(item);
-      let DGTX1 = "=";
-      let DGTX2 = "=";
-
-      const markRegular1 = item.marksregulary.filter(
-        (item) => item.semester === 1
-      );
-      for (let i = 0; i < markRegular1.length; i++) {
-        DGTX1 = DGTX1 + "+" + markRegular1[i].point;
-      }
-
-      const markRegular2 = item.marksregulary.filter(
-        (item) => item.semester === 2
-      );
-      for (let i = 0; i < markRegular2.length; i++) {
-        DGTX2 = DGTX2 + "+" + markRegular2[i].point;
-      }
-      let newItem = {
-        STT: index + 1,
-        TaiKhoan: item.student.user.username,
-        Ho: item.student.user.last_name,
-        Ten: item.student.user.first_name,
-        Mon: item.lecture.subject.subject_name,
-        DGTX_HK1: DGTX1,
-        GK1: item.mid_st_semester_point,
-        CK1: item.end_st_semester_point,
-        TB_HK1: sum1,
-        DGTX_HK2: DGTX2,
-        GK2: item.mid_nd_semester_point,
-        CK2: item.end_nd_semester_point,
-        TB_HK2: sum2,
-        TB_Nam: sum3,
-      };
-      if (semester === 1) {
-        delete newItem.DGTX_HK2;
-        delete newItem.GK2;
-        delete newItem.CK2;
-        delete newItem.TB_HK2;
-        delete newItem.TB_Nam;
-      }
-      if (semester === 2) {
-        delete newItem.DGTX_HK1;
-        delete newItem.GK1;
-        delete newItem.CK1;
-        delete newItem.TB_HK1;
-        delete newItem.TB_Nam;
-      }
-      return newItem;
-      // dataStandard.push(newItem);
-    });
-    return dataStandard;
-  };
-
   const exportMarksStudent = async (user, semester) => {
     try {
       setisLoading(true);
@@ -332,8 +188,8 @@ export default function MyClass() {
                   />
                 </Button>
               ) : (
-                  ""
-                )}
+                ""
+              )}
             </Row>
           </Form.Group>
           <br></br>
@@ -346,22 +202,24 @@ export default function MyClass() {
           {showDiem ? (
             xemBangDiemHocSinh()
           ) : (
-              <>
-                <Table striped bordered hover size="sm">
-                  <thead>
-                    <tr>
-                      <th>Số TT</th>
-                      <th>Mã HS</th>
-                      <th>Họ và tên</th>
-                      <th>Năm sinh</th>
-                      <th>Giới tính</th>
-                      <th>Email</th>
-                      <th>Số điện thoại</th>
-                      <th>Hành động</th>
-                    </tr>
-                  </thead>
-                  <tbody>{showListStudent}</tbody>
-                </Table>
+            <>
+              <Table striped bordered hover size="sm">
+                <thead>
+                  <tr>
+                    <th>Số TT</th>
+                    <th>Mã HS</th>
+                    <th>Họ và tên</th>
+                    <th>Năm sinh</th>
+                    <th>Giới tính</th>
+                    <th>Email</th>
+                    <th>Số điện thoại</th>
+                    <th>Hành động</th>
+                  </tr>
+                </thead>
+                <tbody>{showListStudent}</tbody>
+              </Table>
+              {/* {<ConductTable />} */}
+              <Row>
                 <DropdownButton
                   id="dropdown-basic-button"
                   variant="success"
@@ -373,24 +231,27 @@ export default function MyClass() {
                     }}
                   >
                     Học kỳ 1
-                </Dropdown.Item>
+                  </Dropdown.Item>
                   <Dropdown.Item
                     onClick={() => {
                       exportMarksClass(2);
                     }}
                   >
                     Học kỳ 2
-                </Dropdown.Item>
+                  </Dropdown.Item>
                   <Dropdown.Item
                     onClick={() => {
                       exportMarksClass(3);
                     }}
                   >
                     Cả năm
-                </Dropdown.Item>
+                  </Dropdown.Item>
                 </DropdownButton>
-              </>
-            )}
+                &nbsp;
+                {/* <Button variant="success">Xét Hạnh Kiểm</Button> */}
+              </Row>
+            </>
+          )}
         </Card.Body>
       </Card>
     </Container>
@@ -399,17 +260,17 @@ export default function MyClass() {
 
 const setGender = (data) => {
   if (data == null) {
-    return "Khác"
+    return "Khác";
   } else {
     if (data == 1) {
-      return "Nam"
+      return "Nam";
     }
     if (data == 0) {
-      return "Nữ"
+      return "Nữ";
     }
   }
-  return "Khác"
-}
+  return "Khác";
+};
 
 function StudentDetail(props) {
   const showBangDiem = (user) => {
@@ -512,14 +373,16 @@ function BangDiemHocSinh(props) {
       if (rs.count > 0) {
         setListMarks(rs.results);
       }
-    } catch (ex) { }
+    } catch (ex) {}
   };
+
   useEffect(() => {
     getAllMarkByYear();
     console.log(JSON.stringify(props.studentDetail));
   }, []);
 
   const showRowSubject = listMarks.map((item, idx) => {
+    const [sum1, sum2, sum3] = sumMarks(item);
     const markRegular1 = item.marksregulary.filter(
       (item) => item.semester === 1
     );
@@ -540,19 +403,18 @@ function BangDiemHocSinh(props) {
     return (
       <tr>
         <td>{idx + 1}</td>
-        {/* <td>{item.lecture.school_year.from_year}</td> */}
         <td>{item.lecture.subject.subject_name}</td>
 
         <td>{showMark1}</td>
         <td>{item.mid_st_semester_point}</td>
         <td>{item.end_st_semester_point}</td>
-        <td>{ }</td>
+        <td>{sum1}</td>
 
         <td>{showMark2}</td>
         <td>{item.mid_nd_semester_point}</td>
         <td>{item.end_nd_semester_point}</td>
-        <td>{ }</td>
-        <td>{ }</td>
+        <td>{sum2}</td>
+        <td>{sum3}</td>
       </tr>
     );
   });
@@ -646,5 +508,106 @@ function BangDiemHocSinh(props) {
         </DropdownButton>
       </Form.Row>
     </>
+  );
+}
+
+function ConductTable() {
+  return (
+    <Table striped bordered hover size="sm">
+      <thead>
+        <tr>
+          <th>Số TT</th>
+          <th>Mã HS</th>
+          <th>Họ và tên</th>
+          <th>Hạnh kiểm HK1</th>
+          <th>Hạnh kiểm HK2</th>
+          <th>Hạnh kiểm cả năm</th>
+        </tr>
+      </thead>
+      <tbody>{<ConductRow />}</tbody>
+    </Table>
+  );
+}
+
+function ConductRow() {
+  const [listConduct, setlistConduct] = useState([
+    { id: 0, value: "Chưa xét" },
+    { id: 1, value: "Yếu" },
+    { id: 2, value: "Trung bình" },
+    { id: 3, value: "Khá" },
+    { id: 4, value: "Tốt" },
+  ]);
+
+  const [currentConduct1, setcurrentConduct1] = useState(0);
+  const [currentConduct2, setcurrentConduct2] = useState(0);
+
+  const onselectConduct1 = (event) => {
+    const conductSelect = event.target.value;
+    setcurrentConduct1(conductSelect);
+    console.log(event.target.value);
+    // setcurrentYear(yearSelect);
+    // getlistLecture(userState.user.user_id, yearSelect);
+  };
+  const onselectConduct2 = (event) => {
+    const conductSelect = event.target.value;
+    setcurrentConduct2(conductSelect);
+    console.log(event.target.value);
+    // setcurrentYear(yearSelect);
+    // getlistLecture(userState.user.user_id, yearSelect);
+  };
+
+  const listselectConduct1 = () => {
+    return (
+      <Form.Control
+        size="sm"
+        as="select"
+        value={currentConduct1}
+        onChange={onselectConduct1}
+      >
+        {listConduct.map((item, idx) => (
+          <option className="dropdown-item" value={item.id} key={idx}>
+            {item.value}
+          </option>
+        ))}
+      </Form.Control>
+    );
+  };
+
+  const listselectConduct2 = () => {
+    return (
+      <Form.Control
+        size="sm"
+        as="select"
+        value={currentConduct2}
+        onChange={onselectConduct2}
+      >
+        {listConduct.map((item, idx) => (
+          <option className="dropdown-item" value={item.id} key={idx}>
+            {item.value}
+          </option>
+        ))}
+      </Form.Control>
+    );
+  };
+
+  return (
+    <tr>
+      <td>
+        1{" "}
+        <Button
+          onClick={() => {
+            alert(JSON.stringify(currentConduct1));
+            alert(JSON.stringify(currentConduct2));
+          }}
+        >
+          ok
+        </Button>
+      </td>
+      <td>1f1sd1132</td>
+      <td>Họ tên</td>
+      <td>{listselectConduct1()}</td>
+      <td>{listselectConduct2()}</td>
+      <td></td>
+    </tr>
   );
 }

@@ -49,8 +49,8 @@ export default function Footer() {
             <h5 className="text-uppercase font-weight-bold">Liên hệ</h5>
             <div>Địa chỉ: 54 Nguyễn Lương Bằng, TP Đà Nẵng</div>
             <div>Telephone: (+84) 0974 436 947</div>
-            <div>Mobile:(+84.0236) 3736949</div>
-            <div>Email: : cntt@edu.ud.vn@gmail.com</div>
+            <div>Mobile: (+84.0236) 3736949</div>
+            <div>Email: cntt@edu.ud.vn@gmail.com</div>
           </div>
         </div>
       </div>

@@ -9,6 +9,7 @@ import {
   Card,
   Spinner,
   Alert,
+  Badge
 } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
 import { get_schoolyear_service } from "../../services/schoolYearService";
@@ -21,18 +22,23 @@ export default function TeachClassList() {
   const [currentYear, setcurrentYear] = useState(0);
   const [listLecture, setlistLecture] = useState([]);
   const [isLoading, setisLoading] = useState(false);
+  const [message, setMessage] = useState(null);
+
   const getlistLecture = async (teacherId, yearId) => {
     setisLoading(true);
     const rs = await get_lecture_teacher_service(teacherId, yearId);
-    if (!rs.error) {
+    if (rs.error) {
+      setMessage("Không thể kết nối đến Server!")
+      setisLoading(false);
+      return
+    } else {
       if (rs.results.length > 0) {
         const arr_lecture = rs.results;
         setlistLecture(arr_lecture);
       } else {
+        setlistLecture([]);
       }
       setisLoading(false);
-    } else {
-
     }
 
   };
@@ -55,9 +61,16 @@ export default function TeachClassList() {
 
   const getlistFirst = async () => {
     const rs = await get_schoolyear_service();
-    setlistYear(rs);
-    const yearId = getcurrentYear(rs);
-    getlistLecture(userState.user.user_id, yearId);
+    if (rs.error) {
+      setMessage("Không thể kết nối đến Server!")
+      // setisLoading(false);
+      return
+    } else {
+      setlistYear(rs);
+      const yearId = getcurrentYear(rs);
+      getlistLecture(userState.user.user_id, yearId);
+    }
+
   };
 
   const onselectYear = (event) => {
@@ -96,6 +109,17 @@ export default function TeachClassList() {
     />
   ));
 
+  const showMessage = () => {
+    if (message != null) {
+      return (
+        <h5>
+          <Badge variant="danger">{message}</Badge>
+        </h5>
+      );
+    }
+  };
+
+
   useEffect(() => {
     getlistFirst();
   }, []);
@@ -128,6 +152,7 @@ export default function TeachClassList() {
                 )}
             </Row>
           </Form.Group>
+          {showMessage()}
           <br></br>
           <Table striped bordered hover>
             <HeadTable></HeadTable>

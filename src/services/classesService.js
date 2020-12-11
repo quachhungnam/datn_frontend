@@ -14,9 +14,9 @@ async function get_classesService(id) {
         });
         let resultJson = await result.json();
         return resultJson;
-    } catch (error) {
-        console.log(`Error is: ${error}`);
-        return error;
+    } catch (ex) {
+        console.log(`Error is: ${ex}`);
+        return { error: ex };
     }
 }
 async function get_teacher_class(teacherId, yearId) {
@@ -32,9 +32,9 @@ async function get_teacher_class(teacherId, yearId) {
         });
         let resultJson = await result.json();
         return resultJson;
-    } catch (error) {
-        console.log(`Error is: ${error}`);
-        return error;
+    } catch (ex) {
+        console.log(`Error is: ${ex}`);
+        return { error: ex };
     }
 }
 

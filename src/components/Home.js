@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Container, Card, Nav } from "react-bootstrap";
+import { Container, Card, Nav, Badge } from "react-bootstrap";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import parse from "html-react-parser";
 import { getNotice } from "../services/noticeService";
@@ -8,22 +8,27 @@ import { getNotice } from "../services/noticeService";
 // import {ExcelFile, ExcelSheet} from "react-data-export";
 export default function Home() {
   const [listNotice, setListNotice] = useState([]);
-  const columns = [
-    { key: 'id', name: 'ID' },
-    { key: 'title', name: 'Title' }
-  ];
+  const [message, setMessage] = useState(null)
+  // const columns = [
+  //   { key: 'id', name: 'ID' },
+  //   { key: 'title', name: 'Title' }
+  // ];
 
-  const rows = [
-    { id: 0, title: 'Example' },
-    { id: 1, title: 'Demo' }
-  ];
+  // const rows = [
+  //   { id: 0, title: 'Example' },
+  //   { id: 1, title: 'Demo' }
+  // ];
 
   const getAllNotice = async () => {
     try {
       const rs = await getNotice();
-      if (!rs.error) {
+      if (rs.error) {
+        setMessage("Không thể kết nối đến Server!")
+        return
+      } else {
         setListNotice(rs);
       }
+
     } catch (ex) {
     } finally {
     }
@@ -63,6 +68,17 @@ export default function Home() {
     return "";
   };
 
+  const showMessage = () => {
+    if (message != null) {
+      return (
+        <h5>
+          <Badge variant="danger">{message}</Badge>
+        </h5>
+
+      )
+    }
+    return ""
+  }
   // const showListNotice = listNotice.map((item) => (
   //   <Card>
   //     <Card.Header>
@@ -98,7 +114,9 @@ export default function Home() {
           </Nav>
         </Card.Header>
 
-        <Card.Body>{showListNotice()}
+        <Card.Body>
+          {showListNotice()}
+          {showMessage()}
           {/* <DataGrid
             columns={columns}
             rows={rows}

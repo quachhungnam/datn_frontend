@@ -10,11 +10,18 @@ import {
 } from "react-bootstrap";
 import { AuthContext } from "../../context/AuthContext";
 
-import { getRecordStudent, getMarksStudent } from "../../services/marksService";
+import {
+  getRecordStudent,
+  getMarksStudent,
+  getConductStudent,
+} from "../../services/marksService";
+import { sumMarks } from '../../utils/marksUtils';
+
 
 function MyMarks() {
   const [userState] = React.useContext(AuthContext);
   const [listRecord, setlistRecord] = useState([]);
+  const [listConduct, setlistConduct] = useState([]);
   const [listMarks, setlistMarks] = useState({});
   const [isLoading, setisLoading] = useState(false);
 
@@ -29,36 +36,36 @@ function MyMarks() {
     }, {});
   }
 
-  const sumMarks = (dataMarks) => {
-    const listReg = dataMarks.marksregulary;
-    const listReg1 = listReg.filter((itemReg) => itemReg.semester === 1);
-    const listReg2 = listReg.filter((itemReg) => itemReg.semester === 2);
-    let sumReg1 = 0;
-    let sumReg2 = 0;
-    for (let reg1 of listReg1) {
-      sumReg1 = sumReg1 + parseFloat(reg1.point);
-    }
-    for (let reg2 of listReg2) {
-      sumReg2 = sumReg2 + parseFloat(reg2.point);
-    }
-    const GK1 = parseFloat(dataMarks.mid_st_semester_point);
-    const CK1 = parseFloat(dataMarks.end_st_semester_point);
-    const GK2 = parseFloat(dataMarks.mid_nd_semester_point);
-    const CK2 = parseFloat(dataMarks.end_nd_semester_point);
+  // const sumMarks = (dataMarks) => {
+  //   const listReg = dataMarks.marksregulary;
+  //   const listReg1 = listReg.filter((itemReg) => itemReg.semester === 1);
+  //   const listReg2 = listReg.filter((itemReg) => itemReg.semester === 2);
+  //   let sumReg1 = 0;
+  //   let sumReg2 = 0;
+  //   for (let reg1 of listReg1) {
+  //     sumReg1 = sumReg1 + parseFloat(reg1.point);
+  //   }
+  //   for (let reg2 of listReg2) {
+  //     sumReg2 = sumReg2 + parseFloat(reg2.point);
+  //   }
+  //   const GK1 = parseFloat(dataMarks.mid_st_semester_point);
+  //   const CK1 = parseFloat(dataMarks.end_st_semester_point);
+  //   const GK2 = parseFloat(dataMarks.mid_nd_semester_point);
+  //   const CK2 = parseFloat(dataMarks.end_nd_semester_point);
 
-    const TB_HK1 = (sumReg1 + GK1 * 2 + CK1 * 3) / (5 + listReg1.length);
-    const TB_HK2 = (sumReg2 + GK2 * 2 + CK2 * 3) / (5 + listReg2.length);
+  //   const TB_HK1 = (sumReg1 + GK1 * 2 + CK1 * 3) / (5 + listReg1.length);
+  //   const TB_HK2 = (sumReg2 + GK2 * 2 + CK2 * 3) / (5 + listReg2.length);
 
-    const TB_HK_1 = TB_HK1.toFixed(1);
-    const TB_HK_2 = TB_HK2.toFixed(1);
+  //   const TB_HK_1 = TB_HK1.toFixed(1);
+  //   const TB_HK_2 = TB_HK2.toFixed(1);
 
-    const TB_NAM = (
-      (parseFloat(TB_HK_1) + parseFloat(TB_HK_2) * 2) /
-      3
-    ).toFixed(1);
+  //   const TB_NAM = (
+  //     (parseFloat(TB_HK_1) + parseFloat(TB_HK_2) * 2) /
+  //     3
+  //   ).toFixed(1);
 
-    return [TB_HK_1, TB_HK_2, TB_NAM];
-  };
+  //   return [TB_HK_1, TB_HK_2, TB_NAM];
+  // };
 
   const getAllMarks = async () => {
     setisLoading(true);
@@ -77,6 +84,21 @@ function MyMarks() {
     }
   };
 
+  const getAllConduct = async () => {
+    const rs = await getConductStudent(userState.user.user_id);
+    if (rs.error) {
+      console.log('rrrrr')
+      return
+    } else {
+      if (rs.count > 0) {
+        // console.log(rs.results);
+        // console.log(rs.results[0].learningoutcomes);
+        console.log(rs.results[0])
+        setlistConduct(rs.results[0].learningoutcomes);//danh sach hanh kiem cua hoc sinh
+      }
+    }
+  };
+
   const sumAllMarksStudent = (data) => {
     let TBK1 = 0;
     let TBK2 = 0;
@@ -88,7 +110,7 @@ function MyMarks() {
       TBK2 = parseFloat(TBK2) + parseFloat(k2);
       TBK3 = parseFloat(TBK3) + parseFloat(k3);
     }
-    return [TBK1 / l, TBK2 / l, TBK3 / l];
+    return [isNaN(TBK1) ? "-" : (TBK1 / l), isNaN(TBK2) ? "-" : (TBK2 / l), isNaN(TBK3) ? "-" : (TBK3 / l)];
   };
 
   const showMarksDetail = () => {
@@ -103,14 +125,23 @@ function MyMarks() {
   };
 
   const getConduct = (data, year) => {
-    const dataOfYear = data.filter(
-      (item) => item.school_year.from_year === year
+    // let st_semester_conduct = 0;
+    // let nd_semester_conduct = 0;
+    //danh sach hanh kiem loc theo nam
+    const newConduct = data.filter(
+      (item) => item.school_year.from_year == year
     );
-    const st_semester_conduct = 2;
-    const nd_semester_conduct = 3;
-    const year_conduct = (st_semester_conduct + nd_semester_conduct * 2) / 3;
+    console.log('chinh em' + JSON.stringify(newConduct))
 
-    return [st_semester_conduct, nd_semester_conduct, year_conduct];
+    // for (let i = 0; i < newConduct.length; i++) {
+    //   st_semester_conduct = newConduct[i].st_semester_conduct;
+    //   nd_semester_conduct = newConduct[i].nd_semester_conduct;
+    // }
+    if (newConduct.length > 0) {
+      return newConduct[0]
+    }
+    return { st_semester_conduct: null, nd_semester_conduct: null }
+    // return newConduct;
   };
 
   const showMarkRe = () => {
@@ -119,14 +150,20 @@ function MyMarks() {
       let year = key;
       let newList = listMarks[key];
       const [TBK1, TBK2, TBK3] = sumAllMarksStudent(newList);
-      const [con1, con2, con3] = getConduct(listRecord, year);
+      // const [con1, con2, con3] =
+      //   listConduct.length > 0 ? getConduct(listConduct, year) : [0, 0, 0];
+      const conduct = getConduct(listConduct, year);
+
       let ele = (
         <RowRecord
           year={year}
           TBK1={TBK1}
           TBK2={TBK2}
           TBK3={TBK3}
-          con1={con1}
+          conduct={conduct}
+        // con1={con1}
+        // con2={con2}
+        // con3={con3}
         />
       );
       arrMarks.push(ele);
@@ -137,6 +174,7 @@ function MyMarks() {
   useEffect(() => {
     getAllRecord();
     getAllMarks();
+    getAllConduct();
   }, []);
 
   return (
@@ -160,8 +198,8 @@ function MyMarks() {
               />
             </Button>
           ) : (
-            ""
-          )}
+              ""
+            )}
           <hr />
           <Table striped bordered hover size="sm">
             <thead>
@@ -203,36 +241,36 @@ function MyMarks() {
 // bang diem chi tiet
 function TableRecordDetail(props) {
   const listMarksYear = props.listMarks;
-  const sumMarks = (dataMarks) => {
-    const listReg = dataMarks.marksregulary;
-    const listReg1 = listReg.filter((itemReg) => itemReg.semester === 1);
-    const listReg2 = listReg.filter((itemReg) => itemReg.semester === 2);
-    let sumReg1 = 0;
-    let sumReg2 = 0;
-    for (let reg1 of listReg1) {
-      sumReg1 = sumReg1 + parseFloat(reg1.point);
-    }
-    for (let reg2 of listReg2) {
-      sumReg2 = sumReg2 + parseFloat(reg2.point);
-    }
-    const GK1 = parseFloat(dataMarks.mid_st_semester_point);
-    const CK1 = parseFloat(dataMarks.end_st_semester_point);
-    const GK2 = parseFloat(dataMarks.mid_nd_semester_point);
-    const CK2 = parseFloat(dataMarks.end_nd_semester_point);
+  // const sumMarks = (dataMarks) => {
+  //   const listReg = dataMarks.marksregulary;
+  //   const listReg1 = listReg.filter((itemReg) => itemReg.semester === 1);
+  //   const listReg2 = listReg.filter((itemReg) => itemReg.semester === 2);
+  //   let sumReg1 = 0;
+  //   let sumReg2 = 0;
+  //   for (let reg1 of listReg1) {
+  //     sumReg1 = sumReg1 + parseFloat(reg1.point);
+  //   }
+  //   for (let reg2 of listReg2) {
+  //     sumReg2 = sumReg2 + parseFloat(reg2.point);
+  //   }
+  //   const GK1 = parseFloat(dataMarks.mid_st_semester_point);
+  //   const CK1 = parseFloat(dataMarks.end_st_semester_point);
+  //   const GK2 = parseFloat(dataMarks.mid_nd_semester_point);
+  //   const CK2 = parseFloat(dataMarks.end_nd_semester_point);
 
-    const TB_HK1 = (sumReg1 + GK1 * 2 + CK1 * 3) / (5 + listReg1.length);
-    const TB_HK2 = (sumReg2 + GK2 * 2 + CK2 * 3) / (5 + listReg2.length);
+  //   const TB_HK1 = (sumReg1 + GK1 * 2 + CK1 * 3) / (5 + listReg1.length);
+  //   const TB_HK2 = (sumReg2 + GK2 * 2 + CK2 * 3) / (5 + listReg2.length);
 
-    const TB_HK_1 = TB_HK1.toFixed(1);
-    const TB_HK_2 = TB_HK2.toFixed(1);
+  //   const TB_HK_1 = TB_HK1.toFixed(1);
+  //   const TB_HK_2 = TB_HK2.toFixed(1);
 
-    const TB_NAM = (
-      (parseFloat(TB_HK_1) + parseFloat(TB_HK_2) * 2) /
-      3
-    ).toFixed(1);
+  //   const TB_NAM = (
+  //     (parseFloat(TB_HK_1) + parseFloat(TB_HK_2) * 2) /
+  //     3
+  //   ).toFixed(1);
 
-    return [TB_HK_1, TB_HK_2, TB_NAM];
-  };
+  //   return [TB_HK_1, TB_HK_2, TB_NAM];
+  // };
 
   // const showgi = () => {
   //   alert(JSON.stringify(listMarksYear));
@@ -335,19 +373,42 @@ function RowRecord(props) {
   //     return ""
   //   }
   // }
+  const conduct = props.conduct;
+
+  const XepHocLuc = (hk, ht) => { };
+  const XepHK = (data) => {
+    // console.log(data);
+    if (data == null) {
+      return "Chưa xét";
+    } else {
+      if (1 <= data && data < 1.5) {
+        return "Yếu";
+      }
+      if (1.5 <= data && data < 2.5) {
+        return "Trung bình";
+      }
+      if (2.5 <= data && data < 3.5) {
+        return "Khá";
+      }
+      if (3.5 <= data && data <= 4) {
+        return "Tốt";
+      }
+    }
+    return "Chưa xét";
+  };
 
   return (
     <tr>
-      <td>{}</td>
+      <td>{ }</td>
       <td>{props.year}</td>
       <td>{props.TBK1}</td>
-      <td>{props.con1}</td>
-      <td>{}</td>
+      <td>{XepHK(conduct.st_semester_conduct)}</td>
+      <td>{ }</td>
       <td> {props.TBK2}</td>
-      <td></td>
+      <td>{XepHK(conduct.nd_semester_conduct)}</td>
       <td></td>
       <td>{props.TBK3}</td>
-      <td></td>
+      <td>{XepHK(conduct.nd_semester_conduct + conduct.nd_semester_conduct * 2)}</td>
       <td></td>
     </tr>
   );

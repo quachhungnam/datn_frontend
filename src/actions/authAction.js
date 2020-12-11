@@ -4,15 +4,21 @@ export async function loginAction(dispatch, user) {
     try {
         dispatch({ type: 'REQUEST_LOGIN' });
         const res = await loginUser(user)
+        if (res.error) {
+            dispatch({ type: 'LOGIN_ERROR', error: "Không thể kết nối đến Server!" });
+            return
+        }
         if (res.access) {
             await dispatch({ type: 'LOGIN_SUCCESS', user: res });
+            return
             // localStorage.setItem("user", JSON.stringify(res));
         } else {
             dispatch({ type: 'LOGIN_ERROR', error: "Sai tài khoản hoặc mật khẩu!" });
+            return
         }
     } catch (e) {
         dispatch({ type: 'LOGIN_ERROR', error: "Không thể đăng nhập lúc này!" });
-        console.log(e)
+        // console.log(e)
     }
 }
 

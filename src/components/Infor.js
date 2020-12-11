@@ -25,7 +25,7 @@ import {
 import ChangePassword from "./ChangePassword";
 import { AuthContext } from "../context/AuthContext";
 import validator from "validator";
-import {standarDate} from '../utils/standardDate'
+import { standarDate } from '../utils/standardDate'
 
 
 function Infor() {
@@ -52,13 +52,18 @@ function Infor() {
     try {
       setisLoading(true);
       let rs = await getUserService(userState.user.user_id);
+      if (rs.error) {
+        setMessage("Không thể kết nối đến Server!")
+        setisLoading(false);
+        return
+      }
       if (userState.user.is_teacher === false) {
         const rsMoreInfor = await getStudentService(userState.user.user_id);
         setMoreInfor(rsMoreInfor);
       }
       setisLoading(false);
       setUser(rs);
-    } catch (e) {}
+    } catch (e) { }
   };
 
   const handleInput = (event) => {
@@ -138,8 +143,8 @@ function Infor() {
                 <b className="text-uppercase">
                   {moreInfor.classes != null
                     ? moreInfor.classes.class_name +
-                      "- Khóa: " +
-                      moreInfor.classes.course_year
+                    "- Khóa: " +
+                    moreInfor.classes.course_year
                     : "Chưa phân lớp"}
                 </b>
               </Col>
@@ -237,8 +242,8 @@ function Infor() {
                           {user.gender === 1
                             ? "Nam"
                             : user.gender === 0
-                            ? "Nữ"
-                            : "Khác"}
+                              ? "Nữ"
+                              : "Khác"}
                         </b>
                       </Col>
                     </Row>
@@ -323,18 +328,18 @@ function Infor() {
                       />
                     </Button>
                   ) : (
-                    ""
-                  )}
+                      ""
+                    )}
                 </Col>
                 <Col>{showMessage()}</Col>
               </Row>
             </Form>
           ) : (
-            <ChangePassword
-            // changePassword={onChangePassword}
-            // message={message}
-            ></ChangePassword>
-          )}
+              <ChangePassword
+              // changePassword={onChangePassword}
+              // message={message}
+              ></ChangePassword>
+            )}
         </Card.Body>
       </Card>
     </Container>

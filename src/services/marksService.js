@@ -12,9 +12,9 @@ async function get_marksofclass_service(lecture_id) {
         let resultJson = await result.json();
         // console.log(resultJson)
         return resultJson;
-    } catch (error) {
-        console.log(`Error is: ${error}`);
-        return error;
+    } catch (ex) {
+        console.log(`Error is: ${ex}`);
+        return { error: ex };
     }
 }
 async function get_marksofstudent_service(lecture_id, student_id) {
@@ -30,9 +30,9 @@ async function get_marksofstudent_service(lecture_id, student_id) {
         let resultJson = await result.json();
         // console.log(resultJson)
         return resultJson;
-    } catch (error) {
-        console.log(`Error is: ${error}`);
-        return error;
+    } catch (ex) {
+        console.log(`Error is: ${ex}`);
+        return { error: ex };
     }
 }
 async function getMarksLecture(lecture_id) {
@@ -48,9 +48,9 @@ async function getMarksLecture(lecture_id) {
         let resultJson = await result.json();
         // console.log(resultJson)
         return resultJson;
-    } catch (error) {
-        console.log(`Error is: ${error}`);
-        return error;
+    } catch (ex) {
+        console.log(`Error is: ${ex}`);
+        return { error: ex };
     }
 }
 // cap nhat diem giua ky, cuoi ky, va
@@ -68,9 +68,9 @@ async function update_marks(data) {
         let resultJson = await result.json();
         // console.log(resultJson)
         return resultJson;
-    } catch (error) {
-        console.log(`Error is: ${error}`);
-        return error;
+    } catch (ex) {
+        console.log(`Error is: ${ex}`);
+        return { error: ex };
     }
 }
 
@@ -86,8 +86,25 @@ async function getRecordStudent(studentId) {
         });
         let resultJson = await result.json();
         return resultJson;
-    } catch (error) {
-        return error;
+    } catch (ex) {
+        console.log(`Error is: ${ex}`);
+        return { error: ex };
+    }
+}
+async function getConductStudent(studentId) {
+    try {
+        let result = await fetch(`${API_URL}/api/students/${studentId}/learningoutcomes/`, {
+            method: 'GET',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+        });
+        let resultJson = await result.json();
+        return resultJson;
+    } catch (ex) {
+        console.log(`Error is: ${ex}`);
+        return { error: ex };
     }
 }
 
@@ -103,8 +120,9 @@ async function getMarksStudent(studentId) {
         });
         let resultJson = await result.json();
         return resultJson;
-    } catch (error) {
-        return error;
+    } catch (ex) {
+        console.log(`Error is: ${ex}`);
+        return { error: ex };
     }
 }
 async function getMarksByYear(studentId, yearId) {
@@ -119,8 +137,9 @@ async function getMarksByYear(studentId, yearId) {
         });
         let resultJson = await result.json();
         return resultJson;
-    } catch (error) {
-        return error;
+    } catch (ex) {
+        console.log(`Error is: ${ex}`);
+        return { error: ex };
     }
 }
 async function getMarksClass(classId, yearId) {
@@ -135,8 +154,9 @@ async function getMarksClass(classId, yearId) {
         });
         let resultJson = await result.json();
         return resultJson;
-    } catch (error) {
-        return error;
+    } catch (ex) {
+        console.log(`Error is: ${ex}`);
+        return { error: ex };
     }
 }
 async function addMarksReg(data) {
@@ -152,11 +172,12 @@ async function addMarksReg(data) {
         });
         let resultJson = await result.json();
         return resultJson;
-    } catch (error) {
-        return error;
+    } catch (ex) {
+        console.log(`Error is: ${ex}`);
+        return { error: ex };
     }
 }
-async function updateMarksReg( data) {
+async function updateMarksReg(data) {
     try {
         let result = await fetch(`${API_URL}/api/marksregularys/${data.id}/`, {
             method: 'PATCH',
@@ -169,8 +190,9 @@ async function updateMarksReg( data) {
         });
         let resultJson = await result.json();
         return resultJson;
-    } catch (error) {
-        return error;
+    } catch (ex) {
+        console.log(`Error is: ${ex}`);
+        return { error: ex };
     }
 }
 
@@ -186,8 +208,9 @@ async function deleteMarksReg(id) {
         });
         let resultJson = await result.json();
         return resultJson;
-    } catch (error) {
-        return error;
+    } catch (ex) {
+        console.log(`Error is: ${ex}`);
+        return { error: ex };
     }
 }
 
@@ -205,5 +228,6 @@ export {
     getMarksClass,
     addMarksReg,
     deleteMarksReg,
-    updateMarksReg
+    updateMarksReg,
+    getConductStudent
 }

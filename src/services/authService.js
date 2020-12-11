@@ -13,9 +13,9 @@ async function checkToken(token) {
         });
         let resultJson = await result.json();
         return resultJson;
-    } catch (error) {
-        console.log(`Error is: ${error}`);
-        return error;
+    } catch (ex) {
+        console.log(`Error is: ${ex}`);
+        return { error: ex };
     }
 }
 
@@ -34,8 +34,9 @@ const loginUser = async (user) => {
         });
         let resultJson = await result.json();
         return resultJson;
-    } catch (error) {
-        return error;
+    } catch (ex) {
+        console.log(`Error is: ${ex}`);
+        return { error: ex };
     }
 }
 
@@ -52,8 +53,9 @@ const changePassword = async (password) => {
         });
         let resultJson = await result.json();
         return resultJson;
-    } catch (error) {
-        return error;
+    } catch (ex) {
+        console.log(`Error is: ${ex}`);
+        return { error: ex };
     }
 }
 

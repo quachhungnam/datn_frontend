@@ -12,9 +12,9 @@ async function get_list_student_service(class_id) {
         let resultJson = await result.json();
         // console.log(resultJson)
         return resultJson;
-    } catch (error) {
-        console.log(`Error is: ${error}`);
-        return error;
+    } catch (ex) {
+        console.log(`Error is: ${ex}`);
+        return { error: ex };
     }
 }
 async function getStudentLecture(classId, yearId) {
@@ -30,9 +30,9 @@ async function getStudentLecture(classId, yearId) {
         let resultJson = await result.json();
         // console.log(resultJson)
         return resultJson;
-    } catch (error) {
-        console.log(`Error is: ${error}`);
-        return error;
+    } catch (ex) {
+        console.log(`Error is: ${ex}`);
+        return { error: ex };
     }
 }
 async function uploadFile(files) {
@@ -49,15 +49,14 @@ async function uploadFile(files) {
         let resultJson = await result.json();
         // console.log(resultJson)
         return resultJson;
-    } catch (error) {
-        console.log(`Error is: ${error}`);
-        return error;
+    } catch (ex) {
+        console.log(`Error is: ${ex}`);
+        return { error: ex };
     }
 }
 
 export {
     get_list_student_service,
-
     uploadFile,
     getStudentLecture,
 }

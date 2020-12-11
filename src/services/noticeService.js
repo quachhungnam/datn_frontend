@@ -12,9 +12,9 @@ async function getNotice() {
         let resultJson = await result.json();
         // console.log(resultJson)
         return resultJson;
-    } catch (error) {
-        console.log(`Error is: ${error}`);
-        return error;
+    } catch (ex) {
+        console.log(`Error is: ${ex}`);
+        return { error: ex }
     }
 }
-export {getNotice}
+export { getNotice }

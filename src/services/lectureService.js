@@ -18,9 +18,9 @@ async function get_lecture_service(token, id) {
     let resultJson = await result.json();
     // console.log(resultJson)
     return resultJson;
-  } catch (error) {
-    console.log(`Error is: ${error}`);
-    return error;
+  } catch (ex) {
+    console.log(`Error is: ${ex}`);
+    return { error: ex };
   }
 }
 async function getLectureDetail(lectureId) {
@@ -36,9 +36,9 @@ async function getLectureDetail(lectureId) {
     let resultJson = await result.json();
     // console.log(resultJson)
     return resultJson;
-  } catch (error) {
-    console.log(`Error is: ${error}`);
-    return error;
+  } catch (ex) {
+    console.log(`Error is: ${ex}`);
+    return { error: ex };
   }
 }
 
@@ -59,9 +59,9 @@ async function get_lecture_teacher_service(teacher_id, schoolyear_id) {
     let resultJson = await result.json();
     // console.log(resultJson)
     return resultJson;
-  } catch (error) {
-    console.log(`Error is: ${error}`);
-    return error;
+  } catch (ex) {
+    console.log(`Error is: ${ex}`);
+    return { error: ex };
   }
 }
 export { get_lecture_service, get_lecture_teacher_service, getLectureDetail };

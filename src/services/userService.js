@@ -14,9 +14,9 @@ async function getUserService(id) {
         });
         let resultJson = await result.json();
         return resultJson;
-    } catch (error) {
-        console.log(`Error is: ${error}`);
-        return error;
+    } catch (ex) {
+        console.log(`Error is: ${ex}`);
+        return { error: ex };
     }
 }
 async function getStudentService(id) {
@@ -32,9 +32,9 @@ async function getStudentService(id) {
         });
         let resultJson = await result.json();
         return resultJson;
-    } catch (error) {
-        console.log(`Error is: ${error}`);
-        return error;
+    } catch (ex) {
+        console.log(`Error is: ${ex}`);
+        return { error: ex };
     }
 }
 async function getTeacherService(id) {
@@ -50,9 +50,9 @@ async function getTeacherService(id) {
         });
         let resultJson = await result.json();
         return resultJson;
-    } catch (error) {
-        console.log(`Error is: ${error}`);
-        return error;
+    } catch (ex) {
+        console.log(`Error is: ${ex}`);
+        return { error: ex };
     }
 }
 async function updateUserService(data) {
@@ -68,9 +68,9 @@ async function updateUserService(data) {
         });
         let resultJson = await result.json();
         return resultJson;
-    } catch (error) {
-        console.log(`Error is: ${error}`);
-        return error;
+    } catch (ex) {
+        console.log(`Error is: ${ex}`);
+        return { error: ex };
     }
 }
 
