@@ -13,6 +13,7 @@ import {
   Modal,
   Badge,
   Alert,
+  FormControl,
 } from "react-bootstrap";
 import {
   update_marks,
@@ -31,9 +32,11 @@ import {
   validateListMarksCK2,
   // validateMarksReg,
 } from "../../utils/validateMarksReg";
-import { standarDate } from '../../utils/standardDate'
+import { standarDate } from "../../utils/standardDate";
 import { ExportData } from "../../utils/exportData";
-import { sumMarks, standardExportLecture } from '../../utils/marksUtils'
+import { sumMarks, standardExportLecture } from "../../utils/marksUtils";
+import ChartTron from "./ChartMarks";
+
 export default function TeachClass(props) {
   const initMarksState = {
     isAddDGTX1: false,
@@ -59,6 +62,10 @@ export default function TeachClass(props) {
   const [message, setMessage] = useState(null);
   const today = new Date();
   const standardDay = today.toISOString().slice(0, 10);
+  const [showChart, setShowChart] = useState(false);
+  const [desc, setDesc] = useState(-1);
+  const [filter, setfilter] = useState({ name: "", sort: -1 });
+  const [count, setCount] = useState(0);
   const [marksState, dispatch] = React.useReducer((prevState, action) => {
     switch (action.type) {
       case "ADD_DGTX1":
@@ -215,41 +222,7 @@ export default function TeachClass(props) {
     await updateManyMarksReg(data);
     setisUpdate(false);
   };
-  // HIEN THI DANH SACH DIEM
-  // const sumMarks = (dataMarks) => {
-  //   const listReg = dataMarks.marksregulary;
-  //   const listReg1 = listReg.filter((itemReg) => itemReg.semester === 1);
-  //   const listReg2 = listReg.filter((itemReg) => itemReg.semester === 2);
-  //   let sumReg1 = 0;
-  //   let sumReg2 = 0;
-  //   for (let reg1 of listReg1) {
-  //     sumReg1 = sumReg1 + parseFloat(reg1.point);
-  //   }
-  //   for (let reg2 of listReg2) {
-  //     sumReg2 = sumReg2 + parseFloat(reg2.point);
-  //   }
-  //   const GK1 = parseFloat(dataMarks.mid_st_semester_point);
-  //   const CK1 = parseFloat(dataMarks.end_st_semester_point);
-  //   const GK2 = parseFloat(dataMarks.mid_nd_semester_point);
-  //   const CK2 = parseFloat(dataMarks.end_nd_semester_point);
-  //   // console.log(dataMarks.mid_st_semester_point);
-  //   // if (dataMarks.mid_st_semester_point == null) {
-  //   //   console.log("null");
-  //   // }
 
-  //   const TB_HK1 = (sumReg1 + GK1 * 2 + CK1 * 3) / (5 + listReg1.length);
-  //   const TB_HK2 = (sumReg2 + GK2 * 2 + CK2 * 3) / (5 + listReg2.length);
-
-  //   const TB_HK_1 = TB_HK1.toFixed(1);
-  //   const TB_HK_2 = TB_HK2.toFixed(1);
-
-  //   const TB_NAM = (
-  //     (parseFloat(TB_HK_1) + parseFloat(TB_HK_2) * 2) /
-  //     3
-  //   ).toFixed(1);
-
-  //   return [TB_HK_1, TB_HK_2, TB_NAM];
-  // };
   const showStudentsMarks = listMarks.map((item, index) => {
     const [sum1, sum2, sum3] = sumMarks(item);
     return (
@@ -501,6 +474,53 @@ export default function TeachClass(props) {
     }
   };
 
+  const compareBy = (key, ascending) => {
+    let reverse = ascending ? 1 : -1;
+    return function (a, b) {
+      if (a[key] < b[key]) return -1 * reverse;
+      if (a[key] > b[key]) return 1 * reverse;
+      return 0;
+    };
+  };
+  const xep = (name) => {
+    const newList = listMarks;
+    if (name === "username") {
+      newList.sort((a, b) => {
+        if (a.student.user.username > b.student.user.username) return desc;
+        if (a.student.user.username < b.student.user.username) return -desc;
+        return 0;
+      });
+      setDesc(-desc);
+    }
+    if (name === "name") {
+      newList.sort((a, b) => {
+        if (a.student.user.first_name > b.student.user.first_name) return desc;
+        if (a.student.user.first_name < b.student.user.first_name) return -desc;
+        return 0;
+      });
+      setDesc(-desc);
+    }
+    // if (name === "tbk1") {
+
+    //   const listfor=newList.map((item) => {
+    //     const [sum1, sum2, sum3] = sumMarks(item);
+    //     item.sum1 = sum1;
+    //     item.sum2 = sum2;
+    //     item.sum3 = sum3;
+    //     return item;
+    //   });
+
+    //   newList.sort((a, b) => {
+    //     if (a.student.user.username > b.student.user.username) return desc;
+    //     if (a.student.user.username < b.student.user.username) return -desc;
+    //     return 0;
+    //   });
+    //   setDesc(-desc);
+    // }
+    setlistMarks(newList);
+    setCount((count) => count + 1);
+  };
+
   useEffect(() => {
     getLecture();
   }, []);
@@ -536,10 +556,19 @@ export default function TeachClass(props) {
                         />
                       </Button>
                     ) : (
-                        ""
-                      )}
+                      ""
+                    )}
                   </Col>
                 </Row>
+                {/* <Row>
+                  <Col md={{ span: 6 }}>
+                    <FormControl
+                      type="text"
+                      placeholder="Tìm kiếm"
+                      className=" mr-sm-2"
+                    />
+                  </Col>
+                </Row> */}
                 <Table striped bordered hover size="sm">
                   <HeadTable
                     onAddMarksReg={onAddMarksReg}
@@ -555,6 +584,7 @@ export default function TeachClass(props) {
                     onUpdateMarksGK2={onUpdateMarksGK2}
                     onUpdateMarksCK1={onUpdateMarksCK1}
                     onUpdateMarksCK2={onUpdateMarksCK2}
+                    xep={xep}
                   />
                   <tbody>{showStudentsMarks}</tbody>
                 </Table>
@@ -593,7 +623,37 @@ export default function TeachClass(props) {
                       Xuất điểm cả năm
                     </Dropdown.Item>
                   </DropdownButton>
+                  &nbsp;
+                  <Button
+                    variant="success"
+                    onClick={() => {
+                      setShowChart(!showChart);
+                    }}
+                  >
+                    Thống kê
+                  </Button>
                 </Form.Row>
+                <hr />
+                {showChart ? (
+                  <>
+                    <Row>
+                      <Col>
+                        <ChartTron listMarks={listMarks} types={1} />
+                      </Col>
+                      <Col>
+                        <ChartTron listMarks={listMarks} types={2} />
+                      </Col>
+                    </Row>
+                    <hr />
+                    <Row>
+                      <Col md={{ offset: 3, span: 6 }}>
+                        <ChartTron listMarks={listMarks} types={3} />
+                      </Col>
+                    </Row>
+                  </>
+                ) : (
+                  ""
+                )}
               </Card.Body>
             </Form>
           </Card>
@@ -634,6 +694,10 @@ function HeadTable(props) {
   };
   const onAddMarksCK2 = () => {
     props.addMarks({ type: "ADD_CK2" });
+  };
+
+  const xep = (name, value) => {
+    props.xep(name, value);
   };
 
   const showDropDGTX1 = () => {
@@ -689,12 +753,12 @@ function HeadTable(props) {
             </Button>
           </>
         ) : (
-            ""
-          )}
+          ""
+        )}
       </Form.Row>
     ) : (
-        ""
-      );
+      ""
+    );
   };
   const showDropGK1 = () => {
     return props.limitDateInput(1) === true ? (
@@ -735,12 +799,12 @@ function HeadTable(props) {
             </Button>
           </>
         ) : (
-            ""
-          )}
+          ""
+        )}
       </Form.Row>
     ) : (
-        ""
-      );
+      ""
+    );
   };
 
   const showDropCK1 = () => {
@@ -782,12 +846,12 @@ function HeadTable(props) {
             </Button>
           </>
         ) : (
-            ""
-          )}
+          ""
+        )}
       </Form.Row>
     ) : (
-        ""
-      );
+      ""
+    );
   };
 
   const showDropDGTX2 = () => {
@@ -838,12 +902,12 @@ function HeadTable(props) {
             </Button>
           </>
         ) : (
-            ""
-          )}
+          ""
+        )}
       </Form.Row>
     ) : (
-        ""
-      );
+      ""
+    );
   };
   const showDropGK2 = () => {
     return props.limitDateInput(2) === true ? (
@@ -884,12 +948,12 @@ function HeadTable(props) {
             </Button>
           </>
         ) : (
-            ""
-          )}
+          ""
+        )}
       </Form.Row>
     ) : (
-        ""
-      );
+      ""
+    );
   };
   const showDropCK2 = () => {
     return props.limitDateInput(2) ? (
@@ -930,21 +994,43 @@ function HeadTable(props) {
             </Button>
           </>
         ) : (
-            ""
-          )}
+          ""
+        )}
       </Form.Row>
     ) : (
-        ""
-      );
+      ""
+    );
   };
   return (
     <thead>
       <tr>
         <th rowSpan="3">STT</th>
-        <th rowSpan="3">Mã HS </th>
-        <th rowSpan="3">Họ Tên</th>
-        <th colSpan={4}>Học kỳ 1 (Hạn nhập điểm: {standarDate(props.limitInput1)}) </th>
-        <th colSpan={4}>Học kỳ 2 (Hạn nhập điểm: {standarDate(props.limitInput2)})</th>
+        <th rowSpan="3">
+          Mã HS{" "}
+          {/* <Button
+            onClick={() => {
+              props.xep("username");
+            }}
+          >
+            xep
+          </Button> */}
+        </th>
+        <th rowSpan="3">
+          Họ Tên{" "}
+          {/* <Button
+            onClick={() => {
+              props.xep("name");
+            }}
+          >
+            xep
+          </Button> */}
+        </th>
+        <th colSpan={4}>
+          Học kỳ 1 (Hạn nhập điểm: {standarDate(props.limitInput1)})
+        </th>
+        <th colSpan={4}>
+          Học kỳ 2 (Hạn nhập điểm: {standarDate(props.limitInput2)})
+        </th>
         <th rowSpan="3">Cả năm</th>
       </tr>
 
@@ -952,7 +1038,16 @@ function HeadTable(props) {
         <th colSpan={1}>Điểm ĐGTX </th>
         <th>Giữa kỳ</th>
         <th>Cuối kỳ</th>
-        <th>TB Kỳ</th>
+        <th>
+          TB Kỳ{" "}
+          {/* <Button
+            onClick={() => {
+              props.xep("tbk1");
+            }}
+          >
+            xep
+          </Button> */}
+        </th>
         <th colSpan={1}>Điểm ĐGTX</th>
         <th>Giữa kỳ</th>
         <th>Cuối kỳ</th>
@@ -1208,8 +1303,8 @@ function RowTable(props) {
           </Badge>
         </>
       ) : (
-          ""
-        )}
+        ""
+      )}
     </div>
   ));
   // HIEN THI DIEM DANH GIA THUONG XUYEN 2
@@ -1241,8 +1336,8 @@ function RowTable(props) {
           X
         </Badge>
       ) : (
-          ""
-        )}
+        ""
+      )}
     </div>
   ));
 
@@ -1277,8 +1372,8 @@ function RowTable(props) {
               </Button>
             </>
           ) : (
-              ""
-            )}{" "}
+            ""
+          )}{" "}
           {showInputMarksReg()}
         </Form.Row>
       </td>
@@ -1342,8 +1437,8 @@ function RowTable(props) {
               </Button>
             </>
           ) : (
-              ""
-            )}{" "}
+            ""
+          )}{" "}
           {showInputMarksReg2()}
         </Form.Row>
       </td>
@@ -1385,4 +1480,3 @@ function RowTable(props) {
     </tr>
   );
 }
-

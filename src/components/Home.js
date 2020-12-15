@@ -1,34 +1,22 @@
-import React, { useState, useEffect } from "react";
-import { Container, Card, Nav, Badge } from "react-bootstrap";
+import React, { useState, useEffect, PureComponent } from "react";
+import { Container, Card, Nav, Badge, Row, Col } from "react-bootstrap";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import parse from "html-react-parser";
 import { getNotice } from "../services/noticeService";
-// import DataGrid from 'react-data-grid';
-// import 'react-data-grid/dist/react-data-grid.css';
-// import {ExcelFile, ExcelSheet} from "react-data-export";
+
 export default function Home() {
   const [listNotice, setListNotice] = useState([]);
-  const [message, setMessage] = useState(null)
-  // const columns = [
-  //   { key: 'id', name: 'ID' },
-  //   { key: 'title', name: 'Title' }
-  // ];
-
-  // const rows = [
-  //   { id: 0, title: 'Example' },
-  //   { id: 1, title: 'Demo' }
-  // ];
+  const [message, setMessage] = useState(null);
 
   const getAllNotice = async () => {
     try {
       const rs = await getNotice();
       if (rs.error) {
-        setMessage("Không thể kết nối đến Server!")
-        return
+        setMessage("Không thể kết nối đến Server!");
+        return;
       } else {
         setListNotice(rs);
       }
-
     } catch (ex) {
     } finally {
     }
@@ -36,13 +24,13 @@ export default function Home() {
 
   const standarDate = (data) => {
     if (data.length >= 10) {
-      let d = data.slice(8, 10)
-      let m = data.slice(5, 7)
-      let y = data.slice(0, 4)
-      return d + "-" + m + "-" + y
+      let d = data.slice(8, 10);
+      let m = data.slice(5, 7);
+      let y = data.slice(0, 4);
+      return d + "-" + m + "-" + y;
     }
-    return data
-  }
+    return data;
+  };
 
   const showListNotice = () => {
     if (listNotice.length !== 0) {
@@ -74,28 +62,10 @@ export default function Home() {
         <h5>
           <Badge variant="danger">{message}</Badge>
         </h5>
-
-      )
+      );
     }
-    return ""
-  }
-  // const showListNotice = listNotice.map((item) => (
-  //   <Card>
-  //     <Card.Header>
-  //       <span className="text-danger">
-  //         <b>
-  //           {item.post_date}
-  //           {":"}
-  //         </b>{" "}
-  //       </span>
-  //       <span className="text-primary">
-  //         {" "}
-  //         <b>{item.title}</b>{" "}
-  //       </span>
-  //     </Card.Header>
-  //     <Card.Body> {parse(item.content)}</Card.Body>
-  //   </Card>
-  // ));
+    return "";
+  };
 
   useEffect(() => {
     getAllNotice();
@@ -117,13 +87,6 @@ export default function Home() {
         <Card.Body>
           {showListNotice()}
           {showMessage()}
-          {/* <DataGrid
-            columns={columns}
-            rows={rows}
-          /> */}
-          {/* <ExcelFile>
-                <ExcelSheet dataSet={multiDataSet} name="Organization"/>
-            </ExcelFile> */}
         </Card.Body>
         {/* <Card.Footer>
           <Pagination>
