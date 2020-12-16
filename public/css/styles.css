@@ -25,3 +25,11 @@
 .txt-upcase {
   text-transform: uppercase;
 }
+
+.sort-desc {
+  /* box-shadow: inset 0 -3px 0 0 green; */
+} 
+.sort-desc:hover {
+  /* background-color: yellow; */
+  cursor: pointer;
+}

@@ -1,4 +1,4 @@
-const standarDate = (data) => {
+const standardDate = (data) => {
     if (data != null) {
         if (data.length >= 10) {
             let d = data.slice(8, 10)
@@ -10,4 +10,4 @@ const standarDate = (data) => {
 
     return data
 }
-export { standarDate }
+export { standardDate }

@@ -26,28 +26,27 @@ export default function ChartTron(props) {
 
     const coutMarks = (data, type) => {
         let dataFil = [];
-        if (type == 5) {
+        if (type === 5) {
             dataFil = data.filter((item) => item >= 8.0);
         }
-        if (type == 4) {
+        if (type === 4) {
             dataFil = data.filter((item) => 6.5 <= item && item < 8.0);
         }
-        if (type == 3) {
+        if (type ===3) {
             dataFil = data.filter((item) => 5.0 <= item && item < 6.5);
         }
-        if (type == 2) {
+        if (type === 2) {
             dataFil = data.filter((item) => 3.5 <= item && item < 5.0);
         }
-        if (type == 1) {
+        if (type === 1) {
             dataFil = data.filter((item) => 0 <= item && item < 3.5);
         }
 
         return dataFil.length;
     };
 
-    const dataIn = type == 1 ? diemhocky1 : type == 2 ? diemhocky2 : diemhocky3
-    const showText = type == 1 ? "Thống kê điểm học kỳ 1" : type == 2 ? "Thống kê điểm học kỳ 2" : "Thống kê điểm cả năm"
-    // console.log(JSON.stringify(ssss));
+    const dataIn = type === 1 ? diemhocky1 : type === 2 ? diemhocky2 : diemhocky3
+    const showText = type === 1 ? "Thống kê điểm học kỳ 1" : type === 2 ? "Thống kê điểm học kỳ 2" : "Thống kê điểm cả năm"
     const data = {
         datasets: [
             {

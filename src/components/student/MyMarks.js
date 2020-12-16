@@ -36,36 +36,6 @@ function MyMarks() {
     }, {});
   }
 
-  // const sumMarks = (dataMarks) => {
-  //   const listReg = dataMarks.marksregulary;
-  //   const listReg1 = listReg.filter((itemReg) => itemReg.semester === 1);
-  //   const listReg2 = listReg.filter((itemReg) => itemReg.semester === 2);
-  //   let sumReg1 = 0;
-  //   let sumReg2 = 0;
-  //   for (let reg1 of listReg1) {
-  //     sumReg1 = sumReg1 + parseFloat(reg1.point);
-  //   }
-  //   for (let reg2 of listReg2) {
-  //     sumReg2 = sumReg2 + parseFloat(reg2.point);
-  //   }
-  //   const GK1 = parseFloat(dataMarks.mid_st_semester_point);
-  //   const CK1 = parseFloat(dataMarks.end_st_semester_point);
-  //   const GK2 = parseFloat(dataMarks.mid_nd_semester_point);
-  //   const CK2 = parseFloat(dataMarks.end_nd_semester_point);
-
-  //   const TB_HK1 = (sumReg1 + GK1 * 2 + CK1 * 3) / (5 + listReg1.length);
-  //   const TB_HK2 = (sumReg2 + GK2 * 2 + CK2 * 3) / (5 + listReg2.length);
-
-  //   const TB_HK_1 = TB_HK1.toFixed(1);
-  //   const TB_HK_2 = TB_HK2.toFixed(1);
-
-  //   const TB_NAM = (
-  //     (parseFloat(TB_HK_1) + parseFloat(TB_HK_2) * 2) /
-  //     3
-  //   ).toFixed(1);
-
-  //   return [TB_HK_1, TB_HK_2, TB_NAM];
-  // };
 
   const getAllMarks = async () => {
     setisLoading(true);
@@ -87,12 +57,10 @@ function MyMarks() {
   const getAllConduct = async () => {
     const rs = await getConductStudent(userState.user.user_id);
     if (rs.error) {
-      console.log('rrrrr')
+      console.log('err')
       return
     } else {
       if (rs.count > 0) {
-        // console.log(rs.results);
-        // console.log(rs.results[0].learningoutcomes);
         console.log(rs.results[0])
         setlistConduct(rs.results[0].learningoutcomes);//danh sach hanh kiem cua hoc sinh
       }

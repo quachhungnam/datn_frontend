@@ -25,7 +25,7 @@ import {
 import ChangePassword from "./ChangePassword";
 import { AuthContext } from "../context/AuthContext";
 import validator from "validator";
-import { standarDate } from '../utils/standardDate'
+import { standardDate } from '../utils/standardDate'
 
 
 function Infor() {
@@ -251,7 +251,7 @@ function Infor() {
                     <Row>
                       <Col md={2}>Năm sinh:</Col>
                       <Col>
-                        <b>{standarDate(user.birthday)}</b>
+                        <b>{standardDate(user.birthday)}</b>
                       </Col>
                     </Row>
                   </Alert>

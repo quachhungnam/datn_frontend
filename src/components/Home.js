@@ -1,5 +1,5 @@
-import React, { useState, useEffect, PureComponent } from "react";
-import { Container, Card, Nav, Badge, Row, Col } from "react-bootstrap";
+import React, { useState, useEffect } from "react";
+import { Container, Card, Nav, Badge } from "react-bootstrap";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import parse from "html-react-parser";
 import { getNotice } from "../services/noticeService";
@@ -35,21 +35,26 @@ export default function Home() {
   const showListNotice = () => {
     if (listNotice.length !== 0) {
       const ListNotice = listNotice.map((item) => (
-        <Card>
-          <Card.Header>
-            <span className="text-danger">
-              <b>
-                {standarDate(item.post_date)}
-                {":"}
-              </b>{" "}
-            </span>
-            <span className="text-primary">
-              {" "}
-              <b>{item.title}</b>{" "}
-            </span>
-          </Card.Header>
-          <Card.Body> {parse(item.content)}</Card.Body>
-        </Card>
+        <>
+          <Card>
+            <Card.Body>
+              <span className="text-danger">
+                <b>
+                  {standarDate(item.post_date)}
+                  {":"}
+                </b>{" "}
+              </span>
+              <span className="text-primary">
+                {" "}
+                <b>{item.title}</b>{" "}
+              </span>
+              <hr />
+              {parse(item.content)}
+            </Card.Body>
+          </Card>
+          <br/>
+        </>
+
       ));
       return ListNotice;
     }

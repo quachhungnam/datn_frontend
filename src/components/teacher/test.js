@@ -13,6 +13,12 @@
 // //     { brand: 'Peugot', color: 'white' }
 // // ];
 
+let xx= { name:"name", age:19}
+let n ={age:18}
+xx.age=18
+
+console.log(xx)
+
 let today = Date()
 console.log(today)
 // const rs = [
