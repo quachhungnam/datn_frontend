@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  Table,
-  Button,
-  Dropdown,
-  DropdownButton,
-  Form,
-} from "react-bootstrap";
+import { Table, Button, Dropdown, DropdownButton, Form } from "react-bootstrap";
 import MarksItem from "./MarksItem";
 import { sumMarks } from "../../utils/marksUtils";
 import { standardDate } from "../../utils/standardDate";
@@ -24,7 +18,6 @@ export default function MarksList(props) {
     isAddCK2: false,
   };
 
-  // const handleShow = () => setShow(true);
   const [marksState, dispatch] = React.useReducer((prevState, action) => {
     switch (action.type) {
       case "ADD_DGTX1":
@@ -88,8 +81,16 @@ export default function MarksList(props) {
         };
     }
   }, initMarksState);
+
   const showListMarks = () => {
-    return props.listMarks;
+    let keyt = props.keyword.toLowerCase();
+    const list = props.listMarks.filter(
+      (item) =>
+        item.student.user.username.toLowerCase().indexOf(keyt) !== -1 ||
+        item.student.user.last_name.toLowerCase().indexOf(keyt) !== -1 ||
+        item.student.user.first_name.toLowerCase().indexOf(keyt) !== -1
+    );
+    return list;
   };
 
   const AddMarksReg1 = () => {
@@ -418,9 +419,9 @@ export default function MarksList(props) {
     );
   };
 
-  //showXep list mark
-  const xep = (columnName) => {
-    props.xep(columnName);
+  //showsortMarks list mark
+  const sortMarks = (columnName) => {
+    props.sortMarks(columnName);
   };
 
   const eleMarks = showListMarks().map((item, idx) => {
@@ -456,18 +457,12 @@ export default function MarksList(props) {
         delMarksReg={props.delMarksReg}
         updateMarksRegState={props.updateMarksRegState}
         updateMarksRegState2={props.updateMarksRegState2}
-        // updateFieldChanged={updateFieldChanged}
-        // updateMarksRegState={updateMarksRegState}d
-        // updateMarksRegState2={updateMarksRegState2}
-        // delMarksReg={delMarksReg}
         updateReg={props.updateReg}
-        // setMessage={setMessage}
+        setMessage={props.setMessage}
       />
     );
   });
-  //   React.useEffect(() => {
-  //     showListMarks();
-  //   }, [props.listMarks]);
+
   return (
     <Table striped bordered hover size="sm">
       <thead>
@@ -477,7 +472,7 @@ export default function MarksList(props) {
             <span
               className="sort-desc"
               onClick={() => {
-                xep("username");
+                sortMarks("username");
               }}
             >
               Mã HS
@@ -487,7 +482,7 @@ export default function MarksList(props) {
             <span
               className="sort-desc"
               onClick={() => {
-                xep("name");
+                sortMarks("name");
               }}
             >
               Họ Tên
@@ -508,7 +503,7 @@ export default function MarksList(props) {
             <span
               className="sort-desc"
               onClick={() => {
-                xep("gk1");
+                sortMarks("gk1");
               }}
             >
               Giữa kỳ
@@ -518,7 +513,7 @@ export default function MarksList(props) {
             <span
               className="sort-desc"
               onClick={() => {
-                xep("ck1");
+                sortMarks("ck1");
               }}
             >
               Cuối kỳ
@@ -530,7 +525,7 @@ export default function MarksList(props) {
             <span
               className="sort-desc"
               onClick={() => {
-                xep("gk2");
+                sortMarks("gk2");
               }}
             >
               Giữa kỳ
@@ -540,7 +535,7 @@ export default function MarksList(props) {
             <span
               className="sort-desc"
               onClick={() => {
-                xep("ck2");
+                sortMarks("ck2");
               }}
             >
               Cuối kỳ

@@ -11,6 +11,7 @@ import {
   Spinner,
   Badge,
   Alert,
+  FormControl,
 } from "react-bootstrap";
 import {
   update_marks,
@@ -48,7 +49,7 @@ export default function TeachClass(props) {
   const [showChart, setShowChart] = useState(false);
   const [desc, setDesc] = useState(-1);
   const [count, setCount] = useState(0);
-
+  const [keyword, setKeyword] = useState("");
   // LAY DANH SACH DIEM TU DATABASE
   const getLecture = async () => {
     try {
@@ -380,7 +381,7 @@ export default function TeachClass(props) {
     }
   };
 
-  const xep = (name) => {
+  const sortMarks = (name) => {
     const newList = listMarks;
     if (name === "username") {
       newList.sort((a, b) => {
@@ -468,6 +469,11 @@ export default function TeachClass(props) {
     setCount((count) => count + 1);
   };
 
+  const handlerSearch = (event) => {
+    const { name, value } = event.target;
+    setKeyword(value);
+  };
+
   useEffect(() => {
     getLecture();
   }, []);
@@ -507,15 +513,18 @@ export default function TeachClass(props) {
                     )}
                   </Col>
                 </Row>
-                {/* <Row>
-                  <Col md={{ span: 6 }}>
+                <Row>
+                  <Col md={{ span: 4 }}>
                     <FormControl
                       type="text"
-                      placeholder="Tìm kiếm"
+                      placeholder="Tìm kiếm học sinh"
                       className=" mr-sm-2"
+                      onChange={(e) => {
+                        handlerSearch(e);
+                      }}
                     />
                   </Col>
-                </Row> */}
+                </Row>
 
                 <MarksList
                   listMarks={listMarks}
@@ -536,7 +545,9 @@ export default function TeachClass(props) {
                   addNewMarksReg={addNewMarksReg}
                   addNewMarksReg2={addNewMarksReg2}
                   updateReg={updateReg}
-                  xep={xep}
+                  sortMarks={sortMarks}
+                  keyword={keyword}
+                  setMessage={setMessage}
                 />
 
                 <hr />

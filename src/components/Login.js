@@ -30,10 +30,6 @@ export default function Login() {
     loginAction(dispatch, user);
   };
 
-  // const resetUser = () => {
-  //   setUser(initUser);
-  // };
-
   if (userState.user !== "") {
     return <Redirect to="/" />;
   }
@@ -110,8 +106,8 @@ export default function Login() {
                               />
                             </Button>
                           ) : (
-                            ""
-                          )}
+                              ""
+                            )}
                         </Col>
                       </Row>
                       <Row>
@@ -123,8 +119,8 @@ export default function Login() {
                               </Badge>
                             </h5>
                           ) : (
-                            ""
-                          )}
+                              ""
+                            )}
                         </Col>
                       </Row>
                     </Form>

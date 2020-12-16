@@ -188,8 +188,8 @@ export default function MyClass() {
                   />
                 </Button>
               ) : (
-                  ""
-                )}
+                ""
+              )}
             </Row>
           </Form.Group>
           <br></br>
@@ -202,56 +202,91 @@ export default function MyClass() {
           {showDiem ? (
             xemBangDiemHocSinh()
           ) : (
-              <>
-                <Table striped bordered hover size="sm">
-                  <thead>
-                    <tr>
-                      <th>Số TT</th>
-                      <th>Mã HS</th>
-                      <th>Họ và tên</th>
-                      <th>Năm sinh</th>
-                      <th>Giới tính</th>
-                      <th>Email</th>
-                      <th>Số điện thoại</th>
-                      <th>Hành động</th>
-                    </tr>
-                  </thead>
-                  <tbody>{showListStudent}</tbody>
-                </Table>
-                {/* {<ConductTable />} */}
-                <Row>
-                  <DropdownButton
-                    id="dropdown-basic-button"
-                    variant="success"
-                    title="Xuất điểm"
-                  >
-                    <Dropdown.Item
-                      onClick={() => {
-                        exportMarksClass(1);
-                      }}
-                    >
-                      Học kỳ 1
-                  </Dropdown.Item>
-                    <Dropdown.Item
-                      onClick={() => {
-                        exportMarksClass(2);
-                      }}
-                    >
-                      Học kỳ 2
-                  </Dropdown.Item>
-                    <Dropdown.Item
-                      onClick={() => {
-                        exportMarksClass(3);
-                      }}
-                    >
-                      Cả năm
-                  </Dropdown.Item>
-                  </DropdownButton>
-                &nbsp;
-                {/* <Button variant="success">Xét Hạnh Kiểm</Button> */}
-                </Row>
-              </>
-            )}
+            <>
+              <Table striped bordered hover size="sm">
+                <thead>
+                  <tr>
+                    <th>Số TT</th>
+                    <th>
+                      <span
+                        className="sort-desc"
+                        onClick={() => {
+                          // sortMarks("gk2");
+                        }}
+                      >
+                        Mã HS
+                      </span>
+                    </th>
+                    <th>
+                      <span
+                        className="sort-desc"
+                        onClick={() => {
+                          // sortMarks("gk2");
+                        }}
+                      >
+                        Họ và tên
+                      </span>
+                    </th>
+                    <th>
+                      <span
+                        className="sort-desc"
+                        onClick={() => {
+                          // sortMarks("gk2");
+                        }}
+                      >
+                        Năm sinh
+                      </span>{" "}
+                    </th>
+                    <th>
+                      <span
+                        className="sort-desc"
+                        onClick={() => {
+                          // sortMarks("gk2");
+                        }}
+                      >
+                        Giới tính
+                      </span>
+                    </th>
+                    <th>Email</th>
+                    <th>Số điện thoại</th>
+                    <th>Hành động</th>
+                  </tr>
+                </thead>
+                <tbody>{showListStudent}</tbody>
+              </Table>
+              {/* {<ConductTable />} */}
+              <hr />
+              <DropdownButton
+                id="dropdown-basic-button"
+                variant="success"
+                title="Xuất điểm"
+              >
+                <Dropdown.Item
+                  onClick={() => {
+                    exportMarksClass(1);
+                  }}
+                >
+                  Học kỳ 1
+                </Dropdown.Item>
+                <Dropdown.Item
+                  onClick={() => {
+                    exportMarksClass(2);
+                  }}
+                >
+                  Học kỳ 2
+                </Dropdown.Item>
+                <Dropdown.Item
+                  onClick={() => {
+                    exportMarksClass(3);
+                  }}
+                >
+                  Cả năm
+                </Dropdown.Item>
+              </DropdownButton>
+              &nbsp;
+              {/* <Button variant="success">Xét Hạnh Kiểm</Button> */}
+            </>
+          )}
         </Card.Body>
       </Card>
     </Container>
@@ -362,6 +397,18 @@ function RowTable(props) {
   );
 }
 
+function ListStudent(props) {
+  const showListStudent = () => {
+    const list = props.listStudent;
+    return list;
+  };
+
+  const eleStudent = showListStudent().map((item) => {
+    return <StudentItem />;
+  });
+}
+function StudentItem(props) {}
+
 function BangDiemHocSinh(props) {
   const [listMarks, setListMarks] = useState([]);
   const getAllMarkByYear = async () => {
@@ -373,7 +420,7 @@ function BangDiemHocSinh(props) {
       if (rs.count > 0) {
         setListMarks(rs.results);
       }
-    } catch (ex) { }
+    } catch (ex) {}
   };
 
   useEffect(() => {

@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import { Form, Button, Badge } from "react-bootstrap";
-import {
-  validateListMarksReg,
-} from "../../utils/validateMarksReg";
+import { validateListMarksReg } from "../../utils/validateMarksReg";
 export default function MarksItem(props) {
   const [isEdit, setIsEdit] = useState(false);
   const [isEdit2, setIsEdit2] = useState(false);
@@ -13,6 +11,7 @@ export default function MarksItem(props) {
     (item) => item.semester === 2
   );
 
+  //Thay doi trang thai chinh sua diem DGTX
   const setEditMarksReg = (semester) => {
     if (semester === 1) {
       setIsEdit(true);
@@ -32,26 +31,17 @@ export default function MarksItem(props) {
 
   //XOA DIEM DANH GIA THUONG XUYEN 1
   const onDelMarksReg = async (markReg, semester) => {
-    // if (semester === 1) {
-    //   const newList = listMarksReg1.filter((item) => item.id !== markReg.id);
-    //   // setListMarksReg1(newList);
-    // }
-    // if (semester === 2) {
-    //   const newList = listMarksReg2.filter((item) => item.id !== markReg.id);
-    //   // setListMarksReg2(newList);
-    // }
-    props.delMarksReg(markReg.id);
-    // const rs = await deleteMarksReg(markReg.id);
+    await props.delMarksReg(markReg.id);
   };
 
   const onUpdateMarksReg = async () => {
     try {
       const valid = validateListMarksReg(listMarksReg1);
+      console.log(listMarksReg1);
       if (valid === false) {
         props.setMessage("Nhập điểm không hợp lệ!");
         return;
       }
-
       const standardList = listMarksReg1.map((item) => {
         if (item.is_public === "Fasle") {
           item.is_public = 0;
@@ -60,14 +50,12 @@ export default function MarksItem(props) {
         }
         return item;
       });
-      // const rs = await updateManyMarksReg(standartList);
-
       await props.updateReg(standardList);
-    } catch (ex) {
-    } finally {
+      props.setMessage("Cập nhật điểm thành công!");
       setIsEdit(false);
-    }
+    } catch (ex) {}
   };
+  //lay gia tri diem DGTX moi'
   const onChangeNewMarksReg = (event) => {
     const { value } = event.target;
     let obj = {
@@ -76,7 +64,7 @@ export default function MarksItem(props) {
     };
     props.updateMarksRegState(obj);
   };
-
+  //lay gia tri diem DGTX moi'
   const onChangeNewMarksReg2 = (event) => {
     const { value } = event.target;
     let obj = {
@@ -85,7 +73,7 @@ export default function MarksItem(props) {
     };
     props.updateMarksRegState2(obj);
   };
-
+  //hien input nhap diem DGTX moi
   const showInputMarksReg = () => {
     if (props.marksState.isAddDGTX1) {
       return (
@@ -105,17 +93,16 @@ export default function MarksItem(props) {
     }
     return "";
   };
+  //hien input nhap diem dgtx moi
   const showInputMarksReg2 = () => {
     if (props.marksState.isAddDGTX2) {
       return (
         <Form.Control
           type="number"
-          step="0.1"
           min="0"
           max="10"
           style={{ width: 60 }}
           size="sm"
-          // type="text"
           placeholder="DGTX"
           disabled={false}
           onChange={onChangeNewMarksReg2}
@@ -127,7 +114,12 @@ export default function MarksItem(props) {
 
   const onUpdateMarksReg2 = async () => {
     try {
-      const standartList = listMarksReg2.map((item) => {
+      const valid = validateListMarksReg(listMarksReg2);
+      if (valid === false) {
+        props.setMessage("Nhập điểm không hợp lệ!");
+        return;
+      }
+      const standardList = listMarksReg2.map((item) => {
         if (item.is_public === "Fasle") {
           item.is_public = 0;
         } else {
@@ -135,13 +127,12 @@ export default function MarksItem(props) {
         }
         return item;
       });
-      // const rs = await updateManyMarksReg(standartList);
-      props.updateReg(standartList);
-    } catch (ex) {
-    } finally {
+      await props.updateReg(standardList);
+      props.setMessage("Cập nhật điểm thành công!");
       setIsEdit2(false);
-    }
+    } catch (ex) {}
   };
+
   //lay gia tri diem gk,ck
   const handleInput = (event) => {
     const { name, value } = event.target;
@@ -152,18 +143,8 @@ export default function MarksItem(props) {
 
   ///lay gia tri sua diem danh gia thuong xuyen
   const handleInputMarksReg1 = (data, event) => {
-    //lay dong nao, lay id nao
     const { value } = event.target;
-    // const marks_ref = { id: props.idx };
     let obj = { marks_ref: props.idx, id: data.id, point: value };
-    // let newList = listMarksReg1.map((item) => {
-    //   if (item.id === data.id) {
-    //     return { ...item, point: value };
-    //   } else {
-    //     return item;
-    //   }
-    // });
-    // setListMarksReg1(newList);
     props.onChangeMarksReg(obj);
   };
 
