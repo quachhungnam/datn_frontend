@@ -34,7 +34,7 @@ function Infor() {
     username: "",
     first_name: "",
     last_name: "",
-    gender: -1,
+    gender: null,
     birthday: null,
     email: "",
     phone_number: "",
@@ -239,11 +239,11 @@ function Infor() {
                       <Col>
                         <b>
                           {" "}
-                          {user.gender === 1
+                          {user.gender === true
                             ? "Nam"
-                            : user.gender === 0
+                            : user.gender === false
                               ? "Nữ"
-                              : "Khác"}
+                              : "-"}
                         </b>
                       </Col>
                     </Row>

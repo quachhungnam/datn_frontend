@@ -12,6 +12,7 @@ import {
   Spinner,
   Badge,
   Alert,
+  FormControl,
 } from "react-bootstrap";
 import { get_schoolyear_service } from "../../services/schoolYearService";
 import { get_teacher_class } from "../../services/classesService";
@@ -30,6 +31,8 @@ export default function MyClass() {
   const [isLoading, setisLoading] = useState(false);
   const [showDiem, setShowDiem] = useState(false);
   const [studentDetail, setStudentDetail] = useState(null);
+  const [desc, setDesc] = useState(-1);
+  const [keyword, setKeyword] = useState("");
   //neu la nam hoc hien tai thi lay danh sach khac
 
   const getListStudent = async (classId, yearId) => {
@@ -102,7 +105,7 @@ export default function MyClass() {
   };
 
   const showListClass = listClass.map((item, index) => (
-    <RowTable
+    <ClassInfor
       key={index}
       class_name={item.classes.class_name}
       course_year={item.classes.course_year}
@@ -152,16 +155,46 @@ export default function MyClass() {
       />
     );
   };
+  const handlerSearch = (event) => {
+    const { name, value } = event.target;
+    setKeyword(value);
+  };
 
-  const showListStudent = listStudent.map((item, index) => (
-    <StudentDetail
-      key={index}
-      stt={index + 1}
-      user={item.user}
-      exportMarksStudent={exportMarksStudent}
-      showBangDiem={showBangDiem}
-    />
-  ));
+  const sortStudent = (name) => {
+    const newList = listStudent;
+    if (name === "username") {
+      newList.sort((a, b) => {
+        if (a.user.username > b.user.username) return desc;
+        if (a.user.username < b.user.username) return -desc;
+        return 0;
+      });
+      setDesc(-desc);
+    }
+    if (name === "name") {
+      newList.sort((a, b) => {
+        if (a.user.first_name > b.user.first_name) return desc;
+        if (a.user.first_name < b.user.first_name) return -desc;
+        return 0;
+      });
+      setDesc(-desc);
+    }
+    if (name === "gender") {
+      newList.sort((a, b) => {
+        if (a.user.gender > b.user.gender) return desc;
+        if (a.user.gender < b.user.gender) return -desc;
+        return 0;
+      });
+      setDesc(-desc);
+    }
+    if (name === "birthday") {
+      newList.sort((a, b) => {
+        if (a.user.birthday > b.user.birthday) return desc;
+        if (a.user.birthday < b.user.birthday) return -desc;
+        return 0;
+      });
+      setDesc(-desc);
+    }
+  };
 
   useEffect(() => {
     getlistFirst();
@@ -176,7 +209,7 @@ export default function MyClass() {
           </Alert>
           <Form.Group>
             <Row>
-              <Col md={3}>{listselectYear()}</Col>
+              <Col md={3}>{showDiem ? "" : listselectYear()}</Col>
               {isLoading ? (
                 <Button variant="primary" size="sm" disabled>
                   <Spinner
@@ -194,67 +227,30 @@ export default function MyClass() {
           </Form.Group>
           <br></br>
           {showListClass}
-          {/* 
-          <Table striped bordered hover>
-            <tbody>{showListClass}</tbody>
-          </Table> */}
 
           {showDiem ? (
             xemBangDiemHocSinh()
           ) : (
             <>
-              <Table striped bordered hover size="sm">
-                <thead>
-                  <tr>
-                    <th>Số TT</th>
-                    <th>
-                      <span
-                        className="sort-desc"
-                        onClick={() => {
-                          // sortMarks("gk2");
-                        }}
-                      >
-                        Mã HS
-                      </span>
-                    </th>
-                    <th>
-                      <span
-                        className="sort-desc"
-                        onClick={() => {
-                          // sortMarks("gk2");
-                        }}
-                      >
-                        Họ và tên
-                      </span>
-                    </th>
-                    <th>
-                      <span
-                        className="sort-desc"
-                        onClick={() => {
-                          // sortMarks("gk2");
-                        }}
-                      >
-                        Năm sinh
-                      </span>{" "}
-                    </th>
-                    <th>
-                      <span
-                        className="sort-desc"
-                        onClick={() => {
-                          // sortMarks("gk2");
-                        }}
-                      >
-                        Giới tính
-                      </span>
-                    </th>
-                    <th>Email</th>
-                    <th>Số điện thoại</th>
-                    <th>Hành động</th>
-                  </tr>
-                </thead>
-                <tbody>{showListStudent}</tbody>
-              </Table>
-              {/* {<ConductTable />} */}
+              <Row>
+                <Col md={{ span: 4 }}>
+                  <FormControl
+                    type="text"
+                    placeholder="Tìm kiếm học sinh"
+                    className=" mr-sm-2"
+                    onChange={(e) => {
+                      handlerSearch(e);
+                    }}
+                  />
+                </Col>
+              </Row>
+              <ListStudent
+                listStudent={listStudent}
+                exportMarksStudent={exportMarksStudent}
+                sortStudent={sortStudent}
+                keyword={keyword}
+                showBangDiem={showBangDiem}
+              />
               <hr />
               <DropdownButton
                 id="dropdown-basic-button"
@@ -284,7 +280,6 @@ export default function MyClass() {
                 </Dropdown.Item>
               </DropdownButton>
               &nbsp;
-              {/* <Button variant="success">Xét Hạnh Kiểm</Button> */}
             </>
           )}
         </Card.Body>
@@ -295,19 +290,149 @@ export default function MyClass() {
 
 const setGender = (data) => {
   if (data == null) {
-    return "Khác";
+    return "-";
   } else {
-    if (data === 1 || data === "1") {
+    if (data === true || data === "1") {
       return "Nam";
     }
-    if (data === 0 || data === "0") {
+    if (data === false || data === "0") {
       return "Nữ";
     }
   }
-  return "Khác";
+  return "-";
 };
 
-function StudentDetail(props) {
+//Thong tin lop chu nhiem
+function ClassInfor(props) {
+  const showGradesClass = () => {
+    const grades = parseInt(props.school_year) - parseInt(props.course_year);
+    //nam hoc se luon luon lop hon khoa hoc
+    return 10 + grades;
+  };
+  const showSchoolYear = () => {
+    return props.school_year + "-" + parseInt(props.school_year + 1);
+  };
+  const showCourseYear = () => {
+    return props.course_year + "-" + parseInt(props.course_year + 1);
+  };
+
+  return (
+    <Alert variant="success">
+      <Row>
+        <Col md={2}>
+          {" "}
+          <b>Lớp:</b>
+        </Col>
+        <Col>
+          <b className="text-uppercase">
+            {showGradesClass() + props.class_name}
+          </b>
+        </Col>
+      </Row>
+      <Row>
+        <Col md={2}>
+          {" "}
+          <b>Khóa:</b>
+        </Col>
+        <Col>
+          <b className="text-uppercase">{showCourseYear()}</b>
+        </Col>
+      </Row>
+      <Row>
+        <Col md={2}>
+          {" "}
+          <b>Năm học:</b>
+        </Col>
+        <Col>
+          <b className="text-uppercase">{showSchoolYear()}</b>
+        </Col>
+      </Row>
+    </Alert>
+  );
+}
+
+//Danh sach hoc sinh
+function ListStudent(props) {
+  const showListStudent = () => {
+    let keyt = props.keyword.toLowerCase();
+    const list = props.listStudent.filter(
+      (item) =>
+        item.user.username.toLowerCase().indexOf(keyt) !== -1 ||
+        item.user.last_name.toLowerCase().indexOf(keyt) !== -1 ||
+        item.user.first_name.toLowerCase().indexOf(keyt) !== -1
+    );
+    return list;
+  };
+
+  const eleStudent = showListStudent().map((item, idx) => {
+    return (
+      <StudentItem
+        key={idx}
+        stt={idx + 1}
+        user={item.user}
+        exportMarksStudent={props.exportMarksStudent}
+        showBangDiem={props.showBangDiem}
+      />
+    );
+  });
+
+  return (
+    <Table striped bordered hover size="sm">
+      <thead>
+        <tr>
+          <th>Số TT</th>
+          <th>
+            <span
+              className="sort-desc"
+              onClick={() => {
+                props.sortStudent("username");
+              }}
+            >
+              Mã HS
+            </span>
+          </th>
+          <th>
+            <span
+              className="sort-desc"
+              onClick={() => {
+                props.sortStudent("name");
+              }}
+            >
+              Họ và tên
+            </span>
+          </th>
+          <th>
+            <span
+              className="sort-desc"
+              onClick={() => {
+                props.sortStudent("birthday");
+              }}
+            >
+              Năm sinh
+            </span>{" "}
+          </th>
+          <th>
+            <span
+              className="sort-desc"
+              onClick={() => {
+                props.sortStudent("gender");
+              }}
+            >
+              Giới tính
+            </span>
+          </th>
+          <th>Email</th>
+          <th>Số điện thoại</th>
+          <th>Hành động</th>
+        </tr>
+      </thead>
+      <tbody>{eleStudent}</tbody>
+    </Table>
+  );
+}
+
+//item Student Infor
+function StudentItem(props) {
   const showBangDiem = (user) => {
     props.showBangDiem(user);
   };
@@ -330,7 +455,6 @@ function StudentDetail(props) {
           <Dropdown.Item
             onClick={() => {
               showBangDiem(props.user);
-              // props.exportMarksStudent(props.user, 1);
             }}
           >
             Xem bảng điểm
@@ -362,52 +486,6 @@ function StudentDetail(props) {
     </tr>
   );
 }
-
-function RowTable(props) {
-  return (
-    <Alert variant="success">
-      <Row>
-        <Col md={2}>
-          {" "}
-          <b>Lớp:</b>
-        </Col>
-        <Col>
-          <b className="text-uppercase">{props.class_name}</b>
-        </Col>
-      </Row>
-      <Row>
-        <Col md={2}>
-          {" "}
-          <b>Khóa:</b>
-        </Col>
-        <Col>
-          <b className="text-uppercase">{props.course_year}</b>
-        </Col>
-      </Row>
-      <Row>
-        <Col md={2}>
-          {" "}
-          <b>Năm học:</b>
-        </Col>
-        <Col>
-          <b className="text-uppercase">{props.school_year}</b>
-        </Col>
-      </Row>
-    </Alert>
-  );
-}
-
-function ListStudent(props) {
-  const showListStudent = () => {
-    const list = props.listStudent;
-    return list;
-  };
-
-  const eleStudent = showListStudent().map((item) => {
-    return <StudentItem />;
-  });
-}
-function StudentItem(props) {}
 
 function BangDiemHocSinh(props) {
   const [listMarks, setListMarks] = useState([]);

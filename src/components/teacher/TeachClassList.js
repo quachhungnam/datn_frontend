@@ -9,7 +9,7 @@ import {
   Card,
   Spinner,
   Alert,
-  Badge
+  Badge,
 } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
 import { get_schoolyear_service } from "../../services/schoolYearService";
@@ -28,9 +28,9 @@ export default function TeachClassList() {
     setisLoading(true);
     const rs = await get_lecture_teacher_service(teacherId, yearId);
     if (rs.error) {
-      setMessage("Không thể kết nối đến Server!")
+      setMessage("Không thể kết nối đến Server!");
       setisLoading(false);
-      return
+      return;
     } else {
       if (rs.results.length > 0) {
         const arr_lecture = rs.results;
@@ -40,7 +40,6 @@ export default function TeachClassList() {
       }
       setisLoading(false);
     }
-
   };
 
   const getcurrentYear = (rs) => {
@@ -62,15 +61,14 @@ export default function TeachClassList() {
   const getlistFirst = async () => {
     const rs = await get_schoolyear_service();
     if (rs.error) {
-      setMessage("Không thể kết nối đến Server!")
+      setMessage("Không thể kết nối đến Server!");
       // setisLoading(false);
-      return
+      return;
     } else {
       setlistYear(rs);
       const yearId = getcurrentYear(rs);
       getlistLecture(userState.user.user_id, yearId);
     }
-
   };
 
   const onselectYear = (event) => {
@@ -96,19 +94,6 @@ export default function TeachClassList() {
     );
   };
 
-  const showlistLecture = listLecture.map((item, id) => (
-    <RowTable
-      key={id}
-      letureId={item.id}
-      index={id + 1}
-      class_name={item.classes.class_name}
-      course_year={item.classes.course_year}
-      subject_name={item.subject.subject_name}
-      from_year={item.school_year.from_year}
-      to_year={item.school_year.to_year}
-    />
-  ));
-
   const showMessage = () => {
     if (message != null) {
       return (
@@ -119,7 +104,6 @@ export default function TeachClassList() {
     }
   };
 
-
   useEffect(() => {
     getlistFirst();
   }, []);
@@ -129,7 +113,6 @@ export default function TeachClassList() {
       <br></br>
       <Card>
         <Card.Body>
-
           <Alert variant="success">
             <h5 className="txt-upcase">Danh sách lớp giảng dạy</h5>
           </Alert>
@@ -148,52 +131,81 @@ export default function TeachClassList() {
                   />
                 </Button>
               ) : (
-                  ""
-                )}
+                ""
+              )}
             </Row>
           </Form.Group>
           {showMessage()}
           <br></br>
-          <Table striped bordered hover>
-            <HeadTable></HeadTable>
-            <tbody>{showlistLecture}</tbody>
-          </Table>
+          <ListTeachClass ListTeachClass={listLecture} />
         </Card.Body>
       </Card>
     </Container>
   );
 }
 
-function HeadTable() {
+function ListTeachClass(props) {
+  const showListTeachClass = () => {
+    return props.ListTeachClass;
+  };
+  const eleTeachClass = showListTeachClass().map((item, idx) => {
+    return (
+      <ClassItem
+        key={idx}
+        stt={idx + 1}
+        letureId={item.id}
+        class_name={item.classes.class_name}
+        course_year={item.classes.course_year}
+        subject_name={item.subject.subject_name}
+        from_year={item.school_year.from_year}
+        to_year={item.school_year.to_year}
+      />
+    );
+  });
+
   return (
-    <thead>
-      <tr>
-        <th>Số TT</th>
-        <th>Lớp</th>
-        <th>Khóa</th>
-        <th>Môn</th>
-        <th>Năm học</th>
-      </tr>
-    </thead>
+    <Table bordered hover>
+      <thead>
+        <tr>
+          <th>Số TT</th>
+          <th>Lớp</th>
+          <th>Khóa</th>
+          <th>Môn</th>
+          <th>Năm học</th>
+        </tr>
+      </thead>
+      <tbody>{eleTeachClass}</tbody>
+    </Table>
   );
 }
 
-function RowTable(props) {
+function ClassItem(props) {
+  const showGradesClass = () => {
+    const grades = parseInt(props.from_year) - parseInt(props.course_year);
+    return 10 + grades;
+  };
+  const showCourseYear = () => {
+    return props.course_year + "-" + parseInt(props.course_year + 1);
+  };
+
   return (
     <tr>
-      <td>{props.index}</td>
+      <td>{props.stt}</td>
       <td>
         <NavLink
+          className="font-weight-bold"
           to={{
             pathname: "/input",
             state: props.letureId,
           }}
         >
-          {props.class_name}
+          {showGradesClass() + props.class_name}
         </NavLink>
       </td>
-      <td>{props.course_year}</td>
-      <td>{props.subject_name}</td>
+      <td>{showCourseYear()}</td>
+      <td>
+        <p class="text-primary font-weight-bold">{props.subject_name}</p>
+      </td>
       <td>{props.from_year + " - " + props.to_year}</td>
     </tr>
   );
