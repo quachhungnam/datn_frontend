@@ -30,7 +30,7 @@ import {
   validateListMarksCK2,
 } from "../../utils/validateMarksReg";
 import { ExportData } from "../../utils/exportData";
-import { standardExportLecture } from "../../utils/marksUtils";
+import { standardExportLecture, sumMarks } from "../../utils/marksUtils";
 import MarksList from "./MarksList";
 import ChartTron from "./ChartMarks";
 
@@ -48,7 +48,7 @@ export default function TeachClass(props) {
   const standardDay = today.toISOString().slice(0, 10);
   const [showChart, setShowChart] = useState(false);
   const [desc, setDesc] = useState(-1);
-  const [count, setCount] = useState(0);
+  // const [count, setCount] = useState(0);
   const [keyword, setKeyword] = useState("");
   // LAY DANH SACH DIEM TU DATABASE
   const getLecture = async () => {
@@ -348,19 +348,32 @@ export default function TeachClass(props) {
   };
   const showLecture = () => {
     if (lecture != null) {
+      const showSchoolYear = () => {
+        return (
+          lecture.school_year.from_year +
+          "-" +
+          parseInt(lecture.school_year.from_year + 1)
+        );
+      };
+      const showGradesClass = () => {
+        const grades =
+          parseInt(lecture.school_year.from_year) -
+          parseInt(lecture.classes.course_year);
+        return 10 + grades;
+      };
       return (
         <Alert variant="success">
           <Row>
             <Col md={2}> Năm học:</Col>
             <Col>
               {" "}
-              <b>{lecture.school_year.from_year}</b>
+              <b>{showSchoolYear()}</b>
             </Col>
           </Row>
           <Row>
             <Col md={2}> Lớp:</Col>
             <Col>
-              <b>{lecture.classes.class_name}</b>{" "}
+              <b>{showGradesClass() + lecture.classes.class_name}</b>{" "}
             </Col>
           </Row>
           <Row>
@@ -465,12 +478,42 @@ export default function TeachClass(props) {
       });
       setDesc(-desc);
     }
+    if (name === "tbk1") {
+      newList.sort((a, b) => {
+        const [sum1a, ,] = sumMarks(a);
+        const [sum1b, ,] = sumMarks(b);
+        if (parseFloat(sum1a) > parseFloat(sum1b)) return desc;
+        if (parseFloat(sum1a) < parseFloat(sum1b)) return -desc;
+        return 0;
+      });
+      setDesc(-desc);
+    }
+    if (name === "tbk2") {
+      newList.sort((a, b) => {
+        const [, sum1a] = sumMarks(a);
+        const [, sum1b] = sumMarks(b);
+        if (parseFloat(sum1a) > parseFloat(sum1b)) return desc;
+        if (parseFloat(sum1a) < parseFloat(sum1b)) return -desc;
+        return 0;
+      });
+      setDesc(-desc);
+    }
+    if (name === "tbnam") {
+      newList.sort((a, b) => {
+        const [, , sum1a] = sumMarks(a);
+        const [, , sum1b] = sumMarks(b);
+        if (parseFloat(sum1a) > parseFloat(sum1b)) return desc;
+        if (parseFloat(sum1a) < parseFloat(sum1b)) return -desc;
+        return 0;
+      });
+      setDesc(-desc);
+    }
 
-    setCount((count) => count + 1);
+    // setCount((count) => count + 1);
   };
 
   const handlerSearch = (event) => {
-    const { name, value } = event.target;
+    const { value } = event.target;
     setKeyword(value);
   };
 

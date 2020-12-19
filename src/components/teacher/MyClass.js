@@ -17,12 +17,22 @@ import {
 import { get_schoolyear_service } from "../../services/schoolYearService";
 import { get_teacher_class } from "../../services/classesService";
 import { AuthContext } from "../../context/AuthContext";
-import { getStudentLecture } from "../../services/studentService";
+import {
+  getStudentLecture,
+  getStudentConduct,
+  postStudentConduct,
+  patchStudentConduct,
+} from "../../services/studentService";
 import { ExportData } from "../../utils/exportData";
 import { getMarksByYear, getMarksClass } from "../../services/marksService";
 import { standardDate } from "../../utils/standardDate";
 import { sumMarks, standardExport } from "../../utils/marksUtils";
 export default function MyClass() {
+  const initState = {
+    showListStudent: true,
+    showMarkStudent: false,
+    showConduct: false,
+  };
   const [userState] = React.useContext(AuthContext);
   const [listYear, setlistYear] = useState([]);
   const [currentYear, setcurrentYear] = useState(0);
@@ -33,8 +43,22 @@ export default function MyClass() {
   const [studentDetail, setStudentDetail] = useState(null);
   const [desc, setDesc] = useState(-1);
   const [keyword, setKeyword] = useState("");
+  const [listConduct, setListConduct] = useState([]);
+  const [showConduct, setShowConduct] = useState(false);
   //neu la nam hoc hien tai thi lay danh sach khac
 
+  const [state, dispatch] = React.useReducer((prevState, action) => {
+    switch (action.type) {
+      case "SHOW_STUDENT":
+        return initState;
+      case "SHOW_MARKS":
+        return { ...initState, showListStudent: false, showMarkStudent: true };
+      case "SHOW_CONDUCT":
+        return { ...initState, showListStudent: false, showConduct: true };
+      default:
+        return initState;
+    }
+  }, initState);
   const getListStudent = async (classId, yearId) => {
     const rs = await getStudentLecture(classId, yearId);
     if (rs.results !== "") {
@@ -42,6 +66,20 @@ export default function MyClass() {
       setlistStudent(arrStudent);
     } else {
     }
+  };
+
+  const getListConduct = async (classId) => {
+    try {
+      const rs = await getStudentConduct(classId);
+      if (rs.error) {
+        return;
+      }
+      if (rs.results !== "") {
+        const arrConduct = rs.results;
+        setListConduct(arrConduct);
+      } else {
+      }
+    } catch (ex) {}
   };
 
   const getTeacherClass = async (teacherId, yearId) => {
@@ -152,6 +190,7 @@ export default function MyClass() {
         studentDetail={studentDetail != null ? studentDetail : null}
         currentYear={currentYear}
         exportMarksStudent={exportMarksStudent}
+        dispatch={dispatch}
       />
     );
   };
@@ -196,6 +235,22 @@ export default function MyClass() {
     }
   };
 
+  const onShowConduct = () => {
+    setShowConduct(!showConduct);
+  };
+
+  const showListConduct = () => {
+    const classes = listClass.length > 0 ? listClass[0] : null;
+    return (
+      <ListConduct
+        classes={classes}
+        setShowConduct={setShowConduct}
+        currentYear={currentYear}
+        dispatch={dispatch}
+      />
+    );
+  };
+
   useEffect(() => {
     getlistFirst();
   }, []);
@@ -228,9 +283,8 @@ export default function MyClass() {
           <br></br>
           {showListClass}
 
-          {showDiem ? (
-            xemBangDiemHocSinh()
-          ) : (
+          {state.showMarkStudent ? xemBangDiemHocSinh() : ""}
+          {state.showListStudent ? (
             <>
               <Row>
                 <Col md={{ span: 4 }}>
@@ -250,38 +304,53 @@ export default function MyClass() {
                 sortStudent={sortStudent}
                 keyword={keyword}
                 showBangDiem={showBangDiem}
+                dispatch={dispatch}
               />
               <hr />
-              <DropdownButton
-                id="dropdown-basic-button"
-                variant="success"
-                title="Xuất điểm"
-              >
-                <Dropdown.Item
+              <Form.Row>
+                <DropdownButton
+                  id="dropdown-basic-button"
+                  variant="success"
+                  title="Xuất điểm"
+                >
+                  <Dropdown.Item
+                    onClick={() => {
+                      exportMarksClass(1);
+                    }}
+                  >
+                    Học kỳ 1
+                  </Dropdown.Item>
+                  <Dropdown.Item
+                    onClick={() => {
+                      exportMarksClass(2);
+                    }}
+                  >
+                    Học kỳ 2
+                  </Dropdown.Item>
+                  <Dropdown.Item
+                    onClick={() => {
+                      exportMarksClass(3);
+                    }}
+                  >
+                    Cả năm
+                  </Dropdown.Item>
+                </DropdownButton>
+                &nbsp;
+                <Button
+                  variant="success"
                   onClick={() => {
-                    exportMarksClass(1);
+                    dispatch({ type: "SHOW_CONDUCT" });
                   }}
                 >
-                  Học kỳ 1
-                </Dropdown.Item>
-                <Dropdown.Item
-                  onClick={() => {
-                    exportMarksClass(2);
-                  }}
-                >
-                  Học kỳ 2
-                </Dropdown.Item>
-                <Dropdown.Item
-                  onClick={() => {
-                    exportMarksClass(3);
-                  }}
-                >
-                  Cả năm
-                </Dropdown.Item>
-              </DropdownButton>
-              &nbsp;
+                  Xét hạnh kiểm
+                </Button>
+              </Form.Row>
             </>
+          ) : (
+            ""
           )}
+
+          {state.showConduct == true ? showListConduct() : ""}
         </Card.Body>
       </Card>
     </Container>
@@ -313,7 +382,7 @@ function ClassInfor(props) {
     return props.school_year + "-" + parseInt(props.school_year + 1);
   };
   const showCourseYear = () => {
-    return props.course_year + "-" + parseInt(props.course_year + 1);
+    return props.course_year;
   };
 
   return (
@@ -372,6 +441,7 @@ function ListStudent(props) {
         user={item.user}
         exportMarksStudent={props.exportMarksStudent}
         showBangDiem={props.showBangDiem}
+        dispatch={props.dispatch}
       />
     );
   });
@@ -455,6 +525,7 @@ function StudentItem(props) {
           <Dropdown.Item
             onClick={() => {
               showBangDiem(props.user);
+              props.dispatch({ type: "SHOW_MARKS" });
             }}
           >
             Xem bảng điểm
@@ -501,10 +572,6 @@ function BangDiemHocSinh(props) {
     } catch (ex) {}
   };
 
-  useEffect(() => {
-    getAllMarkByYear();
-  }, []);
-
   const showRowSubject = listMarks.map((item, idx) => {
     const [sum1, sum2, sum3] = sumMarks(item);
     const markRegular1 = item.marksregulary.filter(
@@ -542,6 +609,9 @@ function BangDiemHocSinh(props) {
       </tr>
     );
   });
+  useEffect(() => {
+    getAllMarkByYear();
+  }, []);
 
   return (
     <>
@@ -597,7 +667,8 @@ function BangDiemHocSinh(props) {
         <Button
           variant="danger"
           onClick={() => {
-            props.setShowDiem(false);
+            // props.setShowDiem(false);
+            props.dispatch({ type: "SHOW_STUDENT" });
           }}
         >
           Quay lại
@@ -635,6 +706,261 @@ function BangDiemHocSinh(props) {
   );
 }
 
+function ListConduct(props) {
+  const [listConduct, setListConduct] = useState([]);
+  const [listHK, setListHK] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const getListConduct = async () => {
+    try {
+      const rs = await getStudentConduct(props.classes.id);
+      if (rs.error) {
+        return;
+      }
+      if (rs.results !== "") {
+        const arrConduct = rs.results;
+        setListConduct(arrConduct);
+      } else {
+      }
+    } catch (ex) {}
+  };
+
+  const filConduct = (list, yearId) => {
+    const newList = list.filter((item) => item.school_year.id == yearId);
+    return newList;
+  };
+
+  const onSelectConduct = (newItem) => {
+    const filList = listHK.filter((item) => item.student === newItem.student);
+    //neu co thi sua
+    if (filList.length >= 1) {
+      const newList = listHK.map((item, idx) => {
+        if (item.student === newItem.student) {
+          return newItem;
+        } else {
+          return item;
+        }
+      });
+      setListHK(newList);
+      return;
+    }
+    if (filList.length < 1) {
+      setListHK([...listHK, newItem]);
+    }
+  };
+
+  //Xet hanh kiem
+  const postManyConduct = async (data) => {
+    const allResponse = data.map((item) => {
+      const rs = postStudentConduct(item);
+      return rs;
+    });
+    return Promise.all(allResponse);
+  };
+  const patchManyConduct = async (data) => {
+    const allResponse = data.map((item) => {
+      const rs = patchStudentConduct(item);
+      return rs;
+    });
+    return Promise.all(allResponse);
+  };
+
+  const actionSetConduct = async () => {
+    try {
+      const newList = listHK.filter((item) => {
+        if (!item.id) {
+          return item;
+        }
+      });
+      const oldList = listHK.filter((item) => {
+        if (item.id) {
+          return item;
+        }
+      });
+      setIsLoading(true);
+      const postRs = await postManyConduct(newList);
+      const patchRs = await patchManyConduct(oldList);
+      setIsLoading(false);
+    } catch (ex) {}
+  };
+  // const showListConduct = () => {};
+  const eleConduct = listConduct.map((item, idx) => {
+    const conduct = filConduct(item.learningoutcomes, props.currentYear);
+    const cond =
+      conduct.length > 0
+        ? conduct[0]
+        : { st_semester_conduct: null, nd_semester_conduct: null };
+    return (
+      <ConductItem
+        key={idx}
+        stt={idx + 1}
+        user={item.user}
+        currentYear={props.currentYear}
+        conduct={cond} //1list co the rong
+        onSelectConduct={onSelectConduct}
+        listHK={listHK}
+      />
+    );
+  });
+  useEffect(() => {
+    getListConduct();
+  }, [isLoading]);
+
+  return (
+    <Table striped bordered hover size="sm">
+      <thead>
+        <tr>
+          <th rowSpan={2}>Số TT</th>
+          <th rowSpan={2}>Mã HS</th>
+          <th rowSpan={2}>Họ và tên</th>
+          <th>Hạnh kiểm HK1</th>
+          <th>Hạnh kiểm HK2</th>
+          <th rowSpan={2}>Hạnh kiểm cả năm</th>
+        </tr>
+        <tr>
+          <th>
+            <Button
+              variant="success"
+              size="sm"
+              onClick={() => {
+                actionSetConduct();
+              }}
+            >
+              Lưu
+            </Button>
+          </th>
+          <th>
+            <Button
+              variant="success"
+              size="sm"
+              onClick={() => {
+                actionSetConduct();
+              }}
+            >
+              Lưu
+            </Button>
+          </th>
+        </tr>
+      </thead>
+      <tbody>{eleConduct}</tbody>
+      <hr />
+      <Button
+        variant="danger"
+        onClick={() => {
+          props.dispatch({ type: "SHOW_STUDENT" });
+        }}
+      >
+        Quay lại
+      </Button>
+    </Table>
+  );
+}
+
+function ConductItem(props) {
+  const [conduct, setConduct] = useState(props.conduct);
+  const [choiceConduct, setChoiceConduct] = useState([
+    { id: null, value: "-" },
+    { id: 1, value: "Yếu" },
+    { id: 2, value: "Trung bình" },
+    { id: 3, value: "Khá" },
+    { id: 4, value: "Tốt" },
+  ]);
+
+  const getConduct = () => {
+    if (props.conduct.length > 0) {
+      setConduct(props.conduct[0]);
+    }
+  };
+  const rateConduct = (data) => {
+    const tb =
+      (parseInt(data.st_semester_conduct) +
+        parseInt(data.nd_semester_conduct) * 2) /
+      3;
+    console.log(typeof tb);
+    if (isNaN(tb)) {
+      return "-";
+    }
+    if (1 <= tb && tb < 1.5) {
+      return "Yếu";
+    }
+    if (1.5 <= tb && tb < 2.5) {
+      return "Trung bình";
+    }
+    if (2.5 < tb && tb < 3.5) {
+      return "Khá";
+    }
+    if (3.5 < tb) {
+      return "Tốt";
+    }
+    return "-";
+  };
+  const onChangeConduct1 = (event) => {
+    const { name, value } = event.target;
+    setConduct({ ...conduct, st_semester_conduct: value });
+    const obj = conduct;
+    obj.st_semester_conduct = value;
+    obj.student = props.user.id;
+    obj.school_year = props.currentYear;
+    props.onSelectConduct(obj);
+    console.log(props.listHK);
+  };
+  const onChangeConduct2 = (event) => {
+    const { name, value } = event.target;
+    const obj = conduct;
+    obj.nd_semester_conduct = value;
+    obj.student = props.user.id;
+    obj.school_year = props.currentYear;
+    props.onSelectConduct(obj);
+  };
+
+  const listselectConduct1 = () => {
+    return (
+      <Form.Control
+        size="sm"
+        as="select"
+        value={conduct.st_semester_conduct}
+        onChange={onChangeConduct1}
+      >
+        {choiceConduct.map((item, idx) => (
+          <option className="dropdown-item" value={item.id} key={idx}>
+            {item.value}
+          </option>
+        ))}
+      </Form.Control>
+    );
+  };
+
+  const listselectConduct2 = () => {
+    return (
+      <Form.Control
+        size="sm"
+        as="select"
+        value={conduct.nd_semester_conduct}
+        onChange={onChangeConduct2}
+      >
+        {choiceConduct.map((item, idx) => (
+          <option className="dropdown-item" value={item.id} key={idx}>
+            {item.value}
+          </option>
+        ))}
+      </Form.Control>
+    );
+  };
+  useEffect(() => {
+    getConduct();
+  }, []);
+  return (
+    <tr>
+      <td>{props.stt}</td>
+      <td>{props.user.username}</td>
+      <td>{props.user.last_name + " " + props.user.first_name}</td>
+      <td>{listselectConduct1()}</td>
+      <td>{listselectConduct2()}</td>
+      <td>{rateConduct(props.conduct)}</td>
+    </tr>
+  );
+}
+
 function ConductTable() {
   return (
     <Table striped bordered hover size="sm">
@@ -648,7 +974,7 @@ function ConductTable() {
           <th>Hạnh kiểm cả năm</th>
         </tr>
       </thead>
-      <tbody>{<ConductRow />}</tbody>
+      <tbody></tbody>
     </Table>
   );
 }

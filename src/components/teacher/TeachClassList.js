@@ -185,7 +185,7 @@ function ClassItem(props) {
     return 10 + grades;
   };
   const showCourseYear = () => {
-    return props.course_year + "-" + parseInt(props.course_year + 1);
+    return props.course_year
   };
 
   return (

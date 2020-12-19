@@ -494,7 +494,17 @@ export default function MarksList(props) {
           <th colSpan={4}>
             Học kỳ 2 (Hạn nhập điểm: {standardDate(props.limitInput2)})
           </th>
-          <th rowSpan="3">Cả năm</th>
+          <th rowSpan="3">
+            {" "}
+            <span
+              className="sort-desc"
+              onClick={() => {
+                sortMarks("tbnam");
+              }}
+            >
+              Cả năm
+            </span>{" "}
+          </th>
         </tr>
 
         <tr>
@@ -519,7 +529,16 @@ export default function MarksList(props) {
               Cuối kỳ
             </span>
           </th>
-          <th>TB Kỳ </th>
+          <th>
+            <span
+              className="sort-desc"
+              onClick={() => {
+                sortMarks("tbk1");
+              }}
+            >
+              TB Kỳ
+            </span>
+          </th>
           <th colSpan={1}>Điểm ĐGTX</th>
           <th>
             <span
@@ -541,7 +560,17 @@ export default function MarksList(props) {
               Cuối kỳ
             </span>
           </th>
-          <th>TB Kỳ</th>
+          <th>
+            {" "}
+            <span
+              className="sort-desc"
+              onClick={() => {
+                sortMarks("tbk2");
+              }}
+            >
+              TB Kỳ
+            </span>
+          </th>
         </tr>
         <tr>
           <th colSpan={1}>{showDropDGTX1()}</th>

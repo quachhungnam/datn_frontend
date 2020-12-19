@@ -93,8 +93,8 @@ function MyMarks() {
               />
             </Button>
           ) : (
-            ""
-          )}
+              ""
+            )}
           <hr />
           <ListResultStudy listMarks={listMarks} listConduct={listConduct} />
         </Card.Body>
@@ -195,6 +195,7 @@ function ResultStudyItem(props) {
   const conduct = props.conduct;
 
   const XepHK = (data) => {
+    console.log(data)
     if (data == null) {
       return "-";
     } else {
@@ -222,13 +223,13 @@ function ResultStudyItem(props) {
       <td>{showSchoolYear()}</td>
       <td>{props.TBK1}</td>
       <td>{XepHK(conduct.st_semester_conduct)}</td>
-      <td>{}</td>
+      <td>{ }</td>
       <td> {props.TBK2}</td>
       <td>{XepHK(conduct.nd_semester_conduct)}</td>
       <td></td>
       <td>{props.TBK3}</td>
       <td>
-        {XepHK(conduct.nd_semester_conduct + conduct.nd_semester_conduct * 2)}
+        {XepHK((parseInt(conduct.st_semester_conduct) + parseInt(conduct.nd_semester_conduct) * 2) / 3)}
       </td>
       <td></td>
     </tr>
@@ -236,6 +237,66 @@ function ResultStudyItem(props) {
 }
 
 function ListMarksDetail(props) {
+  const [desc, setDesc] = useState(1);
+  const sortMarks = (name) => {
+    const newList = props.listMarks;
+    if (name === "subject") {
+      newList.sort((a, b) => {
+        if (a.lecture.subject.subject_name > b.lecture.subject.subject_name)
+          return desc;
+        if (a.lecture.subject.subject_name < b.lecture.subject.subject_name)
+          return -desc;
+        return 0;
+      });
+      setDesc(-desc);
+    }
+    if (name === "gk1") {
+      newList.sort((a, b) => {
+        if (
+          parseFloat(a.mid_st_semester_point) >
+          parseFloat(b.mid_st_semester_point)
+        )
+          return desc;
+        if (
+          parseFloat(a.mid_st_semester_point) <
+          parseFloat(b.mid_st_semester_point)
+        )
+          return -desc;
+        return 0;
+      });
+      setDesc(-desc);
+    }
+    if (name === "tbk1") {
+      newList.sort((a, b) => {
+        const [sum1a, ,] = sumMarks(a);
+        const [sum1b, ,] = sumMarks(b);
+        if (parseFloat(sum1a) > parseFloat(sum1b)) return desc;
+        if (parseFloat(sum1a) < parseFloat(sum1b)) return -desc;
+        return 0;
+      });
+      setDesc(-desc);
+    }
+    if (name === "tbk2") {
+      newList.sort((a, b) => {
+        const [, sum1a] = sumMarks(a);
+        const [, sum1b] = sumMarks(b);
+        if (parseFloat(sum1a) > parseFloat(sum1b)) return desc;
+        if (parseFloat(sum1a) < parseFloat(sum1b)) return -desc;
+        return 0;
+      });
+      setDesc(-desc);
+    }
+    if (name === "tbnam") {
+      newList.sort((a, b) => {
+        const [, , sum1a] = sumMarks(a);
+        const [, , sum1b] = sumMarks(b);
+        if (parseFloat(sum1a) > parseFloat(sum1b)) return desc;
+        if (parseFloat(sum1a) < parseFloat(sum1b)) return -desc;
+        return 0;
+      });
+      setDesc(-desc);
+    }
+  };
   const showListMarks = () => {
     return props.listMarks;
   };
@@ -267,20 +328,66 @@ function ListMarksDetail(props) {
         <tr>
           <th rowSpan="2">STT</th>
           <th rowSpan="2">Năm học</th>
-          <th rowSpan="2">Môn học</th>
+          <th rowSpan="2">
+            <span
+              className="sort-desc"
+              onClick={() => {
+                sortMarks("subject");
+              }}
+            >
+              Môn học
+            </span>
+          </th>
           <th colSpan="4">Học kỳ 1</th>
           <th colSpan="4">Học kỳ 2</th>
-          <th rowSpan="2">Cả năm</th>
+          <th rowSpan="2">
+            <span
+              className="sort-desc"
+              onClick={() => {
+                sortMarks("tbnam");
+              }}
+            >
+              Cả năm
+            </span>
+          </th>
         </tr>
         <tr>
           <th>Điểm ĐGTX</th>
-          <th>Giữa kỳ</th>
+          <th>
+            <span
+              className="sort-desc"
+              onClick={() => {
+                sortMarks("gk1");
+              }}
+            >
+              Giữa kỳ
+            </span>
+          </th>
           <th>Cuối kỳ</th>
-          <th>Trung bình môn</th>
+          <th>
+            <span
+              className="sort-desc"
+              onClick={() => {
+                sortMarks("tbk1");
+              }}
+            >
+              Trung bình môn
+            </span>
+          </th>
           <th>Điểm ĐGTX</th>
           <th>Giữa kỳ</th>
           <th>Cuối kỳ</th>
-          <th>Trung bình môn</th>
+          <th>
+            {" "}
+            <span
+              className="sort-desc"
+              onClick={() => {
+                sortMarks("tbk2");
+              }}
+            >
+              Trung bình môn
+            </span>
+          </th>
         </tr>
       </thead>
       <tbody>{eleListMarks}</tbody>
