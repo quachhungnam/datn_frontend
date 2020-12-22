@@ -1,10 +1,21 @@
 .navbar-color {
   /* background: #0c4b33; */
   /* background: #20aa76; */
-  background: #417690;
+  /* background: #417690; */
+  background: #0c4b33;
   color: #ffc;
 }
 
+/* .nav-item {
+  text-transform: uppercase;
+
+} */
+
+.color-bagde {
+  background: #20aa76;
+  /* color: #ffc; */
+  color: #f1fff7;
+}
 .btn-color {
   background-color: #417690;
 }
@@ -28,7 +39,7 @@
 
 .sort-desc {
   /* box-shadow: inset 0 -3px 0 0 green; */
-} 
+}
 .sort-desc:hover {
   /* background-color: yellow; */
   cursor: pointer;

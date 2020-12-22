@@ -1,7 +1,7 @@
 import React from "react";
 export default function Footer() {
   return (
-    <footer className="page-footer font-small teal pt-4 navbar-color">
+    <footer className="page-footer font-small teal pt-4 color-bagde">
       <div className="container-fluid text-center text-md-left">
         <div className="row">
           <div className="col-md-3 mt-md-0 mt-3">
@@ -55,7 +55,7 @@ export default function Footer() {
         </div>
       </div>
 
-      <div className="footer-copyright text-center py-3">
+      <div className="footer-copyright text-center py-3 navbar-color">
         Copyright © 2020 Trường THPT Phan Chu Trinh
       </div>
     </footer>

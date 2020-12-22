@@ -53,7 +53,7 @@ export default function MarksItem(props) {
       await props.updateReg(standardList);
       props.setMessage("Cập nhật điểm thành công!");
       setIsEdit(false);
-    } catch (ex) {}
+    } catch (ex) { }
   };
   //lay gia tri diem DGTX moi'
   const onChangeNewMarksReg = (event) => {
@@ -85,7 +85,7 @@ export default function MarksItem(props) {
           style={{ width: 60 }}
           size="sm"
           placeholder="DGTX"
-          defaultValue={""}
+          // defaultValue={""}
           disabled={false}
           onChange={onChangeNewMarksReg}
         />
@@ -130,7 +130,7 @@ export default function MarksItem(props) {
       await props.updateReg(standardList);
       props.setMessage("Cập nhật điểm thành công!");
       setIsEdit2(false);
-    } catch (ex) {}
+    } catch (ex) { }
   };
 
   //lay gia tri diem gk,ck
@@ -178,8 +178,8 @@ export default function MarksItem(props) {
               </Badge>
             </>
           ) : (
-            ""
-          )}
+              ""
+            )}
         </div>
       );
     });
@@ -217,8 +217,8 @@ export default function MarksItem(props) {
               </Badge>
             </>
           ) : (
-            ""
-          )}
+              ""
+            )}
         </div>
       );
     });
@@ -257,8 +257,8 @@ export default function MarksItem(props) {
               </Button>
             </>
           ) : (
-            ""
-          )}{" "}
+              ""
+            )}{" "}
           {showInputMarksReg()}
         </Form.Row>
       </td>
@@ -269,7 +269,7 @@ export default function MarksItem(props) {
           style={{ width: 65 }}
           size="sm"
           placeholder="GK 1"
-          value={props.mid_st_semester_point}
+          value={props.mid_st_semester_point != null ? props.mid_st_semester_point : ""}
           disabled={!props.marksState.isAddGK1}
           onChange={handleInput}
         />
@@ -284,7 +284,7 @@ export default function MarksItem(props) {
           style={{ width: 65 }}
           size="sm"
           placeholder="CK 1"
-          value={props.end_st_semester_point}
+          value={props.end_st_semester_point != null ? props.end_st_semester_point : ""}
           onChange={handleInput}
           disabled={!props.marksState.isAddCK1}
         />
@@ -316,8 +316,8 @@ export default function MarksItem(props) {
               </Button>
             </>
           ) : (
-            ""
-          )}{" "}
+              ""
+            )}{" "}
           {showInputMarksReg2()}
         </Form.Row>
       </td>

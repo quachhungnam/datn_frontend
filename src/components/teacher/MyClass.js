@@ -79,7 +79,7 @@ export default function MyClass() {
         setListConduct(arrConduct);
       } else {
       }
-    } catch (ex) {}
+    } catch (ex) { }
   };
 
   const getTeacherClass = async (teacherId, yearId) => {
@@ -264,7 +264,7 @@ export default function MyClass() {
           </Alert>
           <Form.Group>
             <Row>
-              <Col md={3}>{showDiem ? "" : listselectYear()}</Col>
+              <Col md={3}>{state.showListStudent ? listselectYear() : ""}</Col>
               {isLoading ? (
                 <Button variant="primary" size="sm" disabled>
                   <Spinner
@@ -276,8 +276,8 @@ export default function MyClass() {
                   />
                 </Button>
               ) : (
-                ""
-              )}
+                  ""
+                )}
             </Row>
           </Form.Group>
           <br></br>
@@ -347,8 +347,8 @@ export default function MyClass() {
               </Form.Row>
             </>
           ) : (
-            ""
-          )}
+              ""
+            )}
 
           {state.showConduct == true ? showListConduct() : ""}
         </Card.Body>
@@ -569,7 +569,7 @@ function BangDiemHocSinh(props) {
       if (rs.count > 0) {
         setListMarks(rs.results);
       }
-    } catch (ex) {}
+    } catch (ex) { }
   };
 
   const showRowSubject = listMarks.map((item, idx) => {
@@ -722,7 +722,7 @@ function ListConduct(props) {
         setListConduct(arrConduct);
       } else {
       }
-    } catch (ex) {}
+    } catch (ex) { }
   };
 
   const filConduct = (list, yearId) => {
@@ -781,7 +781,7 @@ function ListConduct(props) {
       const postRs = await postManyConduct(newList);
       const patchRs = await patchManyConduct(oldList);
       setIsLoading(false);
-    } catch (ex) {}
+    } catch (ex) { }
   };
   // const showListConduct = () => {};
   const eleConduct = listConduct.map((item, idx) => {
@@ -807,42 +807,45 @@ function ListConduct(props) {
   }, [isLoading]);
 
   return (
-    <Table striped bordered hover size="sm">
-      <thead>
-        <tr>
-          <th rowSpan={2}>Số TT</th>
-          <th rowSpan={2}>Mã HS</th>
-          <th rowSpan={2}>Họ và tên</th>
-          <th>Hạnh kiểm HK1</th>
-          <th>Hạnh kiểm HK2</th>
-          <th rowSpan={2}>Hạnh kiểm cả năm</th>
-        </tr>
-        <tr>
-          <th>
-            <Button
-              variant="success"
-              size="sm"
-              onClick={() => {
-                actionSetConduct();
-              }}
-            >
-              Lưu
+    <>
+      <Table striped bordered hover size="sm">
+        <thead>
+          <tr>
+            <th rowSpan={2}>Số TT</th>
+            <th rowSpan={2}>Mã HS</th>
+            <th rowSpan={2}>Họ và tên</th>
+            <th>Hạnh kiểm HK1</th>
+            <th>Hạnh kiểm HK2</th>
+            <th rowSpan={2}>Hạnh kiểm cả năm</th>
+          </tr>
+          <tr>
+            <th>
+              <Button
+                variant="success"
+                size="sm"
+                onClick={() => {
+                  actionSetConduct();
+                }}
+              >
+                Lưu
             </Button>
-          </th>
-          <th>
-            <Button
-              variant="success"
-              size="sm"
-              onClick={() => {
-                actionSetConduct();
-              }}
-            >
-              Lưu
+            </th>
+            <th>
+              <Button
+                variant="success"
+                size="sm"
+                onClick={() => {
+                  actionSetConduct();
+                }}
+              >
+                Lưu
             </Button>
-          </th>
-        </tr>
-      </thead>
-      <tbody>{eleConduct}</tbody>
+            </th>
+          </tr>
+        </thead>
+        <tbody>{eleConduct}</tbody>
+
+      </Table>
       <hr />
       <Button
         variant="danger"
@@ -852,7 +855,8 @@ function ListConduct(props) {
       >
         Quay lại
       </Button>
-    </Table>
+    </>
+
   );
 }
 

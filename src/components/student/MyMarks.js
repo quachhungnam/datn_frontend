@@ -106,12 +106,13 @@ function MyMarks() {
           <h5>BẢNG ĐIỂM CHI TIẾT</h5>
           <hr></hr>
           {showListMarksByYear()}
+          <hr />
         </Card.Body>
       </Card>
     </Container>
   );
 }
-
+//bang diem tong ket 3 nam cap 3
 function ListResultStudy(props) {
   const listMarks = props.listMarks;
   const listConduct = props.listConduct;
@@ -127,9 +128,9 @@ function ListResultStudy(props) {
       TBK3 = parseFloat(TBK3) + parseFloat(k3);
     }
     return [
-      isNaN(TBK1) ? "-" : TBK1 / l,
-      isNaN(TBK2) ? "-" : TBK2 / l,
-      isNaN(TBK3) ? "-" : TBK3 / l,
+      isNaN(TBK1) ? "-" : (TBK1 / l).toFixed(1),
+      isNaN(TBK2) ? "-" : (TBK2 / l).toFixed(1),
+      isNaN(TBK3) ? "-" : (TBK3 / l).toFixed(1),
     ];
   };
   const getConduct = (data, year) => {
@@ -142,6 +143,104 @@ function ListResultStudy(props) {
     return { st_semester_conduct: null, nd_semester_conduct: null };
   };
 
+
+  //Xep loai hoc luc
+  const xetDiemTungMon = (TBM) => {
+
+    if (6.5 <= TBM) {
+      return 4 //loai gioi
+    }
+    if (5 <= TBM) {
+      return 3 //loai kha
+    }
+    if (3.5 <= TBM) {
+      return 2 //loai trung binh
+    }
+    if (2 <= TBM) {
+      return 1 //loai yeu
+    }
+    return 0 //kem
+  }
+  const xetDiemTBKy = (TBK) => {
+    if (8 <= TBK) {
+      return 4 //gioi
+    }
+    if (6.5 <= TBK && TBK <= 7.9) {
+      return 3 //kha
+    }
+    if (5 <= TBK && TBK <= 6.4) {
+      return 2 //TB
+    }
+    if (3.5 <= TBK && TBK <= 4.9) {
+      return 1 //Yeu
+    }
+    return 0
+  }
+  const XepHK = (data) => {
+    // console.log(data)
+    if (data == null) {
+      return "-";
+    } else {
+      if (1 <= data && data < 1.5) {
+        return 1; //yeu
+      }
+      if (1.5 <= data && data < 2.5) {
+        return 2; //trung binh
+      }
+      if (2.5 <= data && data < 3.5) {
+        return 3; //kha
+      }
+      if (3.5 <= data && data <= 4) {
+        return 4; //tot
+      }
+    }
+    return 0;
+  };
+
+  const XepHocLuc = (ListDiem, HanhKiem) => {
+    let min = 0;
+    const [TBK1, TBK2, TBK3] = sumAllMarksStudent(ListDiem); //trung binh cua ca ky
+    const hanhkiemHK1 = XepHK(HanhKiem.st_semester_conduct)
+    const hanhkiemHK2 = XepHK(HanhKiem.nd_semester_conduct)
+    const hanhkiemHK3 = XepHK((parseInt(HanhKiem.st_semester_conduct) + parseInt(HanhKiem.nd_semester_conduct) * 2) / 3)
+    // const [xetsum1, xetsum2, xetsum3] = [null, null, null]
+    let minsum1 = 10, minsum2 = 10, minsum3 = 10;
+
+    for (let i = 0; i < ListDiem.length; i++) {
+      const [sum1, sum2, sum3] = sumMarks(ListDiem[i]);
+      if (sum1 < minsum1) {
+        minsum1 = sum1
+      }
+      if (sum2 < minsum2) {
+        minsum2 = sum2
+      }
+      if (sum3 < minsum3) {
+        minsum3 = sum3
+      }
+    }
+
+
+    //lay gia tri nhat nhat cua diem trung binh tung mon
+    const xetTBMK1 = xetDiemTungMon(minsum1)
+    const xetTBMK2 = xetDiemTungMon(minsum2)
+    const xetTBMK3 = xetDiemTungMon(minsum3)
+
+    //lay gia tri nho nhat cua diem trung binh ky
+    const xetTBK1 = xetDiemTBKy(TBK1)
+    const xetTBK2 = xetDiemTBKy(TBK2)
+    const xetTBK3 = xetDiemTBKy(TBK3)
+
+
+    const RS_HK1 = Math.min(xetTBK1, xetTBMK1, hanhkiemHK1)
+    const RS_HK2 = Math.min(xetTBK2, xetTBMK2, hanhkiemHK2)
+    const RS_HK3 = Math.min(xetTBK3, xetTBMK3, hanhkiemHK3)
+    console.log(RS_HK1)
+    console.log(RS_HK2)
+    console.log(RS_HK3)
+    return [RS_HK1, RS_HK2, RS_HK3]
+  }
+
+
   const showListResult = () => {
     let arrResult = [];
     let stt = 0;
@@ -149,6 +248,7 @@ function ListResultStudy(props) {
       stt = stt + 1;
       const [TBK1, TBK2, TBK3] = sumAllMarksStudent(value);
       const conduct = getConduct(listConduct, key);
+      const [RS_HK1, RS_HK2, RS_HK3] = XepHocLuc(value, conduct)
       const eleResult = (
         <ResultStudyItem
           stt={stt}
@@ -157,6 +257,9 @@ function ListResultStudy(props) {
           TBK2={TBK2}
           TBK3={TBK3}
           conduct={conduct}
+          RS_HK1={RS_HK1}
+          RS_HK2={RS_HK2}
+          RS_HK3={RS_HK3}
         />
       );
       arrResult.push(eleResult);
@@ -191,11 +294,28 @@ function ListResultStudy(props) {
     </Table>
   );
 }
+//diem tong ket tung nam
 function ResultStudyItem(props) {
   const conduct = props.conduct;
 
+  const showHK = (data) => {
+    if (data == 4) {
+      return "Giỏi"
+    }
+    if (data == 3) {
+      return "Khá"
+    }
+    if (data == 2) {
+      return "Trung bình"
+    }
+    if (data == 1) {
+      return "Yếu"
+    }
+    return "-"
+  }
+
   const XepHK = (data) => {
-    console.log(data)
+    // console.log(data)
     if (data == null) {
       return "-";
     } else {
@@ -223,19 +343,19 @@ function ResultStudyItem(props) {
       <td>{showSchoolYear()}</td>
       <td>{props.TBK1}</td>
       <td>{XepHK(conduct.st_semester_conduct)}</td>
-      <td>{ }</td>
+      <td>{showHK(props.RS_HK1)}</td>
       <td> {props.TBK2}</td>
       <td>{XepHK(conduct.nd_semester_conduct)}</td>
-      <td></td>
+      <td>{showHK(props.RS_HK2)}</td>
       <td>{props.TBK3}</td>
       <td>
         {XepHK((parseInt(conduct.st_semester_conduct) + parseInt(conduct.nd_semester_conduct) * 2) / 3)}
       </td>
-      <td></td>
+      <td>{showHK(props.RS_HK3)}</td>
     </tr>
   );
 }
-
+//bang diem chi tiet
 function ListMarksDetail(props) {
   const [desc, setDesc] = useState(1);
   const sortMarks = (name) => {
@@ -394,6 +514,8 @@ function ListMarksDetail(props) {
     </Table>
   );
 }
+
+//diem chi tiet tung mon
 function MarksDetailItem(props) {
   const markRegular1 = props.marksregulary.filter(
     (item) => item.semester === 1

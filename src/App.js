@@ -75,7 +75,6 @@ export default function App() {
           // bg="info"
           variant="dark"
           // sticky="top"
-          
         >
           <Navbar.Brand href="/">Trường THPT Phan Châu Trinh</Navbar.Brand>
           <Navbar.Toggle aria-controls="responsive-navbar-nav" />

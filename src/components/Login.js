@@ -128,8 +128,11 @@ export default function Login() {
                 </Card>
               </Col>
             </Row>
+
           </Card.Body>
+
         </Card>
+
       </Container>
       <br></br>
       <Footer />
